@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type: 
+  workout_date: 2025-08-15
+  duration: 1.5
+  calories_burned: 1.5
+  user: one
+
+two:
+  type: 
+  workout_date: 2025-08-15
+  duration: 1.5
+  calories_burned: 1.5
+  user: two
