@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
 import WorkoutDetails from "./WorkoutDetails.js";
+import { Link } from "react-router-dom";
 
 function WorkoutsList(){
   const [workouts, setWorkouts] = useState("");
@@ -33,9 +34,11 @@ function WorkoutsList(){
           <div key={workout.id}>
             <h2>{workout.workout_date}</h2>
             <h2>{workout.workout_type}</h2>
+            <Link to={`/users/1/workouts/${workout.id}`}>Details</Link>
           </div>
         ])}
-        <WorkoutDetails />
+
+        <Link to='/users/1/workouts/new'>New Workout</Link>
     </div>
    
   )
