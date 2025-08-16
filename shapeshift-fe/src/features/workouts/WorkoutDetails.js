@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { API_URL } from "../../constants/Constants";
 import { useParams } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 function WorkoutDetails(){
   const [workout, setWorkout] = useState("")
@@ -25,10 +26,15 @@ function WorkoutDetails(){
       displayWorkoutDetails()
     }, [id])
 
-  
-
   return (
-    <div></div>
+    <div>
+      <h1>Workout details</h1>
+      <p>{workout.workout_type}</p>
+      <p>{workout.workout_date}</p>
+      <p>{workout.duration}</p>
+      <p>{workout.calories_burned}</p>
+      <Link to="/">Back</Link>
+    </div>
   )
 }
 
