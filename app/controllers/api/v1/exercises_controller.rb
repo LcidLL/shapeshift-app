@@ -3,7 +3,7 @@ class Api::V1::ExercisesController < ApplicationController
   before_action :set_exercise, except: [ :index, :create ]
   
   def index
-    @exercises = @workout.exercises.where(workout_type: params[:workout_type])
+    @exercises = @workout.exercises
     render json: @exercises
   end
 
