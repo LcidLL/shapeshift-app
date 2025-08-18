@@ -12,9 +12,11 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users do
         resources :workouts do
+          get '/search' => 'workouts#search'
           resources :exercises
         end
       end
     end
   end
+  
 end

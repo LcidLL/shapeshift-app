@@ -30,13 +30,13 @@ function WorkoutsList(){
   return(
     <div>
       <h1>Workouts</h1>
-        { workouts.map((workout) => [
+        { workouts.map((workout) => (
           <div key={workout.id}>
             <h2>{workout.workout_date}</h2>
             <h2>{workout.workout_type}</h2>
             <Link to={`/users/1/workouts/${workout.id}`}>Details</Link>
           </div>
-        ])}
+        ))}
 
         <Link to='/users/1/workouts/new'>New Workout</Link>
     </div>

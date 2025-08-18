@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { API_URL } from "../../constants/Constants";
 import { useParams } from "react-router-dom"
 import { Link } from "react-router-dom";
+import ExercisesList from "../exercises/ExercisesList";
 
 function WorkoutDetails(){
   const [workout, setWorkout] = useState("")
+
   const { id } = useParams();
 
   useEffect(() => {
@@ -22,7 +24,6 @@ function WorkoutDetails(){
           console.log("An error occured")
         }
       }
-  
       displayWorkoutDetails()
     }, [id])
 
@@ -33,6 +34,8 @@ function WorkoutDetails(){
       <p>{workout.workout_date}</p>
       <p>{workout.duration}</p>
       <p>{workout.calories_burned}</p>
+      <ExercisesList workoutType = {workout.workout_type}/>
+      <Link to={`/users/1/workouts/${workout.id}/exercises/new`} state={{workout}}>Add Exercise</Link>
       <Link to="/">Back</Link>
     </div>
   )
