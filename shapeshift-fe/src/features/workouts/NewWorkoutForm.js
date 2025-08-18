@@ -19,6 +19,17 @@ function NewWorkoutForm(){
 
   const maxDate = `${year}-${month}-${day}`;
 
+  const workoutTypeList = [
+    "Strength",
+    "Plyometrics",
+    "Strongman",
+    "Powerlifting",
+    "Olympic Weightlifting",
+    "Cardio",
+    "Stretching"
+  ];
+
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -56,7 +67,14 @@ function NewWorkoutForm(){
         </div>
         <div>
           <label for="workout-type">Workout Type</label>
-          <input id="workout-type" value={workoutType}  type="text" onChange={(e) => setWorkoutType(e.target.value)}></input>
+          <select id="workout-type" value={workoutType} onChange={(e) => setWorkoutType(e.target.value)}>
+            <option value="">-- Select Workout Type --</option>
+            { workoutTypeList.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label for="duration">Duration</label>
