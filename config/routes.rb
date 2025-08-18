@@ -23,6 +23,7 @@ Rails.application.routes.draw do
 
       get '/profile', to: 'users/registrations#show'
       patch '/profile', to: 'users/registrations#update_profile'
+      post '/daily_weight', to: 'users/registrations#log_daily_weight'
   
   # Defines the root path route ("/")
   # root "api/v1/users#index"
