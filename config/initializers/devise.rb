@@ -330,4 +330,9 @@ Devise.setup do |config|
   
   config.skip_session_storage = [:http_auth, :params_auth]
   config.navigational_formats = []
+  config.warden do |manager|
+    manager.failure_app = lambda do |env|
+      [401, {'Content-Type' => 'application/json'}, [{ error: 'Unauthorized' }.to_json]]
+    end
+  end
 end

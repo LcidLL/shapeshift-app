@@ -15,15 +15,15 @@ Rails.application.routes.draw do
                   registration: 'signup'
                 },
                 controllers: {
-                  sessions: 'users/sessions',
-                  registrations: 'users/registrations',
-                  confirmations: 'users/confirmations',
-                  passwords: 'users/passwords'
+                  sessions: 'api/v1/users/sessions',
+                  registrations: 'api/v1/users/registrations',
+                  confirmations: 'api/v1/users/confirmations',
+                  passwords: 'api/v1/users/passwords'
                 }
 
-      get '/profile', to: 'users/registrations#show'
-      patch '/profile', to: 'users/registrations#update_profile'
-      post '/daily_weight', to: 'users/registrations#log_daily_weight'
+      get '/profile', to: 'profiles#show'
+      patch '/profile', to: 'profiles#update'
+      post '/daily_weight', to: 'profiles#log_daily_weight'
   
   # Defines the root path route ("/")
   # root "api/v1/users#index"
