@@ -34,6 +34,14 @@ class Api::V1::ExercisesController < ApplicationController
     render json: { message: "Exercise deleted"}
   end
 
+  def search
+    @workout = Workout.find(params[:workout_id])
+    w_type = params[:workout_type].downcase
+    data = ExercisesDbApi.get_exercises()
+    exercise_list = data.select { |exercise| exercise["category"] == w_type}
+    render json: exercise_list
+  end
+
   private
 
   def set_user

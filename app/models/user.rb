@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
   has_many :workouts
+  has_many :plans
 
   validates :first_name, :last_name, presence: true, allow_blank: true
   validates :age, numericality: {greater_than: 0}, allow_nil: true

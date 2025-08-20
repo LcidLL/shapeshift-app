@@ -29,12 +29,17 @@ Rails.application.routes.draw do
   # root "api/v1/users#index"
   
       resources :users do
+        resources :search
+        get "/get_info" => "search#get_info"
         resources :workouts do
-          get '/search' => 'workouts#search'
           resources :exercises
+        end
+        resources :plans do
+          resources :daily_plans do
+            resources :exercise_plans
+          end
         end
       end
     end
   end
-  
 end
