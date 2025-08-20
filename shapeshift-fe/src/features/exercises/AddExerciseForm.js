@@ -33,7 +33,7 @@ function AddExerciseForm(){
   useEffect(() => {
     async function getExercises(){
       try{
-        const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}/search?workout_type=${workoutType}`);
+        const response = await fetch(`${API_URL}/exercise_dbs?workout_type=${workoutType}`);
         if (response.ok) {
           const json = await response.json();
           setExercisesList(json)
@@ -89,8 +89,8 @@ function AddExerciseForm(){
           >
             <option value="">-- Exercise --</option>
             {exercisesList.map((exercise) => (
-              <option key={exercise.id} value={exercise.name}>
-                {exercise.name}
+              <option key={exercise.id} value={exercise.exercise_name}>
+                {exercise.exercise_name}
               </option>
             ))}
           </select>
@@ -142,7 +142,6 @@ function AddExerciseForm(){
         </div>
       </form>
       <Link to="/">Back</Link>
-
     </div>
   )
 }

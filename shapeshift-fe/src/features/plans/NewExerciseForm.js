@@ -24,6 +24,7 @@ function NewExerciseForm(){
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
   const [intensity, setIntensity] = useState("");
+  const [nameQuery, setNameQuery] = useState("");
   const navigate = useNavigate()
 
   const workoutTypeList = [
@@ -61,7 +62,7 @@ function NewExerciseForm(){
     setDisplay(false)
 
     try {
-      const response = await fetch(`${API_URL}/users/1/search?workout_type=${workoutType}&mechanic=${mechanic}&muscle=${muscle}&equipment=${equipment}&level=${level}`);
+      const response = await fetch(`${API_URL}/users/1/search?name=${nameQuery}&workout_type=${workoutType}&mechanic=${mechanic}&muscle=${muscle}&equipment=${equipment}&level=${level}`);
       if (response.ok) {
           const json = await response.json();
           setExercisesList(json);
@@ -89,13 +90,13 @@ function NewExerciseForm(){
   }
 
   const setWorkout = async (exercise) => {
-  const strengthTypes = [
-    "strength",
-    "plyometrics",
-    "strongman",
-    "powerlifting",
-    "olympic Weightlifting"
-  ];
+    const strengthTypes = [
+      "strength",
+      "plyometrics",
+      "strongman",
+      "powerlifting",
+      "olympic Weightlifting"
+    ];
     const category = exercise.category
     setShouldShowStrengthInputs(strengthTypes.includes(category))
     setIsCardio(category === "cardio")
@@ -139,6 +140,15 @@ function NewExerciseForm(){
      <p>{dailyPlanId}</p> 
       <p>{planId}</p>
       <form onSubmit={handleSubmit}>
+        <div>
+        <label for="workout-type">Exercise Name</label>
+        <input
+        type="text"
+        placeholder="Search exercises..."
+        value={nameQuery}
+        onChange={(e) => setNameQuery(e.target.value)}
+      />
+      </div>
         <div>
           <label for="workout-type">Workout Type</label>
           <select id="workout-type" value={workoutType} onChange={(e) => setWorkoutType(e.target.value)}>

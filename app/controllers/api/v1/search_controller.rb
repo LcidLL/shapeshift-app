@@ -1,15 +1,21 @@
 class Api::V1::SearchController < ApplicationController
   def index
-    workout_type = params[:workout_type].downcase
+    name_query = params[:name]
+    workout_type = params[:workout_type]
     equipment = params[:equipment]
     muscle = params[:muscle]
     level = params[:level]
     mechanic = params[:mechanic]
     data = ExercisesDbApi.get_exercises(equipment,muscle,level,mechanic)
-    if !workout_type.empty?
-      data = data.select { |exercise| exercise["category"] == workout_type}
-    end
-    render json: data
+    data = data.select { |exercise| exercise["category"] == workout_type.downcase} if workout_type.present?
+    data = data.select { |exercise| exercise["name"]&.downcase&.include?(name_query.downcase) } if name_query.present?
+   filtered_data = data.map do |exercise|
+    {
+      exercise_id: exercise["id"],
+      exercise_name: exercise["name"],
+      category: exercise["category"]
+    }end
+    render json: filtered_data
   end
 
   def get_info
