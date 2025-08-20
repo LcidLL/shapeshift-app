@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  workout_name: MyString
+  day_of_week: MyString
+  workout_date: 2025-08-18
+  plan: one
+
+two:
+  workout_name: MyString
+  day_of_week: MyString
+  workout_date: 2025-08-18
+  plan: two
