@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Api::Vi::SearchControllerTest < ActionDispatch::IntegrationTest
+class Api::V1::WorkoutsControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end
