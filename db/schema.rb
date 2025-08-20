@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_18_072747) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_20_085736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_18_072747) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["plan_id"], name: "index_daily_plans_on_plan_id"
+  end
+
+  create_table "exercise_dbs", force: :cascade do |t|
+    t.string "exercise_name"
+    t.string "exercise_id"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "exercise_plans", force: :cascade do |t|

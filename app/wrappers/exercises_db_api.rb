@@ -19,12 +19,12 @@ class ExercisesDbApi
   def self.get_exercises(equipment,muscle,level,mechanic)
     base_url = "https://exercise-db-fitness-workout-gym.p.rapidapi.com/exercises/filter"
 
-     # Determine if you want to filter
+    # Determine if you want to filter
     filters = {}
-    filters[:equipment] = equipment unless equipment.empty?
-    filters[:muscle] = muscle unless muscle.empty?
-    filters[:level] = level unless level.empty?
-    filters[:mechanic] = mechanic unless mechanic.empty?
+    filters[:equipment] = equipment if equipment.present?
+    filters[:muscle] = muscle if muscle.present?
+    filters[:level] = level if level.present?
+    filters[:mechanic] = mechanic if mechanic.present?
 
     url = URI(base_url)
     url.query = URI.encode_www_form(filters) if filters.any?

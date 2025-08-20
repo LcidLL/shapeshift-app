@@ -40,6 +40,7 @@ Rails.application.routes.draw do
           end
         end
       end
+      resources :exercise_dbs
     end
   end
 end

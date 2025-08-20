@@ -39,7 +39,7 @@ function NewDailyPlanForm(){
         
             if(response.ok){
               const { id } = await response.json();
-              setDailyPlanId()
+              // setDailyPlanId()
               navigate(`/users/1/plans/${plan_id}`);
             } else {
               console.log("Error occured")
