@@ -34,14 +34,6 @@ class Api::V1::ExercisesController < ApplicationController
     render json: { message: "Exercise deleted"}
   end
 
-  def search
-    @workout = Workout.find(params[:workout_id])
-    w_type = params[:workout_type].downcase
-    data = ExercisesDbApi.get_exercises()
-    exercise_list = data.select { |exercise| exercise["category"] == w_type}
-    render json: exercise_list
-  end
-
   private
 
   def set_user
@@ -57,13 +49,7 @@ class Api::V1::ExercisesController < ApplicationController
   end
 
   def exercise_params
-    if @workout.workout_type == "stretching"
-      params.require(:exercise).permit(:exercise_name, :exercise_id, :duration)
-    elsif @workout.workout_type == "Cardio"
-      params.require(:exercise).permit(:exercise_name, :exercise_id, :distance, :duration, :intensity)
-    else
-      params.require(:exercise).permit(:exercise_name, :exercise_id, :sets, :reps, :weight)
-    end
+    params.require(:exercise).permit(:exercise_name, :exercise_id, :distance, :duration, :intensity, :sets, :reps, :weight)
   end
   
 end
