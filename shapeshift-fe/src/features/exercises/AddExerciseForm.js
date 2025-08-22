@@ -3,20 +3,22 @@ import { API_URL } from "../../constants/Constants";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-function AddExerciseForm(){
-
+function AddExerciseForm(props){
+  const { exercise, mode, onSubmit, workoutId} = props
   const location = useLocation();
   const { workout } = location.state || {};
   const { workout_id } = useParams();
 
-  const [workoutType, setWorkoutType] = useState(workout.workout_type)
+  const [workoutType, setWorkoutType] = useState(() => {
+  return workout ? workout.workout_type : "";
+});
   const [exerciseName, setExerciseName] = useState("");
-  const [sets, setSets] = useState("");
-  const [reps, setReps] = useState("");
-  const [weight, setWeight] = useState("");
+  const [sets, setSets] = useState(0);
+  const [reps, setReps] = useState(0);
+  const [weight, setWeight] = useState(0);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
-  const [intensity, setIntensity] = useState("");
+  const [intensity, setIntensity] = useState("N/A");
   const [exercisesList, setExercisesList] = useState([])
   const navigate = useNavigate();
 
@@ -45,7 +47,34 @@ function AddExerciseForm(){
       }
     }
       getExercises()
-  }, [workoutType])
+  }, [workoutType, props])
+
+  useEffect(()=> {
+    if(exercise){
+      setExerciseName(exercise.exercise_name);
+      setSets(exercise.sets);
+      setReps(exercise.reps);
+      setWeight(exercise.weight);
+      setDistance(exercise.distance);
+      setDuration(exercise.duration);
+      setIntensity(exercise.intensity);
+
+      async function getWorkoutType(){
+        try{
+          const response = await fetch(`${API_URL}/users/1/workouts/${workoutId}`);
+          if (response.ok) {
+            const json = await response.json();
+            setWorkoutType(json.workout_type);
+          } else {
+            throw response
+          }
+        } catch (e) {
+          console.log("An error occured")
+        }
+      }
+      getWorkoutType()
+    }
+  }, [props])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -59,25 +88,30 @@ function AddExerciseForm(){
       distance: Number(distance),
       duration: Number(duration)
     }
-    const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}/exercises`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(exerciseData)
-    });
 
-    if(response.ok){
-      const { id } = await response.json();
-      navigate(`/users/1/workouts/${workout_id}`);
+    if(mode === "edit"){
+      onSubmit(exerciseData)
     } else {
-      console.log("Error occured")
+      const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}/exercises`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(exerciseData)
+      });
+
+      if(response.ok){
+        const { id } = await response.json();
+        navigate(`/users/1/workouts/${workout_id}`);
+      } else {
+        console.log("Error occured")
+      }
     }
   }
 
   return (
     <div>
-      <h1>Add Exercise</h1>
+      <h1>{exercise ? "Update":"Add"} Exercise</h1>
       <h2>{ workoutType }</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -138,7 +172,7 @@ function AddExerciseForm(){
         )}
 
         <div>
-          <button type="submit">Add Exercise</button>
+          <button type="submit">{exercise ? "Update Exercise":"Add Exercise"}</button>
         </div>
       </form>
       <Link to="/">Back</Link>

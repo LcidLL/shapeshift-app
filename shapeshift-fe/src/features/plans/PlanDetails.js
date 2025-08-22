@@ -17,7 +17,6 @@ function PlanDetails(){
             if (response.ok) {
               const json = await response.json();
               setPlan(json);
-              console.log(json)
             } else {
               throw response
             }

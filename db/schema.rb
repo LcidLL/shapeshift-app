@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_20_085736) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_22_113806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -53,7 +53,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_20_085736) do
     t.integer "sets"
     t.integer "reps"
     t.float "weight"
-    t.string "intensity"
+    t.string "intensity", default: "N/A"
     t.float "distance"
     t.float "duration"
     t.bigint "workout_id", null: false

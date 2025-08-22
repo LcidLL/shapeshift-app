@@ -9,13 +9,7 @@ class Api::V1::SearchController < ApplicationController
     data = ExercisesDbApi.get_exercises(equipment,muscle,level,mechanic)
     data = data.select { |exercise| exercise["category"] == workout_type.downcase} if workout_type.present?
     data = data.select { |exercise| exercise["name"]&.downcase&.include?(name_query.downcase) } if name_query.present?
-   filtered_data = data.map do |exercise|
-    {
-      exercise_id: exercise["id"],
-      exercise_name: exercise["name"],
-      category: exercise["category"]
-    }end
-    render json: filtered_data
+    render json: data
   end
 
   def get_info

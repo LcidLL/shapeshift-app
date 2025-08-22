@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-function NewWorkoutForm(){
-
+function NewWorkoutForm(props){
+  const { workout, mode, onSubmit } = props
   const [workoutType, setWorkoutType] = useState("")
   const [workoutDate, setWorkoutDate] = useState("")
   const [duration, setDuration] = useState("")
@@ -29,6 +29,15 @@ function NewWorkoutForm(){
     "Stretching"
   ];
 
+  useEffect(()=>{
+    if(workout){
+      setWorkoutType(workout.workout_type)
+      setWorkoutDate(workout.workout_date)
+      setDuration(workout.duration)
+      setCaloriesBurned(workout.calories_burned)
+    }
+  }, [props])
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -40,20 +49,24 @@ function NewWorkoutForm(){
       calories_burned: Number(caloriesBurned)
     }
 
-    const response = await fetch(`${API_URL}/users/1/workouts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(workoutData)
-    });
+    if (mode === "edit"){
+      onSubmit(workoutData)
+    }else {
+      const response = await fetch(`${API_URL}/users/1/workouts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(workoutData)
+      });
 
-    if(response.ok){
-      const { id } = await response.json();
-      navigate(`/users/1/workouts/${id}`);
-    } else {
-      console.log("Error occured")
-    }
+      if(response.ok){
+        const { id } = await response.json();
+        navigate(`/users/1/workouts/${id}`);
+      } else {
+        console.log("Error occured")
+      }
+    } 
   }
 
   return (
@@ -85,7 +98,7 @@ function NewWorkoutForm(){
           <input id="calories-burned" value={caloriesBurned} type="text" onChange={(e) => setCaloriesBurned(e.target.value)}></input>
         </div>
         <div>
-          <button type="submit">Add Workout</button>
+          <button type="submit">{workout ? "Update Workout":"Add Workout"}</button>
         </div>
       </form>
       <Link to="/">Back</Link>
