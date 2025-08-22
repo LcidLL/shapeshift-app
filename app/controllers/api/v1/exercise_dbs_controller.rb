@@ -3,7 +3,9 @@ class Api::V1::ExerciseDbsController < ApplicationController
   def index
     exercise_dbs = ExerciseDb.all
     workout_type = params[:workout_type]
-    data = exercise_dbs.select { |exercise| exercise["category"] == workout_type.downcase}
+    exercise_name = params[:exercise_name]
+    data = exercise_dbs.select { |exercise| exercise["category"] == workout_type.downcase} if workout_type.present?
+    data = exercise_dbs.select { |exercise| exercise["exercise_name"] == exercise_name} if exercise_name.present?
     render json: data
   end
 

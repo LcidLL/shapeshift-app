@@ -1,6 +1,6 @@
 class DailyPlan < ApplicationRecord
   belongs_to :plan
-  has_many :exercise_plans
+  has_many :exercise_plans, dependent: :destroy
 
   validates :workout_date, presence: true, uniqueness: true
   validates :workout_name, presence: true

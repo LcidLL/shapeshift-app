@@ -1,6 +1,6 @@
 class Api::V1::ExercisePlansController < ApplicationController
   before_action :set_daily_plan
-  before_action :set_exercise_plan, except: [ :index, :create]
+  before_action :set_exercise_plan, except: [:index, :create]
 
   def index
     @exercise_plans = @daily_plan.exercise_plans
@@ -45,6 +45,6 @@ class Api::V1::ExercisePlansController < ApplicationController
   end
 
   def exercise_plan_params
-    params.require(:exercise_plan).permit(:exercise_name, :sets, :reps, :intensity, :duration, :distance)
+    params.require(:exercise_plan).permit(:exercise_name, :sets, :reps, :intensity, :duration, :distance, :exercise_id)
   end
 end

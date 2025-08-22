@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 
-function NewExerciseForm(){
+function NewExerciseForm(props){
 
+  const {exercisePlan, mode, onSubmit} = props
   const location = useLocation();
   const { dailyPlanId, planId } = location.state || {};
   const [exercisesList, setExercisesList] = useState("")
-  const [exerciseName, setExerciseName] = useState("")
+  const [exerciseName, setExerciseName] = useState(exercisePlan?.exercise_name || "")
   const [exerciseId, setExerciseId] = useState("")
   const [workoutType, setWorkoutType] = useState("")
   const [shouldShowStrengthInputs, setShouldShowStrengthInputs] = useState(false)
@@ -18,12 +19,11 @@ function NewExerciseForm(){
   const [mechanic, setMechanic] = useState("")
   const [level, setLevel] = useState("")
   const [display, setDisplay] = useState(false)
-  const [sets, setSets] = useState("");
-  const [reps, setReps] = useState("");
-  const [weight, setWeight] = useState("");
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
-  const [intensity, setIntensity] = useState("");
+  const [sets, setSets] = useState(exercisePlan?.sets || "")
+  const [reps, setReps] = useState(exercisePlan?.reps || "")
+  const [distance, setDistance] = useState(exercisePlan?.distance || "")
+  const [duration, setDuration] = useState(exercisePlan?.duration || "")
+  const [intensity, setIntensity] = useState(exercisePlan?.exercise_name || "N/A")
   const [nameQuery, setNameQuery] = useState("");
   const navigate = useNavigate()
 
@@ -35,6 +35,14 @@ function NewExerciseForm(){
     "Olympic Weightlifting",
     "Cardio",
     "Stretching"
+  ];
+
+  const strengthTypes = [
+    "strength",
+    "plyometrics",
+    "strongman",
+    "powerlifting",
+    "olympic weightlifting"
   ];
 
   const equipmentList = [
@@ -55,7 +63,26 @@ function NewExerciseForm(){
   const mechanicList = ["isolation","compound"]
   const muscleList = ["quadriceps","shoulders","abdominals","chest","hamstrings","triceps","biceps","lats","middle_back","forearms","glutes","traps","adductors","abductors","neck"]
   const levelList = ["beginner","intermediate","expert"]
-  const forceList = ["pull","push","static",null]
+
+  useEffect(() => {
+      async function getExercise(){
+        try{
+          const response = await fetch(`${API_URL}/exercise_dbs?exercise_name=${exercisePlan.exercise_name}`);
+          if (response.ok) {
+            const json = await response.json();
+            setShouldShowStrengthInputs(strengthTypes.includes(json[0].category))
+            setIsCardio(json[0].category === "cardio")
+            setIsStretching(json[0].category === "stretching")
+          } else {
+            throw response
+          }
+        } catch (e) {
+          console.log("An error occured")
+        }
+      }
+        getExercise()
+    }, [exercisePlan])
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -112,7 +139,6 @@ function NewExerciseForm(){
       exercise_id: exerciseId,
       sets: Number(sets), 
       reps: Number(reps), 
-      weight: Number(weight),
       intensity: intensity,
       distance: Number(distance),
       duration: Number(duration)
@@ -138,7 +164,7 @@ function NewExerciseForm(){
     <div>
      <p>{dailyPlanId}</p> 
       <p>{planId}</p>
-      <form onSubmit={handleSubmit}>
+      {mode !=="edit" && <><form onSubmit={handleSubmit}>
         <div>
         <label for="workout-type">Exercise Name</label>
         <input
@@ -230,10 +256,6 @@ function NewExerciseForm(){
                         <label for="reps">Reps</label>
                         <input id="reps" value={reps} type="text" onChange={(e) => setReps(e.target.value)}></input>
                       </div>
-                      <div>
-                        <label for="weight">Weight</label>
-                        <input id="weight" value={weight} type="text" onChange={(e) => setWeight(e.target.value)}></input>
-                      </div>
                     </div>
                   )}
 
@@ -266,7 +288,48 @@ function NewExerciseForm(){
               )}
             </div>
           ))}
-        </div> : <h1>No Exercise</h1>}
+        </div> : <h1>No Exercise</h1>}</>}
+
+        {mode === "edit" && <form onSubmit={handleSubmitExercise}>
+                  { shouldShowStrengthInputs &&  (
+                    <div>
+                      <div>
+                        <label for="sets">Sets</label>
+                        <input id="sets" value={sets}  type="text" onChange={(e) => setSets(e.target.value)}></input>
+                      </div>
+                      <div>
+                        <label for="reps">Reps</label>
+                        <input id="reps" value={reps} type="text" onChange={(e) => setReps(e.target.value)}></input>
+                      </div>
+                    </div>
+                  )}
+
+                  { isCardio &&  (
+                    <div>
+                      <div>
+                        <label for="distance">Distance</label>
+                        <input id="distance" value={distance}  type="text" onChange={(e) => setDistance(e.target.value)}></input>
+                      </div>
+                      <div>
+                        <label for="intensity">Intensity</label>
+                        <input id="intensity" value={intensity} type="text" onChange={(e) => setIntensity(e.target.value)}></input>
+                      </div>
+                      <div>
+                        <label for="duration">Duration</label>
+                        <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
+                      </div>
+                    </div>
+                  )}
+
+                  { isStretching &&  (
+                    <div>
+                      <label for="duration">Duration</label>
+                      <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
+                    </div>
+                  )}
+
+                  <button type="submit">Add</button>
+                  </form>}
     </div>
   )
 }
