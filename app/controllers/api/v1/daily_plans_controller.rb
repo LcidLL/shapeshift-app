@@ -1,10 +1,10 @@
 class Api::V1::DailyPlansController < ApplicationController
   before_action :set_plan
   before_action :set_daily_plan, except: [ :index, :create ]
+  before_action :set_daily_plans, except: [ :show, :create ]
   
 
   def index
-    @daily_plans = @plan.daily_plans
     render json: @daily_plans
   end
 
@@ -24,7 +24,7 @@ class Api::V1::DailyPlansController < ApplicationController
 
   def update
     if @daily_plan.update(daily_plan_params)
-      render json: @daily_plan
+      render json: @daily_plans
     else
       render json: { errors: @daily_plan.errors }, status: :unprocessable_entity
     end
@@ -32,7 +32,7 @@ class Api::V1::DailyPlansController < ApplicationController
 
   def destroy
     @daily_plan.destroy
-    render json: { message: "Workout daily_plan deleted"}
+    render json: { data: @daily_plans, message: "Workout daily_plan deleted"}
   end
 
   private
@@ -47,5 +47,9 @@ class Api::V1::DailyPlansController < ApplicationController
 
   def daily_plan_params
     params.require(:daily_plan).permit(:workout_name, :workout_date, :day_of_week)
+  end
+
+  def set_daily_plans
+    @daily_plans = @plan.daily_plans
   end
 end

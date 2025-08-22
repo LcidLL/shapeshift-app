@@ -48,6 +48,23 @@ function PlansList() {
               console.log("Error occured")
             }
         }
+
+    const deletePlan = async (plan_id) => {
+        const confirmed = window.confirm("Are you sure you want to delete this plan?");
+        if (!confirmed) return;
+    
+        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}`, {
+          method: "DELETE"
+        });
+    
+        if(response.ok){
+          setPlans((prev) => prev.filter((plan) => plan.id !== plan_id));
+          navigate("/users/1/plans");
+        } else {
+          console.log("Error occured")
+        }
+      }
+
     
 
   if (!plans) return(<h1>Loading..</h1>)
@@ -60,8 +77,15 @@ function PlansList() {
         <div key={plan.id}>
           <h1>{plan.plan_name}</h1>
           <button onClick={()=> displayEditPlan(plan.id)}>Edit</button>
+          <button onClick={()=> deletePlan(plan.id)}>Delete</button>
           <Link to={`/users/1/plans/${plan.id}/`}>Details</Link>
-          { planId == plan.id && isDisplayed && <NewPlanForm plan={plan} mode="edit" onSubmit={(data) => handleSubmitEdit(data)}/>}
+          { planId == plan.id && isDisplayed && 
+            <div>
+              <NewPlanForm plan={plan} mode="edit" onSubmit={(data) => handleSubmitEdit(data)}/>
+              <p onClick={() => setIsDisplayed(false)}>Close</p>
+            </div>
+          }
+                   
         </div>
       ])}
     </div>

@@ -9,6 +9,7 @@ function PlanDetails(){
 
   const [plan, setPlan] = useState("")
   const { plan_id } = useParams();
+  const [refreshFlag, setRefreshFlag] = useState(false)
 
   useEffect(()=>{
     async function displayPlanDetails(){
@@ -27,14 +28,18 @@ function PlanDetails(){
         displayPlanDetails()
       }, [plan_id])
 
+  const triggerRefresh = () => {
+    setRefreshFlag(prev => !prev); // Toggle to trigger re-render in ChildB
+  };
 
 
   return(
     <div>
       <h1>{plan.plan_name}</h1>
       <p>{plan.description}</p>
-      <NewDailyPlanForm />
-      <DailyPlanList />
+      <NewDailyPlanForm onTrigger={triggerRefresh}  />
+      <DailyPlanList refreshFlag={refreshFlag}/>
+      <Link to={`/users/1/plans/`}>Back</Link>
     </div>
   )
 }

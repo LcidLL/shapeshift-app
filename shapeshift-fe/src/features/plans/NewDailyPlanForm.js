@@ -3,10 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 import ExercisePlansList from "./ExercisePlansList";
 
-function NewDailyPlanForm(){
-  const [workoutName, setWorkoutName] = useState("")
-  const [dayOfWeek, setDayOfWeek] = useState("")
-  const [workoutDate, setWorkoutDate] = useState("")
+function NewDailyPlanForm(props){
+
+  const { onTrigger, dailyPlan, mode, onSubmit } = props
+  const [workoutName, setWorkoutName] = useState(dailyPlan?.workout_name || "")
+  const [dayOfWeek, setDayOfWeek] = useState(dailyPlan?.day_of_week || "")
+  const [workoutDate, setWorkoutDate] = useState(dailyPlan?.workout_date || "")
   const { plan_id } = useParams()
   const navigate = useNavigate()
 
@@ -24,27 +26,30 @@ function NewDailyPlanForm(){
     e.preventDefault()
 
     const dailyPlanData = {
-          workout_date: workoutDate,
-          workout_name: workoutName,
-          day_of_week: dayOfWeek
-        }
-    
-        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(dailyPlanData)
-            });
-        
-            if(response.ok){
-              const { id } = await response.json();
-              // setDailyPlanId()
-              navigate(`/users/1/plans/${plan_id}`);
-            } else {
-              console.log("Error occured")
-            }
+      workout_date: workoutDate,
+      workout_name: workoutName,
+      day_of_week: dayOfWeek
+    }
 
+    if(mode==="edit"){
+      onSubmit(dailyPlanData)
+    } else {
+      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dailyPlanData)
+      });
+
+      if(response.ok){
+        const { id } = await response.json();
+        onTrigger()
+        navigate(`/users/1/plans/${plan_id}`);
+      } else {
+        console.log("Error occured")
+      }
+    }
   }
 
   const getDayOfWeek = async(e) => {
@@ -54,12 +59,13 @@ function NewDailyPlanForm(){
 
   return(
     <div>
+      <h2>{dailyPlan ? "Edit" : "Add"} Workout</h2>
       <form onSubmit={handleSubmit}>
         <label>Workout Name</label>
         <input type="text" value={workoutName} onChange={(e)=> setWorkoutName(e.target.value)} />
         <label>Workout Date</label>
         <input type="date" min={minDate} value={workoutDate} onChange={(e) => setWorkoutDate(e.target.value)} onBlur={getDayOfWeek} />
-        <button type="submit">Add</button>
+        <button type="submit">{dailyPlan ? "Update" : "Add"}</button>
       </form>
       {dayOfWeek}
     </div>

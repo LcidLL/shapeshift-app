@@ -44,7 +44,7 @@ function NewPlanForm(props){
 
   return(
     <div>
-      <h1>New Workout Plan</h1>
+      <h1>{plan ? "Update" : "New"} Workout Plan</h1>
       <form onSubmit={handleSubmit}>
         <label for="plan-name">Plan Name</label>
         <input id="plan-name" type="text" value={planName} onChange={(e) => setPlanName(e.target.value)}></input>
