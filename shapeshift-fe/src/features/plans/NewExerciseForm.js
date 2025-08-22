@@ -80,7 +80,6 @@ function NewExerciseForm(){
       if (response.ok) {
           const json = await response.json();
           // setExercisesList(json);
-          console.log(json)
         } else {
           throw response
         }
@@ -211,6 +210,7 @@ function NewExerciseForm(){
 
         <button type="submit">Search</button>
       </form>
+
       {exercisesList.length != 0  ? 
         <div>
           {exercisesList.map((exercise) => (

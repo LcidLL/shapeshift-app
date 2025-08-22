@@ -13,7 +13,6 @@ function WorkoutsList(){
         if (response.ok) {
           const json = await response.json();
           setWorkouts(json);
-          console.log(json)
         } else {
           throw response
         }
@@ -21,7 +20,6 @@ function WorkoutsList(){
         console.log("An error occured")
       }
     }
-
     loadWorkouts()
   }, [])
 

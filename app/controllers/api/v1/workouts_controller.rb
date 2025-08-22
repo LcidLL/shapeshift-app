@@ -1,6 +1,6 @@
 class Api::V1::WorkoutsController < ApplicationController
   before_action :set_user
-  before_action :set_workout, except: [ :index, :create, :search]
+  before_action :set_workout, except: [ :index, :create ]
 
   def index
     @workouts = @user.workouts.order(workout_date: :desc)
@@ -34,14 +34,6 @@ class Api::V1::WorkoutsController < ApplicationController
     render json: { message: "Workout deleted"}
   end
 
-  def search
-    @workout = Workout.find(params[:workout_id])
-    w_type = params[:workout_type].downcase
-    data = ExercisesDbApi.get_exercises()
-    exercise_list = data.select { |exercise| exercise["category"] == w_type}
-    render json: exercise_list
-  end
-
   private
 
   def set_user
@@ -55,5 +47,4 @@ class Api::V1::WorkoutsController < ApplicationController
   def set_workout
     @workout = Workout.find(params[:id])
   end
-
 end
