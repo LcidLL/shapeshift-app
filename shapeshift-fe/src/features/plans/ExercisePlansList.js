@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NewExerciseForm from "./NewExerciseForm"
 
 function ExercisePlansList(props){
@@ -10,6 +10,7 @@ function ExercisePlansList(props){
   const { dailyPlanId } = props
   const [isDisplayed, setIsDisplayed] = useState(false)
   const [exercisePlanId, setExercisePlanId] = useState("")
+  const navigate = useNavigate()
   const excludedKeys = ['id', 'daily_plan_id','created_at', 'updated_at', 'exercise_id']; 
 
   useEffect(()=>{
@@ -34,15 +35,41 @@ function ExercisePlansList(props){
     setExercisePlanId(exerciseId)
   }
 
-  const deleteExercisePlan = async (e) => {
-
+  const deleteExercisePlan = async (exercise_id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this workout?");
+        if (!confirmed) return;
     
+        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercise_id}`, {
+          method: "DELETE"
+        });
+    
+        if(response.ok){
+          const json = await response.json();
+          setExercisePlans(json.data);
+          navigate(`/users/1/plans/${plan_id}`);
+        } else {
+          console.log("Error occured")
+        }    
   }
 
-  const handleSubmitEdit= async (e) => {
-
-    
-  }
+  const handleSubmitEdit= async (editedData) => {
+          const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercisePlanId}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(editedData)
+            });
+      
+            if(response.ok){
+              const json = await response.json();
+              setExercisePlans(json)
+              setIsDisplayed(false)
+              navigate(`/users/1/plans/${plan_id}`);
+            } else {
+              console.log("Error occured")
+            }
+        }
 
   if (!exercisePlans) return(<h1>No exercise added</h1>)
 
