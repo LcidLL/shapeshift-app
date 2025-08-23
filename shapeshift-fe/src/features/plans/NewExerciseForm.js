@@ -23,7 +23,7 @@ function NewExerciseForm(props){
   const [reps, setReps] = useState(exercisePlan?.reps || "")
   const [distance, setDistance] = useState(exercisePlan?.distance || "")
   const [duration, setDuration] = useState(exercisePlan?.duration || "")
-  const [intensity, setIntensity] = useState(exercisePlan?.exercise_name || "N/A")
+  const [intensity, setIntensity] = useState(exercisePlan?.intensity || "N/A")
   const [nameQuery, setNameQuery] = useState("");
   const navigate = useNavigate()
 
@@ -143,6 +143,9 @@ function NewExerciseForm(props){
       distance: Number(distance),
       duration: Number(duration)
     }
+    if (mode === "edit"){
+      onSubmit(exerciseData)
+    }else{
     
         const response = await fetch(`${API_URL}/users/1/plans/${planId}/daily_plans/${dailyPlanId}/exercise_plans`, {
           method: "POST",
@@ -158,6 +161,7 @@ function NewExerciseForm(props){
         } else {
           console.log("Error occured")
         }
+      }
   }
 
   return(
@@ -328,7 +332,7 @@ function NewExerciseForm(props){
                     </div>
                   )}
 
-                  <button type="submit">Add</button>
+                  <button type="submit">{exercisePlan ? "Update":"Add"}</button>
                   </form>}
     </div>
   )
