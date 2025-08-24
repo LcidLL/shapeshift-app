@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_22_113806) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_24_051412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_22_113806) do
     t.bigint "plan_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "isAdded", default: false
     t.index ["plan_id"], name: "index_daily_plans_on_plan_id"
   end
 
@@ -44,6 +45,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_22_113806) do
     t.bigint "daily_plan_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "isAdded", default: false
     t.index ["daily_plan_id"], name: "index_exercise_plans_on_daily_plan_id"
   end
 
@@ -77,6 +79,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_22_113806) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_plans_on_user_id"
+  end
+
+  create_table "reminders", force: :cascade do |t|
+    t.datetime "remind_at"
+    t.bigint "daily_plan_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["daily_plan_id"], name: "index_reminders_on_daily_plan_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -121,5 +131,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_22_113806) do
   add_foreign_key "exercise_plans", "daily_plans"
   add_foreign_key "exercises", "workouts"
   add_foreign_key "plans", "users"
+  add_foreign_key "reminders", "daily_plans"
   add_foreign_key "workouts", "users"
 end

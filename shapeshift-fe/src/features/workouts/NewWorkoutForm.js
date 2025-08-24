@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function NewWorkoutForm(props){
-  const { workout, mode, onSubmit } = props
-  const [workoutType, setWorkoutType] = useState("")
-  const [workoutDate, setWorkoutDate] = useState("")
-  const [duration, setDuration] = useState("")
-  const [caloriesBurned, setCaloriesBurned] = useState("")
-  const navigate = useNavigate()
+  const location = useLocation();
+  const { daily } = location.state || {};
 
+  const { workout, mode, onSubmit } = props
+  const [workoutType, setWorkoutType] = useState(workout?.workout_type || "")
+  const [workoutDate, setWorkoutDate] = useState(workout?.workout_date || daily?.workout_date || "")
+  const [duration, setDuration] = useState(workout?.duration || "")
+  const [caloriesBurned, setCaloriesBurned] = useState(workout?.calories_burned || "")
+  const navigate = useNavigate()
+  
   //Get date today and set as maximum in date input
   const today = new Date();
   const year = today.getFullYear();
@@ -20,24 +23,10 @@ function NewWorkoutForm(props){
   const maxDate = `${year}-${month}-${day}`;
 
   const workoutTypeList = [
-    "Strength",
-    "Plyometrics",
-    "Strongman",
-    "Powerlifting",
-    "Olympic Weightlifting",
-    "Cardio",
-    "Stretching"
+    "Strength", "Plyometrics", "Strongman",
+    "Powerlifting", "Olympic Weightlifting",
+    "Cardio", "Stretching"
   ];
-
-  useEffect(()=>{
-    if(workout){
-      setWorkoutType(workout.workout_type)
-      setWorkoutDate(workout.workout_date)
-      setDuration(workout.duration)
-      setCaloriesBurned(workout.calories_burned)
-    }
-  }, [props])
-
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -51,7 +40,7 @@ function NewWorkoutForm(props){
 
     if (mode === "edit"){
       onSubmit(workoutData)
-    }else {
+    }else{
       const response = await fetch(`${API_URL}/users/1/workouts`, {
         method: "POST",
         headers: {
@@ -62,10 +51,90 @@ function NewWorkoutForm(props){
 
       if(response.ok){
         const { id } = await response.json();
+        if (daily) {
+          await updateDailyPlanStatus()
+          await loadExercisePlans(id)
+        }else{
         navigate(`/users/1/workouts/${id}`);
+        }
       } else {
         console.log("Error occured")
       }
+    } 
+  }
+
+  const addExercisePlans = async (exercisePlans, id) => {
+    for (const exercise of exercisePlans) {
+      const exerciseData = { 
+        exercise_name: exercise.exercise_name, 
+        sets: Number(exercise.sets ?? 0), 
+        reps: Number(exercise.reps ?? 0), 
+        weight: Number(exercise.weight ?? 0), 
+        intensity: exercise.intensity ?? "N/A",
+        distance: Number(exercise.distance ?? 0 ),
+        duration: Number(exercise.duration ?? 0),
+      }
+      try {
+        const response = await fetch(`${API_URL}/users/1/workouts/${id}/exercises`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(exerciseData)
+        });
+    
+        if(response.ok){
+          await updateExercisePlanStatus(exercise)
+        } else {
+          console.log(`Failed to add exercise: ${exercise.exercise_name}`)
+        }
+      }catch (error) {
+        console.error("Error adding exercise to workout:", error);
+      }
+    }
+
+    navigate(`/`);
+  }
+
+  const loadExercisePlans = async(id) => {
+    const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/exercise_plans`);
+    if (response.ok) {
+      const json = await response.json();
+      addExercisePlans(json, id);
+    } else {
+      console.log("Error occured")
+    }
+  }
+
+  const updateExercisePlanStatus = async (exercise) => {
+    try { 
+      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/exercise_plans/${exercise.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({isAdded: true})
+      });
+  
+      if (!response.ok) throw new Error("Failed to update exercise plan status");
+    }catch (error){
+      console.error("Error updating exercise plan status:", error);
+    } 
+  }
+
+  const updateDailyPlanStatus = async (e) => {
+    try { 
+      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({isAdded: true})
+      });
+  
+      if (!response.ok) throw new Error("Failed to update daily plan status");
+    }catch (error){
+      console.error("Error updating daily plan status:", error);
     } 
   }
 
@@ -102,7 +171,6 @@ function NewWorkoutForm(props){
         </div>
       </form>
       <Link to="/">Back</Link>
-
     </div>
   )
 }

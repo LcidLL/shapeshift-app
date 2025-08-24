@@ -5,7 +5,8 @@ class Api::V1::ExercisePlansController < ApplicationController
 
 
   def index
-    render json: @exercise_plans
+    @joined = @exercise_plans.joins(:daily_plan).select("exercise_plans.*, daily_plans.workout_date AS workout_date")
+    render json: @joined.as_json(methods: [:workout_date])
   end
 
   def show
@@ -50,6 +51,6 @@ class Api::V1::ExercisePlansController < ApplicationController
   end
 
   def exercise_plan_params
-    params.require(:exercise_plan).permit(:exercise_name, :sets, :reps, :intensity, :duration, :distance, :exercise_id)
+    params.require(:exercise_plan).permit(:exercise_name, :sets, :reps, :intensity, :duration, :distance, :exercise_id, :isAdded)
   end
 end
