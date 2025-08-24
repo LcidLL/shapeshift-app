@@ -25,6 +25,7 @@ function NewExerciseForm(props){
   const [duration, setDuration] = useState(exercisePlan?.duration || "")
   const [intensity, setIntensity] = useState(exercisePlan?.intensity || "N/A")
   const [nameQuery, setNameQuery] = useState("");
+  const [exerciseInfo, setExerciseInfo] = useState("")
   const navigate = useNavigate()
 
   const workoutTypeList = [
@@ -106,7 +107,7 @@ function NewExerciseForm(props){
       const response = await fetch(`${API_URL}/users/1/get_info?exercise_id=${exercise_id}`);
       if (response.ok) {
           const json = await response.json();
-          // setExercisesList(json);
+          setExerciseInfo(json)
         } else {
           throw response
         }
@@ -131,6 +132,7 @@ function NewExerciseForm(props){
     setExerciseName(exercise.name)
     setExerciseId(exercise.id)
   }
+
 
   const handleSubmitExercise = async (e) => {
     e.preventDefault()
@@ -247,6 +249,18 @@ function NewExerciseForm(props){
             <div key={exercise.id} onClick={() => getExercise(exercise.id)}>
               <p>{exercise.name}</p>
               <span onClick={() => getExercise(exercise.id)}>Details</span>
+              { 
+                exerciseInfo ? 
+                  <div>
+                    {<img src={exerciseInfo.images[1]} />}
+                    <ol>
+                    {exerciseInfo.instructions.map((inst, index) => (
+                      <li key={index}>{inst}</li>
+                    ))}
+                  </ol>
+                  
+                  </div> : <div>N/A</div>
+              }
               <button onClick={() => setWorkout(exercise)}>Add to Workout</button>
               { exerciseId === exercise.id && (
                 <form onSubmit={handleSubmitExercise}>
