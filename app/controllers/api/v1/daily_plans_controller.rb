@@ -5,7 +5,9 @@ class Api::V1::DailyPlansController < ApplicationController
   
 
   def index
-    render json: @daily_plans
+    outdated_plan = @daily_plans.where("workout_date <= ?", Date.today)
+    future_plan = @daily_plans.where("workout_date > ?", Date.today)
+    render json: {all: @daily_plans, oudated: outdated_plan, future: future_plan}
   end
 
   def show
@@ -46,7 +48,7 @@ class Api::V1::DailyPlansController < ApplicationController
   end
 
   def daily_plan_params
-    params.require(:daily_plan).permit(:workout_name, :workout_date, :day_of_week)
+    params.require(:daily_plan).permit(:workout_name, :workout_date, :day_of_week, :isAdded)
   end
 
   def set_daily_plans

@@ -9,6 +9,8 @@ function DailyPlanList(props){
 
   const { refreshFlag } = props
   const [ dailyPlan, setDailyPlan] = useState("")
+  const [ outdatedPlan, setOutdatedPlan] = useState("")
+  const [ futurePlan, setFuturePlan] = useState("")
   const { plan_id } = useParams();
   const [dailyPlanId, setDailyPlanId] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
@@ -20,7 +22,9 @@ function DailyPlanList(props){
             const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`);
             if (response.ok) {
               const json = await response.json();
-              setDailyPlan(json);
+              setDailyPlan(json.all);
+              setOutdatedPlan(json.oudated);
+              setFuturePlan(json.future);
               console.log(json)
             } else {
               throw response
@@ -77,7 +81,17 @@ function DailyPlanList(props){
 
   return(
     <div>
-      { dailyPlan.map((daily) => [
+      { outdatedPlan.map((daily) => [
+        <div key={daily.id}>
+          <h1>{daily.day_of_week}</h1>
+          <h2>{daily.workout_name}</h2>
+          {!daily.isAdded && <Link to='/users/1/workouts/new' state={{daily}}>Add to Tracker</Link>}
+          <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
+          <ExercisePlansList dailyPlanId={daily.id} date="oudated"/>
+        </div>
+      ])}
+
+      { futurePlan.map((daily) => [
         <div key={daily.id}>
           <h1>{daily.day_of_week}</h1>
           <h2>{daily.workout_name}</h2>
