@@ -1,4 +1,5 @@
 class Api::V1::RemindersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_daily_plan
   # before_action :set_reminder
 
@@ -12,7 +13,7 @@ class Api::V1::RemindersController < ApplicationController
     if @reminder.save
       render json: @reminder, status: :created
     else
-      render json: @reminder.errors, status: :unprocessable_entity
+      render json: { errors: @reminder.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -20,6 +21,10 @@ class Api::V1::RemindersController < ApplicationController
 
   def set_daily_plan
     @daily_plan = DailyPlan.find(params[:daily_plan_id])
+
+    unless @daily_plan.plan.user == current_user
+      render json: { error: 'Access denied' }, status: :forbidden
+    end
   end
 
   def set_reminder
