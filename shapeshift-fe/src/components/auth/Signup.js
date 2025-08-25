@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import './Signup.css';
 
 function Signup() {
   const [formData, setFormData] = useState({
@@ -65,98 +66,98 @@ function Signup() {
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="signup-container">
+      <h1 className="signup-title">Sign Up</h1>
+      <form className="signup-form" onSubmit={handleSubmit}>
         {error && (
-          <div style={{ color: 'red', marginBottom: '10px' }}>
+          <div className="error-message">
             {error}
           </div>
         )}
         
         {success && (
-          <div style={{ color: 'green', marginBottom: '10px' }}>
+          <div className="success-message">
             {success}
           </div>
         )}
         
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="firstName">First Name</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="firstName">First Name</label>
           <input
+            className="form-input"
             id="firstName"
             name="firstName"
             type="text"
             value={formData.firstName}
             onChange={handleChange}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="lastName">Last Name</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="lastName">Last Name</label>
           <input
+            className="form-input"
             id="lastName"
             name="lastName"
             type="text"
             value={formData.lastName}
             onChange={handleChange}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="email">Email</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="email">Email</label>
           <input
+            className="form-input"
             id="email"
             name="email"
             type="email"
             value={formData.email}
             onChange={handleChange}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password">Password</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="password">Password</label>
           <input
+            className="form-input"
             id="password"
             name="password"
             type="password"
             value={formData.password}
             onChange={handleChange}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="confirmPassword">Confirm Password</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="confirmPassword">Confirm Password</label>
           <input
+            className="form-input"
             id="confirmPassword"
             name="confirmPassword"
             type="password"
             value={formData.confirmPassword}
             onChange={handleChange}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
         <button 
+          className="signup-button"
           type="submit" 
           disabled={loading}
-          style={{ padding: '10px 20px', marginRight: '10px' }}
         >
           {loading ? 'Creating account...' : 'Sign Up'}
         </button>
       </form>
 
-      <p style={{ marginTop: '20px' }}>
+      <div className="login-link">
         Already have an account? <Link to="/login">Login</Link>
-      </p>
+      </div>
     </div>
   );
 }

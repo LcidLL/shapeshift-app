@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import './Login.css';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -28,51 +29,51 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="login-container">
+      <h1 className="login-title">Login</h1>
+      <form className="login-form" onSubmit={handleSubmit}>
         {error && (
-          <div style={{ color: 'red', marginBottom: '10px' }}>
+          <div className="error-message">
             {error}
           </div>
         )}
         
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="email">Email</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="email">Email</label>
           <input
+            className="form-input"
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="password">Password</label>
+        <div className="form-group">
+          <label className="form-label" htmlFor="password">Password</label>
           <input
+            className="form-input"
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
           />
         </div>
 
         <button 
+          className="login-button"
           type="submit" 
           disabled={loading}
-          style={{ padding: '10px 20px', marginRight: '10px' }}
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
 
-      <p style={{ marginTop: '20px' }}>
+      <div className="signup-link">
         Don't have an account? <Link to="/signup">Sign up</Link>
-      </p>
+      </div>
     </div>
   );
 }
