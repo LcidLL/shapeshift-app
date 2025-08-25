@@ -36,6 +36,7 @@ Rails.application.routes.draw do
         end
         resources :plans do
           resources :daily_plans do
+            resources :reminders
             resources :exercise_plans
           end
         end
