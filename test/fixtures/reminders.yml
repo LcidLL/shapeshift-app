@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  remind_at: 2025-08-23 16:42:06
+  daily_plan: one
+
+two:
+  remind_at: 2025-08-23 16:42:06
+  daily_plan: two

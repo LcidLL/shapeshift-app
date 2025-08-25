@@ -40,6 +40,17 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+   # Looking to send emails in production? Check out our Email API/SMTP product!
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    user_name: ENV['GMAIL_EMAIL'],
+    password: ENV['GMAIL_PASSWORD'],
+    address: 'smtp.gmail.com',
+    domain: "gmail.com",
+    port: '587',
+    authentication: "plain"
+  }
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
