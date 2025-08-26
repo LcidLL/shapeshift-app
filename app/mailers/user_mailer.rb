@@ -3,7 +3,12 @@ class UserMailer < ApplicationMailer
 
   def reminder_email
     @reminder = params[:reminder]
-    # mail(to: "carljasper.brizuela@gmail.com", subject: "🔔 Reminder:Test")
-    mail(to: "@reminder.user.email", subject: "🔔 Reminder: #{@reminder.title}")
+    @user = @reminder.daily_plan.plan.user
+    @daily_plan = @reminder.daily_plan
+    
+    mail(
+      to: @user.email, 
+      subject: "🔔 Reminder: #{@daily_plan.workout_name}"
+    )
   end
 end

@@ -1,5 +1,12 @@
-import { Router, Route, Routes, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 import './App.css';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Login from './components/auth/Login';
+import Signup from './components/auth/Signup';
+import Dashboard from './components/Dashboard';
+import Profile from './components/profile/Profile';
+
 import WorkoutsList from "./features/workouts/WorkoutsList"
 import WorkoutDetails from './features/workouts/WorkoutDetails';
 import NewWorkoutForm from './features/workouts/NewWorkoutForm';
@@ -14,21 +21,76 @@ import GeneratedWorkoutDetails from './features/plans/GeneratedWorkoutDetails';
 function App() {
   return (
     <BrowserRouter>
-      <div className="App">
-        {/* {workout#index API call} */}
-        <Routes>
-          <Route path = "/" element={<WorkoutsList />} />
-          <Route path = "/users/1/workouts/:id" element={<WorkoutDetails />} />
-          <Route path = "/users/1/workouts/new" element={<NewWorkoutForm />} />
-          <Route path = "/users/1/workouts/:workout_id/exercises/new" element={<AddExerciseForm />} />
-          <Route path = "/users/1/plans" element={<PlanList />} />
-          <Route path = "/users/1/plans/:plan_id" element={<PlanDetails />} />
-          <Route path = "/users/1/plans/new" element={<NewPlanForm />} />
-          <Route path = "/addExercise" element={<NewExerciseForm />} />
-          <Route path = "/generate-workout" element={<GenerateWorkoutForm />} />
-          <Route path = "/generate-workout-results" element={<GeneratedWorkoutDetails />} />
-        </Routes>
-      </div>
+      <AuthProvider>
+        <div className="App">
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/workouts" element={
+              <ProtectedRoute>
+                <WorkoutsList />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/workouts/:id" element={
+              <ProtectedRoute>
+                <WorkoutDetails />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/workouts/new" element={
+              <ProtectedRoute>
+                <NewWorkoutForm />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/workouts/:workout_id/exercises/new" element={
+              <ProtectedRoute>
+                <AddExerciseForm />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/plans" element={
+              <ProtectedRoute>
+                <PlanList />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/plans/:plan_id" element={
+              <ProtectedRoute>
+                <PlanDetails />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/users/:userId/plans/new" element={
+              <ProtectedRoute>
+                <NewPlanForm />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/addExercise" element={
+              <ProtectedRoute>
+                <NewExerciseForm />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </div>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

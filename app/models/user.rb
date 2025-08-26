@@ -4,10 +4,10 @@ class User < ApplicationRecord
          :confirmable,
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
-  has_many :workouts
-  has_many :plans
+  has_many :workouts, dependent: :destroy
+  has_many :plans, dependent: :destroy
 
-  validates :first_name, :last_name, presence: true, allow_blank: true
+  validates :first_name, :last_name, presence: true
   validates :age, numericality: {greater_than: 0}, allow_nil: true
   validates :weight, :height, numericality: {greater_than: 0}, allow_nil: true
   validates :sex, inclusion: { in: %w[male female other] }, allow_nil: true
