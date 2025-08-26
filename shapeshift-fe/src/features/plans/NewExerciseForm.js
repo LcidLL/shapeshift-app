@@ -26,6 +26,7 @@ function NewExerciseForm(props){
   const [intensity, setIntensity] = useState(exercisePlan?.intensity || "N/A")
   const [nameQuery, setNameQuery] = useState("");
   const [exerciseInfo, setExerciseInfo] = useState("")
+  const [errors, setErrors] = useState("")
   const navigate = useNavigate()
 
   const workoutTypeList = [
@@ -161,7 +162,8 @@ function NewExerciseForm(props){
           const { id } = await response.json();
           navigate(`/users/1/plans/${planId}`);
         } else {
-          console.log("Error occured")
+          const errorData = await response.json();
+          setErrors(errorData.errors)
         }
       }
   }

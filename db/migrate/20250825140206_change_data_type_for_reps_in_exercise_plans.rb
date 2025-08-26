@@ -1,0 +1,5 @@
+class ChangeDataTypeForRepsInExercisePlans < ActiveRecord::Migration[7.2]
+  def change
+    change_column :exercise_plans, :reps, :string
+  end
+end
