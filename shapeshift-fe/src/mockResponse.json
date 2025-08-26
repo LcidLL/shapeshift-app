@@ -1,0 +1,223 @@
+{
+  "plan_title": "Intermediate Muscle Building Program (Barbell & Dumbbell)",
+  "week": [
+    {
+      "day": "Monday",
+      "exercises": [
+        {
+          "name": "Barbell Squats",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 10,
+          "equipment": "Barbell",
+          "instructions": "Stand with feet shoulder-width apart, barbell across upper back. Squat down until thighs are parallel to the ground, keeping back straight. Push through heels to return to standing.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Bench Press",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 8,
+          "equipment": "Dumbbell",
+          "instructions": "Lie on a bench with dumbbells in each hand. Lower dumbbells to chest, keeping elbows slightly bent. Push dumbbells back up to starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Barbell Rows",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 8,
+          "equipment": "Barbell",
+          "instructions": "Bend at the hips, keeping back straight, barbell in hands. Pull barbell towards chest, squeezing shoulder blades together. Lower slowly to starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Shoulder Press",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 7,
+          "equipment": "Dumbbell",
+          "instructions": "Sit or stand with dumbbells at shoulder height. Press dumbbells straight up overhead, then lower slowly back to starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Bicep Curls",
+          "sets": 3,
+          "reps": "10-15",
+          "duration_minutes": 6,
+          "equipment": "Dumbbell",
+          "instructions": "Stand with dumbbells at your sides. Curl dumbbells towards shoulders, keeping elbows close to your sides. Lower slowly to starting position.",
+          "rest_seconds": 45
+        }
+      ],
+      "total_duration_minutes": 45
+    },
+    {
+      "day": "Tuesday",
+      "exercises": [
+        {
+          "name": "Dumbbell Deadlifts",
+          "sets": 3,
+          "reps": "6-8",
+          "duration_minutes": 10,
+          "equipment": "Dumbbell",
+          "instructions": "Stand with feet hip-width apart, dumbbells in each hand. Keeping back straight, hinge at hips and lower dumbbells towards the ground. Push through heels to return to standing.",
+          "rest_seconds": 75
+        },
+        {
+          "name": "Dumbbell Lunges",
+          "sets": 3,
+          "reps": "10-12 per leg",
+          "duration_minutes": 8,
+          "equipment": "Dumbbell",
+          "instructions": "Hold dumbbells at your sides. Step forward with one leg, bending both knees to 90 degrees. Push off front foot to return to starting position. Alternate legs.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Rows (single arm)",
+          "sets": 3,
+          "reps": "10-12 per arm",
+          "duration_minutes": 8,
+          "equipment": "Dumbbell",
+          "instructions": "Place one knee and hand on a bench, dumbbell in the other hand. Pull dumbbell towards chest, keeping back straight. Lower slowly to starting position. Alternate arms.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Lateral Raises",
+          "sets": 3,
+          "reps": "12-15",
+          "duration_minutes": 7,
+          "equipment": "Dumbbell",
+          "instructions": "Stand with dumbbells at your sides. Raise dumbbells out to the sides, keeping a slight bend in your elbows. Lower slowly to starting position.",
+          "rest_seconds": 45
+        },
+        {
+          "name": "Dumbbell Triceps Extensions",
+          "sets": 3,
+          "reps": "10-15",
+          "duration_minutes": 6,
+          "equipment": "Dumbbell",
+          "instructions": "Hold dumbbell with both hands overhead. Lower dumbbell behind your head by bending your elbows. Extend your arms back up to the starting position.",
+          "rest_seconds": 45
+        }
+      ],
+      "total_duration_minutes": 45
+    },
+    {
+      "day": "Wednesday",
+      "exercises": [
+        {}
+      ],
+      "total_duration_minutes": 0
+    },
+    {
+      "day": "Thursday",
+      "exercises": [
+        {
+          "name": "Barbell Squats",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 10,
+          "equipment": "Barbell",
+          "instructions": "Stand with feet shoulder-width apart, barbell across upper back. Squat down until thighs are parallel to the ground, keeping back straight. Push through heels to return to standing.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Bench Press",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 8,
+          "equipment": "Dumbbell",
+          "instructions": "Lie on a bench with dumbbells in each hand. Lower dumbbells to chest, keeping elbows slightly bent. Push dumbbells back up to starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Barbell Rows",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 8,
+          "equipment": "Barbell",
+          "instructions": "Bend at the hips, keeping back straight, barbell in hands. Pull barbell towards chest, squeezing shoulder blades together. Lower slowly to starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Shoulder Press",
+          "sets": 3,
+          "reps": "8-12",
+          "duration_minutes": 7,
+          "equipment": "Dumbbell",
+          "instructions": "Sit or stand with dumbbells at shoulder height. Press dumbbells straight up overhead, then lower slowly back to starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Calf Raises",
+          "sets": 3,
+          "reps": "15-20",
+          "duration_minutes": 6,
+          "equipment": "Dumbbell",
+          "instructions": "Hold dumbbells at your sides, stand with feet shoulder width apart. Raise onto your toes, squeezing your calves. Slowly lower back down.",
+          "rest_seconds": 45
+        }
+      ],
+      "total_duration_minutes": 45
+    },
+    {
+      "day": "Friday",
+      "exercises": [
+        {
+          "name": "Dumbbell Deadlifts",
+          "sets": 3,
+          "reps": "6-8",
+          "duration_minutes": 10,
+          "equipment": "Dumbbell",
+          "instructions": "Stand with feet hip-width apart, dumbbells in each hand. Keeping back straight, hinge at hips and lower dumbbells towards the ground. Push through heels to return to standing.",
+          "rest_seconds": 75
+        },
+        {
+          "name": "Dumbbell Lunges",
+          "sets": 3,
+          "reps": "10-12 per leg",
+          "duration_minutes": 8,
+          "equipment": "Dumbbell",
+          "instructions": "Hold dumbbells at your sides. Step forward with one leg, bending both knees to 90 degrees. Push off front foot to return to starting position. Alternate legs.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Rows (single arm)",
+          "sets": 3,
+          "reps": "10-12 per arm",
+          "duration_minutes": 8,
+          "equipment": "Dumbbell",
+          "instructions": "Place one knee and hand on a bench, dumbbell in the other hand. Pull dumbbell towards chest, keeping back straight. Lower slowly to starting position. Alternate arms.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Lateral Raises",
+          "sets": 3,
+          "reps": "12-15",
+          "duration_minutes": 7,
+          "equipment": "Dumbbell",
+          "instructions": "Stand with dumbbells at your sides. Raise dumbbells out to the sides, keeping a slight bend in your elbows. Lower slowly to starting position.",
+          "rest_seconds": 45
+        },
+        {
+          "name": "Dumbbell Triceps Extensions",
+          "sets": 3,
+          "reps": "10-15",
+          "duration_minutes": 6,
+          "equipment": "Dumbbell",
+          "instructions": "Hold dumbbell with both hands overhead. Lower dumbbell behind your head by bending your elbows. Extend your arms back up to the starting position.",
+          "rest_seconds": 45
+        }
+      ],
+      "total_duration_minutes": 45
+    },
+    {
+      "day": "Saturday",
+      "exercises": [
+        {}
+      ],
+      "total_duration_minutes": 0
+    }
+  ]
+}

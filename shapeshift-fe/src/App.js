@@ -15,6 +15,8 @@ import PlanList from './features/plans/PlansList';
 import PlanDetails from './features/plans/PlanDetails';
 import NewPlanForm from './features/plans/NewPlanForm';
 import NewExerciseForm from './features/plans/NewExerciseForm';
+import GenerateWorkoutForm from './features/plans/GenerateWorkoutForm';
+import GeneratedWorkoutDetails from './features/plans/GeneratedWorkoutDetails';
 
 function App() {
   return (

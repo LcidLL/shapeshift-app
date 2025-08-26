@@ -72,6 +72,7 @@ function PlansList() {
   return (
     <div>
       <h2>Plans</h2>
+      <Link to='/generate-workout'>Generate Workout Plan</Link>
       <Link to='/users/1/plans/new'>New Workout Plan</Link>
       { plans.map((plan) => [
         <div key={plan.id}>

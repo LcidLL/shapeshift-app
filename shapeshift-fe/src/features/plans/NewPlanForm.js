@@ -6,6 +6,7 @@ function NewPlanForm(props){
   const { plan, mode, onSubmit } = props
   const [planName, setPlanName] = useState("")
   const [description, setDescription] = useState("")
+  const [errors, setErrors] = useState("")
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -37,7 +38,8 @@ function NewPlanForm(props){
         const { id } = await response.json();
         navigate(`/users/1/plans/${id}`);
       } else {
-        console.log("Error occured")
+        const errorData = await response.json();
+        setErrors(errorData.errors)
       }
     }
   }

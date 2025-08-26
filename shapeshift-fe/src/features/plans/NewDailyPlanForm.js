@@ -10,6 +10,7 @@ function NewDailyPlanForm(props){
   const [dayOfWeek, setDayOfWeek] = useState(dailyPlan?.day_of_week || "")
   const [workoutDate, setWorkoutDate] = useState(dailyPlan?.workout_date || "")
   const { plan_id } = useParams()
+  const [errors, setErrors] = useState()
   const navigate = useNavigate()
 
   //Get date today and set as maximum in date input
@@ -34,6 +35,7 @@ function NewDailyPlanForm(props){
     if(mode==="edit"){
       onSubmit(dailyPlanData)
     } else {
+      try{
       const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
         method: "POST",
         headers: {
@@ -47,8 +49,13 @@ function NewDailyPlanForm(props){
         onTrigger()
         navigate(`/users/1/plans/${plan_id}`);
       } else {
-        console.log("Error occured")
+        const errorData = await response.json();
+        setErrors(errorData.errors)
       }
+    } catch (e){
+      console.log(e)
+    }
+    
     }
   }
 
@@ -59,6 +66,7 @@ function NewDailyPlanForm(props){
 
   return(
     <div>
+      {errors && <span>{errors}</span>}
       <h2>{dailyPlan ? "Edit" : "Add"} Workout</h2>
       <form onSubmit={handleSubmit}>
         <label>Workout Name</label>
