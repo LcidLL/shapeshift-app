@@ -3,25 +3,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 import ExercisePlansList from "./ExercisePlansList";
 
+const weekdayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
 function NewDailyPlanForm(props){
 
   const { onTrigger, dailyPlan, mode, onSubmit } = props
-  const [workoutName, setWorkoutName] = useState(dailyPlan?.workout_name || "")
-  const [dayOfWeek, setDayOfWeek] = useState(dailyPlan?.day_of_week || "")
-  const [workoutDate, setWorkoutDate] = useState(dailyPlan?.workout_date || "")
+
   const { plan_id } = useParams()
-  const [errors, setErrors] = useState()
   const navigate = useNavigate()
 
-  //Get date today and set as maximum in date input
+  const [workoutName, setWorkoutName] = useState(dailyPlan?.workout_name || "")
+  const [workoutDate, setWorkoutDate] = useState(dailyPlan?.workout_date || "")
+  const [dayOfWeek, setDayOfWeek] = useState(dailyPlan?.day_of_week || "")
+  const [errors, setErrors] = useState(null)
+
+  //Get date today and set as minimum in date input
   const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
-  const day = String(today.getDate()).padStart(2, '0');
+  const minDate = today.toISOString().split("T")[0];
 
-  const minDate = `${year}-${month}-${day}`;
+  const handleWorkoutDateChange = (e) => {
+    const selectedDate = e.target.value;
+    setWorkoutDate(selectedDate);
 
-  const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const day = new Date(selectedDate).getDay();
+    setDayOfWeek(weekdayNames[day]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -32,10 +38,12 @@ function NewDailyPlanForm(props){
       day_of_week: dayOfWeek
     }
 
-    if(mode==="edit"){
+    if(mode === "edit"){
       onSubmit(dailyPlanData)
-    } else {
-      try{
+      return
+    }
+
+    try {
       const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
         method: "POST",
         headers: {
@@ -49,33 +57,48 @@ function NewDailyPlanForm(props){
         onTrigger()
         navigate(`/users/1/plans/${plan_id}`);
       } else {
-        const errorData = await response.json();
-        setErrors(errorData.errors)
+        const { errors } = await response.json();
+        setErrors(errors)
       }
-    } catch (e){
-      console.log(e)
+    } catch (error) {
+        console.error("Error submitting daily plan:", error);
+        setErrors(["Something went wrong. Please try again later."]);
     }
-    
-    }
-  }
-
-  const getDayOfWeek = async(e) => {
-    const d = new Date(workoutDate);
-    setDayOfWeek(weekday[d.getDay()])
   }
 
   return(
     <div>
-      {errors && <span>{errors}</span>}
       <h2>{dailyPlan ? "Edit" : "Add"} Workout</h2>
+
+      {errors && (
+        <div style={{ color: "red", marginBottom: "1em" }}>
+          {Array.isArray(errors)
+            ? errors.map((err, index) => <div key={index}>{err}</div>)
+            : <div>{errors}</div>}
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit}>
         <label>Workout Name</label>
-        <input type="text" value={workoutName} onChange={(e)=> setWorkoutName(e.target.value)} />
+        <input 
+          type="text" 
+          value={workoutName} 
+          onChange={(e)=> setWorkoutName(e.target.value)}
+          required
+        />
         <label>Workout Date</label>
-        <input type="date" min={minDate} value={workoutDate} onChange={(e) => setWorkoutDate(e.target.value)} onBlur={getDayOfWeek} />
-        <button type="submit">{dailyPlan ? "Update" : "Add"}</button>
+        <input 
+          type="date" 
+          min={minDate} 
+          value={workoutDate} 
+          onChange={(e) => handleWorkoutDateChange(e)}
+          required
+        />
+        <button type="submit">
+          {dailyPlan ? "Update" : "Add"}
+        </button>
       </form>
-      {dayOfWeek}
+      {dayOfWeek && <p>Day of the week: {dayOfWeek}</p>}
     </div>
   )
 }

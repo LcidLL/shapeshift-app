@@ -26,8 +26,8 @@ function GeneratedWorkoutDetails(){
   useEffect(() => {
   if (isDone && !hasErrors) {
     const timer = setTimeout(() => {
-      navigate("/users/1/plans"); // e.g. /dashboard or /workouts
-    }, 2000); // Wait 2 seconds before redirect
+      navigate("/users/1/plans");
+    }, 2000);
 
     return () => clearTimeout(timer);
   }
@@ -100,9 +100,10 @@ function GeneratedWorkoutDetails(){
 
         if(response.ok){
           const { id } = await response.json();
+          console.log(id)
           await addToExercisePlan(plan_id, id, index, dayName)
         } else {
-          setStatuses((prev) => ({ ...prev, [dayName]: 'Error creating daily plan' }));
+          setStatuses((prev) => ({ ...prev, [dayName]: 'Failed creating daily plan' }));
           setHasErrors(true)
         }
       } catch (e) {
@@ -116,7 +117,7 @@ function GeneratedWorkoutDetails(){
     for (const exercise of exercises) {
       const exerciseData = { 
         exercise_name: exercise.name,
-        sets: exercise.sets, 
+        sets: exercise.sets,
         reps: exercise.reps, 
         intensity: "N/A",
         distance: 0,

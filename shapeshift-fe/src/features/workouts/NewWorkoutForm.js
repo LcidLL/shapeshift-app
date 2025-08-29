@@ -63,12 +63,26 @@ function NewWorkoutForm(props){
     } 
   }
 
+  const extractMaxRep = async (input) => {
+    // Use regex to find all numbers in the string
+    const numbers = input.match(/\d+/g);
+
+    // If numbers were found, return the max number
+    if (numbers) {
+      return Math.max(...numbers.map(Number)); // Convert strings to numbers and get the max
+    }
+
+    // If no numbers were found, return null or a default value
+    return null;
+  }
+
   const addExercisePlans = async (exercisePlans, id) => {
     for (const exercise of exercisePlans) {
+      const maxRep = await extractMaxRep(exercise.reps)
       const exerciseData = { 
         exercise_name: exercise.exercise_name, 
         sets: Number(exercise.sets ?? 0), 
-        reps: Number(exercise.reps ?? 0), 
+        reps: maxRep, 
         weight: Number(exercise.weight ?? 0), 
         intensity: exercise.intensity ?? "N/A",
         distance: Number(exercise.distance ?? 0 ),

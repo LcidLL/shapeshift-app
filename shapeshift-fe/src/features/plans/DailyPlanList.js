@@ -1,39 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import ExercisePlansList from "./ExercisePlansList";
 import { API_URL } from "../../constants/Constants";
-import { Link } from "react-router-dom";
 import NewDailyPlanForm from "./NewDailyPlanForm";
 
 function DailyPlanList(props){
 
   const { refreshFlag } = props
-  const [ dailyPlan, setDailyPlan] = useState("")
-  const [ outdatedPlan, setOutdatedPlan] = useState("")
-  const [ futurePlan, setFuturePlan] = useState("")
-  const { plan_id } = useParams();
+
+  const { plan_id } = useParams()
+  const navigate = useNavigate()
+
+  const [planToday, setPlanToday] = useState("")
+  const [outdatedPlans, setOutdatedPlans] = useState("")
+  const [futurePlans, setFuturePlans] = useState("")
   const [dailyPlanId, setDailyPlanId] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
-  const navigate = useNavigate()
+  
 
   useEffect(()=>{
     async function displayDailyPlanDetails(){
-          try{
-            const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`);
-            if (response.ok) {
-              const json = await response.json();
-              setDailyPlan(json.all);
-              setOutdatedPlan(json.oudated);
-              setFuturePlan(json.future);
-              console.log(json)
-            } else {
-              throw response
-            }
-          } catch (e) {
-            console.log("An error occured")
-          }
+      try{
+        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`);
+        if (response.ok) {
+          const json = await response.json();
+          setPlanToday(json.today)
+          setOutdatedPlans(json.outdated)
+          setFuturePlans(json.future)
+        } else {
+          throw response
         }
-        displayDailyPlanDetails()
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    }
+    displayDailyPlanDetails()
   }, [plan_id, refreshFlag])
 
   const deleteDailyPlan = async (daily_id) => {
@@ -46,7 +47,9 @@ function DailyPlanList(props){
 
     if(response.ok){
       const json = await response.json();
-      setDailyPlan(json.data);
+      setPlanToday(json.today)
+      setOutdatedPlans(json.outdated)
+      setFuturePlans(json.future)
       navigate(`/users/1/plans/${plan_id}`);
     } else {
       console.log("Error occured")
@@ -56,42 +59,65 @@ function DailyPlanList(props){
   const displayEditDailyPlan = async (dailyId) => {
     setIsDisplayed(true)
     setDailyPlanId(dailyId)
-   }
+  }
 
-    const handleSubmitEdit = async (editedData) => {
+  const handleSubmitEdit = async (editedData) => {
+    try{
       const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(editedData)
-        });
-  
-        if(response.ok){
-          const json = await response.json();
-          setDailyPlan(json);
-          setIsDisplayed(false)
-          navigate(`/users/1/plans/${plan_id}`);
-        } else {
-          console.log("Error occured")
-        }
-    }
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(editedData)
+      });
 
-  if(!dailyPlan) return(<h1>Loading...</h1>)
+      if(response.ok){
+        const json = await response.json();
+        setFuturePlans((prev) =>
+          prev.map((plan) => (plan.id === dailyPlanId ? json : plan))
+        )
+        setIsDisplayed(false)
+        navigate(`/users/1/plans/${plan_id}`);
+      } else {
+        console.log("Error occured")
+      } 
+    } catch (error){
+      console.error("Update error:", error);
+    }
+  }
+
+  if (!outdatedPlans.length && !futurePlans.length && !planToday.length) return <h1>Loading...</h1>;
 
   return(
     <div>
-      { outdatedPlan.map((daily) => [
+      { planToday.map((daily) => [
+        <div key={daily.id}>
+          <h1>{daily.day_of_week}</h1>
+          <h2>{daily.workout_name}</h2>
+          {
+            !daily.isAdded && 
+            <Link to='/users/1/workouts/new' state={{daily}}>
+                Add to Tracker
+            </Link>
+          }
+          <button onClick={()=> deleteDailyPlan(daily.id)}>
+            Delete
+          </button>
+          <ExercisePlansList dailyPlanId={daily.id}/>
+        </div>
+      ])}
+
+      { outdatedPlans.map((daily) => [
         <div key={daily.id}>
           <h1>{daily.day_of_week}</h1>
           <h2>{daily.workout_name}</h2>
           {!daily.isAdded && <Link to='/users/1/workouts/new' state={{daily}}>Add to Tracker</Link>}
           <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
-          <ExercisePlansList dailyPlanId={daily.id} date="oudated"/>
+          <ExercisePlansList dailyPlanId={daily.id} />
         </div>
       ])}
 
-      { futurePlan.map((daily) => [
+      { futurePlans.map((daily) => [
         <div key={daily.id}>
           <h1>{daily.day_of_week}</h1>
           <h2>{daily.workout_name}</h2>
@@ -101,7 +127,11 @@ function DailyPlanList(props){
               daily.id === dailyPlanId &&
               isDisplayed &&
               <div>
-                <NewDailyPlanForm dailyPlan={daily} mode="edit" onSubmit={(data) => handleSubmitEdit(data)}/>
+                <NewDailyPlanForm 
+                  dailyPlan={daily} 
+                  mode="edit" 
+                  onSubmit={(data) => handleSubmitEdit(data)}
+                />
                 <p onClick={() => setIsDisplayed(false)}>Close</p>
               </div>
           }

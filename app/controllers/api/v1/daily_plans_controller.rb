@@ -5,9 +5,8 @@ class Api::V1::DailyPlansController < ApplicationController
   
 
   def index
-    outdated_plan = @daily_plans.where("workout_date <= ?", Date.today)
-    future_plan = @daily_plans.where("workout_date > ?", Date.today)
-    render json: {all: @daily_plans, oudated: outdated_plan, future: future_plan}
+    get_plans_by_date
+    render json: {all: @daily_plans, outdated: @outdated_plan, future: @future_plan, today: @plan_today}
   end
 
   def show
@@ -26,7 +25,7 @@ class Api::V1::DailyPlansController < ApplicationController
 
   def update
     if @daily_plan.update(daily_plan_params)
-      render json: @daily_plans
+      render json: @daily_plan
     else
       render json: { errors: @daily_plan.errors }, status: :unprocessable_entity
     end
@@ -34,7 +33,8 @@ class Api::V1::DailyPlansController < ApplicationController
 
   def destroy
     @daily_plan.destroy
-    render json: { data: @daily_plans, message: "Workout daily_plan deleted"}
+    get_plans_by_date
+    render json: {all: @daily_plans, outdated: @outdated_plan, future: @future_plan, today: @plan_today, message: "Daily plan deleted"}
   end
 
   private
@@ -53,5 +53,11 @@ class Api::V1::DailyPlansController < ApplicationController
 
   def set_daily_plans
     @daily_plans = @plan.daily_plans
+  end
+
+  def get_plans_by_date
+    @outdated_plan = @daily_plans.where("workout_date < ?", Date.today)
+    @future_plan = @daily_plans.where("workout_date > ?", Date.today)
+    @plan_today = @daily_plans.where("workout_date = ?", Date.today)
   end
 end
