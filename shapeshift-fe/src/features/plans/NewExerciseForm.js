@@ -35,19 +35,6 @@ function NewExerciseForm(props){
     "powerlifting", "olympic weightlifting"
   ]
 
-    const extractMaxRep = async (input) => {
-    // Use regex to find all numbers in the string
-    const numbers = input.match(/\d+/g);
-
-    // If numbers were found, return the max number
-    if (numbers) {
-      return Math.max(...numbers.map(Number)); // Convert strings to numbers and get the max
-    }
-
-    // If no numbers were found, return null or a default value
-    return null;
-  }
-  
   useEffect(() => {
     async function getExercise(){
       if (exercisePlan){

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :users do
         resources :search
         get "/get_info" => "search#get_info"
+        get "/workouts/summary" => "workouts#summary"
         resources :workouts do
           resources :exercises
         end
