@@ -1,6 +1,6 @@
 class Api::V1::WorkoutsController < ApplicationController
   before_action :set_user
-  before_action :set_workout, except: [ :index, :create ]
+  before_action :set_workout, except: [ :index, :create, :summary]
 
   def index
     @workouts = @user.workouts.order(workout_date: :desc)
@@ -32,6 +32,17 @@ class Api::V1::WorkoutsController < ApplicationController
   def destroy
     @workout.destroy
     render json: { message: "Workout deleted"}
+  end
+
+  def summary
+    period = params[:period]&.to_sym
+
+    begin
+      data = Workout.summary_by_period(period)
+      render json: data
+    rescue ArgumentError => e
+      render json: { error: e.message }, status: :bad_request
+    end
   end
 
   private
