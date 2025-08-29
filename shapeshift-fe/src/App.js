@@ -40,52 +40,55 @@ function App() {
             } />
             
             <Route path="/users/:userId/workouts" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <WorkoutsList />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/workouts/:id" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <WorkoutDetails />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/workouts/new" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <NewWorkoutForm />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/workouts/:workout_id/exercises/new" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <AddExerciseForm />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/plans" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <PlanList />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/plans/:plan_id" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <PlanDetails />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/plans/new" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <NewPlanForm />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
             
             <Route path="/addExercise" element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <NewExerciseForm />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } />
+
+            <Route path = "/generate-workout" element={<GenerateWorkoutForm />} />
+            <Route path = "/generate-workout-results" element={<GeneratedWorkoutDetails />} />
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>

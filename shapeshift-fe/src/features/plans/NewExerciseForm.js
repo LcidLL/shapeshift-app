@@ -1,73 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
+import ExerciseSearchForm from "./ExerciseSearchForm";
+import ExerciseInfo from "./ExerciseInfo";
 
 function NewExerciseForm(props){
 
   const {exercisePlan, mode, onSubmit} = props
   const location = useLocation();
+
   const { dailyPlanId, planId } = location.state || {};
+  
   const [exercisesList, setExercisesList] = useState("")
   const [exerciseName, setExerciseName] = useState(exercisePlan?.exercise_name || "")
   const [exerciseId, setExerciseId] = useState("")
-  const [workoutType, setWorkoutType] = useState("")
   const [shouldShowStrengthInputs, setShouldShowStrengthInputs] = useState(false)
   const [isCardio, setIsCardio] = useState(false)
   const [isStretching, setIsStretching] = useState(false)
-  const [equipment, setEquipment] = useState("")
-  const [muscle, setMuscle] = useState("")
-  const [mechanic, setMechanic] = useState("")
-  const [level, setLevel] = useState("")
-  const [display, setDisplay] = useState(false)
+  const [displayExerciseInfo, setDisplayExerciseInfo] = useState(false)
+  const [notInDB,setNotInDB] = useState(false)
+
   const [sets, setSets] = useState(exercisePlan?.sets || "")
   const [reps, setReps] = useState(exercisePlan?.reps || "")
   const [distance, setDistance] = useState(exercisePlan?.distance || "")
   const [duration, setDuration] = useState(exercisePlan?.duration || "")
   const [intensity, setIntensity] = useState(exercisePlan?.intensity || "N/A")
-  const [nameQuery, setNameQuery] = useState("");
-  const [exerciseInfo, setExerciseInfo] = useState("")
+  
+  
   const [errors, setErrors] = useState("")
   const navigate = useNavigate()
 
-  const workoutTypeList = [
-    "Strength",
-    "Plyometrics",
-    "Strongman",
-    "Powerlifting",
-    "Olympic Weightlifting",
-    "Cardio",
-    "Stretching"
-  ];
-
   const strengthTypes = [
-    "strength",
-    "plyometrics",
-    "strongman",
-    "powerlifting",
-    "olympic weightlifting"
-  ];
-
-  const equipmentList = [
-    "barbell",
-    "dumbbell",
-    "other",
-    "body_only",
-    "cable",
-    "machine",
-    "kettlebells",
-    "bands",
-    "medicine_ball",
-    "exercise_ball",
-    "foam_roll",
-    "e-z_curl_bar"
+    "strength", "plyometrics", "strongman",
+    "powerlifting", "olympic weightlifting"
   ]
 
-  const mechanicList = ["isolation","compound"]
-  const muscleList = ["quadriceps","shoulders","abdominals","chest","hamstrings","triceps","biceps","lats","middle_back","forearms","glutes","traps","adductors","abductors","neck"]
-  const levelList = ["beginner","intermediate","expert"]
+    const extractMaxRep = async (input) => {
+    // Use regex to find all numbers in the string
+    const numbers = input.match(/\d+/g);
 
+    // If numbers were found, return the max number
+    if (numbers) {
+      return Math.max(...numbers.map(Number)); // Convert strings to numbers and get the max
+    }
+
+    // If no numbers were found, return null or a default value
+    return null;
+  }
+  
   useEffect(() => {
-      async function getExercise(){
+    async function getExercise(){
+      if (exercisePlan){
         try{
           const response = await fetch(`${API_URL}/exercise_dbs?exercise_name=${exercisePlan.exercise_name}`);
           if (response.ok) {
@@ -79,52 +62,15 @@ function NewExerciseForm(props){
             throw response
           }
         } catch (e) {
+          setNotInDB(true)
           console.log("An error occured")
         }
       }
+    }
         getExercise()
     }, [exercisePlan])
-  
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setDisplay(false)
-
-    try {
-      const response = await fetch(`${API_URL}/users/1/search?name=${nameQuery}&workout_type=${workoutType}&mechanic=${mechanic}&muscle=${muscle}&equipment=${equipment}&level=${level}`);
-      if (response.ok) {
-          const json = await response.json();
-          setExercisesList(json);
-          console.log(json)
-        } else {
-          throw response
-        }
-    } catch (e) {
-      console.log("An error occured")
-    }
-  }
-  const getExercise = async (exercise_id) => {
-    try {
-      const response = await fetch(`${API_URL}/users/1/get_info?exercise_id=${exercise_id}`);
-      if (response.ok) {
-          const json = await response.json();
-          setExerciseInfo(json)
-        } else {
-          throw response
-        }
-    } catch (e) {
-      console.log("An error occured")
-    }
-  }
-
-  const setWorkout = async (exercise) => {
-    const strengthTypes = [
-      "strength",
-      "plyometrics",
-      "strongman",
-      "powerlifting",
-      "olympic Weightlifting"
-    ];
+  const getWorkoutType = async (exercise) => {
     const category = exercise.category
     setShouldShowStrengthInputs(strengthTypes.includes(category))
     setIsCardio(category === "cardio")
@@ -134,6 +80,10 @@ function NewExerciseForm(props){
     setExerciseId(exercise.id)
   }
 
+  const getExerciseInfo = async (exercise) => {
+    setExerciseId(exercise.id)
+    setDisplayExerciseInfo(true)
+  }
 
   const handleSubmitExercise = async (e) => {
     e.preventDefault()
@@ -141,7 +91,7 @@ function NewExerciseForm(props){
       exercise_name: exerciseName,
       exercise_id: exerciseId,
       sets: Number(sets), 
-      reps: Number(reps), 
+      reps: reps, 
       intensity: intensity,
       distance: Number(distance),
       duration: Number(duration)
@@ -149,7 +99,6 @@ function NewExerciseForm(props){
     if (mode === "edit"){
       onSubmit(exerciseData)
     }else{
-    
         const response = await fetch(`${API_URL}/users/1/plans/${planId}/daily_plans/${dailyPlanId}/exercise_plans`, {
           method: "POST",
           headers: {
@@ -159,6 +108,7 @@ function NewExerciseForm(props){
         });
     
         if(response.ok){
+          console.log("ok")
           const { id } = await response.json();
           navigate(`/users/1/plans/${planId}`);
         } else {
@@ -168,188 +118,97 @@ function NewExerciseForm(props){
       }
   }
 
+  const handleRepRangeInput = (e) => {
+     const value = e.target.value;
+
+    // Only allow numbers and dash (`-`)
+    const regex = /^[0-9-]*$/;
+    if (regex.test(value)) {
+      setReps(value);
+    }
+  }
+
+  const renderWorkoutInputs = () => {
+    if (shouldShowStrengthInputs || notInDB) {
+      return (
+        <>
+          <label htmlFor="sets">Sets</label>
+          <input id="sets" type="number" value={sets} onChange={(e) => setSets(e.target.value)} />
+
+          <label htmlFor="reps">Rep Range</label>
+          <input id="reps" type="text" value={reps} onChange={(e) => handleRepRangeInput(e)} />
+        </>
+      );
+    }
+
+    if (isCardio) {
+      return (
+        <>
+          <label htmlFor="distance">Distance</label>
+          <input id="distance" value={distance} onChange={(e) => setDistance(e.target.value)} />
+
+          <label htmlFor="intensity">Intensity</label>
+          <input id="intensity" value={intensity} onChange={(e) => setIntensity(e.target.value)} />
+
+          <label htmlFor="duration">Duration</label>
+          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
+        </>
+      );
+    }
+
+    if (isStretching) {
+      return (
+        <>
+          <label htmlFor="duration">Duration</label>
+          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
+        </>
+      );
+    }
+
+    return null;
+  };
+
   return(
     <div>
-     <p>{dailyPlanId}</p> 
+      <p>{dailyPlanId}</p> 
       <p>{planId}</p>
-      {mode !=="edit" && <><form onSubmit={handleSubmit}>
-        <div>
-        <label for="workout-type">Exercise Name</label>
-        <input
-        type="text"
-        placeholder="Search exercises..."
-        value={nameQuery}
-        onChange={(e) => setNameQuery(e.target.value)}
-      />
-      </div>
-        <div>
-          <label for="workout-type">Workout Type</label>
-          <select id="workout-type" value={workoutType} onChange={(e) => setWorkoutType(e.target.value)}>
-            <option value="">-- Select Workout Type --</option>
-            { workoutTypeList.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label for="muscle-list">Muscle</label>
-          <select id="muscle-list" value={muscle} onChange={(e) => setMuscle(e.target.value)}>
-            <option value="">Optional</option>
-            { muscleList.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label for="equipment-list">Equipment</label>
-          <select id="equipment-list" value={equipment} onChange={(e) => setEquipment(e.target.value)}>
-            <option value="">Optional</option>
-            { equipmentList.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label for="mechanic-list">Mechanic</label>
-          <select id="mechanic-list" value={mechanic} onChange={(e) => setMechanic(e.target.value)}>
-            <option value="">Optional</option>
-            { mechanicList.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-         <div>
-          <label for="level-list">Level</label>
-          <select id="level-list" value={level} onChange={(e) => setLevel(e.target.value)}>
-            <option value="">Optional</option>
-            { levelList.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button type="submit">Search</button>
-      </form>
-
-      {exercisesList.length != 0  ? 
+      {
+        mode !=="edit" && 
+        <ExerciseSearchForm setExercisesList={setExercisesList}/>
+      }
+      {
+        exercisesList.length !== 0  && 
         <div>
           {exercisesList.map((exercise) => (
-            <div key={exercise.id} onClick={() => getExercise(exercise.id)}>
+            <div key={exercise.id}>
               <p>{exercise.name}</p>
-              <span onClick={() => getExercise(exercise.id)}>Details</span>
               { 
-                exerciseInfo ? 
-                  <div>
-                    {<img src={exerciseInfo.images[1]} />}
-                    <ol>
-                    {exerciseInfo.instructions.map((inst, index) => (
-                      <li key={index}>{inst}</li>
-                    ))}
-                  </ol>
-                  
-                  </div> : <div>N/A</div>
+                exerciseId === exercise.id && 
+                displayExerciseInfo && 
+                <ExerciseInfo exerciseId={exercise.id} />
               }
-              <button onClick={() => setWorkout(exercise)}>Add to Workout</button>
-              { exerciseId === exercise.id && (
+
+              <span onClick={() => getExerciseInfo(exercise)}>Details</span>
+              <button onClick={() => getWorkoutType(exercise)}>Add to Workout</button>
+
+              {(exerciseId === exercise.id) && (
                 <form onSubmit={handleSubmitExercise}>
-                  { shouldShowStrengthInputs &&  (
-                    <div>
-                      <div>
-                        <label for="sets">Sets</label>
-                        <input id="sets" value={sets}  type="text" onChange={(e) => setSets(e.target.value)}></input>
-                      </div>
-                      <div>
-                        <label for="reps">Reps</label>
-                        <input id="reps" value={reps} type="text" onChange={(e) => setReps(e.target.value)}></input>
-                      </div>
-                    </div>
-                  )}
-
-                  { isCardio &&  (
-                    <div>
-                      <div>
-                        <label for="distance">Distance</label>
-                        <input id="distance" value={distance}  type="text" onChange={(e) => setDistance(e.target.value)}></input>
-                      </div>
-                      <div>
-                        <label for="intensity">Intensity</label>
-                        <input id="intensity" value={intensity} type="text" onChange={(e) => setIntensity(e.target.value)}></input>
-                      </div>
-                      <div>
-                        <label for="duration">Duration</label>
-                        <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
-                      </div>
-                    </div>
-                  )}
-
-                  { isStretching &&  (
-                    <div>
-                      <label for="duration">Duration</label>
-                      <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
-                    </div>
-                  )}
-
-                  <button type="submit">Add</button>
-                  </form>
+                  {renderWorkoutInputs()}
+                  <button type="submit">{exercisePlan ? "Update" : "Add"}</button>
+                </form>
               )}
-            </div>
+            </div> 
           ))}
-        </div> : <h1>No Exercise</h1>}</>}
+        </div>
+      }
 
-        {mode === "edit" && <form onSubmit={handleSubmitExercise}>
-                  { shouldShowStrengthInputs &&  (
-                    <div>
-                      <div>
-                        <label for="sets">Sets</label>
-                        <input id="sets" value={sets}  type="text" onChange={(e) => setSets(e.target.value)}></input>
-                      </div>
-                      <div>
-                        <label for="reps">Reps</label>
-                        <input id="reps" value={reps} type="text" onChange={(e) => setReps(e.target.value)}></input>
-                      </div>
-                    </div>
-                  )}
-
-                  { isCardio &&  (
-                    <div>
-                      <div>
-                        <label for="distance">Distance</label>
-                        <input id="distance" value={distance}  type="text" onChange={(e) => setDistance(e.target.value)}></input>
-                      </div>
-                      <div>
-                        <label for="intensity">Intensity</label>
-                        <input id="intensity" value={intensity} type="text" onChange={(e) => setIntensity(e.target.value)}></input>
-                      </div>
-                      <div>
-                        <label for="duration">Duration</label>
-                        <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
-                      </div>
-                    </div>
-                  )}
-
-                  { isStretching &&  (
-                    <div>
-                      <label for="duration">Duration</label>
-                      <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
-                    </div>
-                  )}
-
-                  <button type="submit">{exercisePlan ? "Update":"Add"}</button>
-                  </form>}
+      {
+        mode === "edit" && 
+        <form onSubmit={handleSubmitExercise}>
+          {renderWorkoutInputs()}
+          <button type="submit">{exercisePlan ? "Update" : "Add"}</button>
+        </form>
+      }
     </div>
   )
 }
