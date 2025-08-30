@@ -3,11 +3,11 @@ class UserMailer < ApplicationMailer
 
   def reminder_email
     @reminder = params[:reminder]
-    @user = @reminder.daily_plan.plan.user
+    # @user = @reminder.daily_plan.plan.user --- temporary comment
     @daily_plan = @reminder.daily_plan
     
     mail(
-      to: @user.email, 
+      to: @user?.email || "carljasper.brizuela@gmail.com", 
       subject: "🔔 Reminder: #{@daily_plan.workout_name}"
     )
   end

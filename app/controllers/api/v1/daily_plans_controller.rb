@@ -2,7 +2,6 @@ class Api::V1::DailyPlansController < ApplicationController
   before_action :set_plan
   before_action :set_daily_plan, except: [ :index, :create ]
   before_action :set_daily_plans, except: [ :show, :create ]
-  
 
   def index
     get_plans_by_date

@@ -43,4 +43,5 @@ function PlanDetails(){
     </div>
   )
 }
+
 export default PlanDetails;
