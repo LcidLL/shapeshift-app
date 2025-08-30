@@ -3,6 +3,8 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import ExercisePlansList from "./ExercisePlansList";
 import { API_URL } from "../../constants/Constants";
 import NewDailyPlanForm from "./NewDailyPlanForm";
+import ReminderForm from "../../features/reminders/ReminderForm"
+import RemindersList from "../reminders/RemindersList";
 
 function DailyPlanList(props){
 
@@ -16,7 +18,7 @@ function DailyPlanList(props){
   const [futurePlans, setFuturePlans] = useState("")
   const [dailyPlanId, setDailyPlanId] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
-  
+  const [showReminderForm, setShowReminderForm] = useState(false)  
 
   useEffect(()=>{
     async function displayDailyPlanDetails(){
@@ -86,6 +88,11 @@ function DailyPlanList(props){
     }
   }
 
+  const getReminderForm = async (dailyId) => {
+    setShowReminderForm(true)
+    setDailyPlanId(dailyId)
+  }
+
   if (!outdatedPlans.length && !futurePlans.length && !planToday.length) return <h1>Loading...</h1>;
 
   return(
@@ -135,6 +142,13 @@ function DailyPlanList(props){
                 <p onClick={() => setIsDisplayed(false)}>Close</p>
               </div>
           }
+          <button onClick={() => getReminderForm(daily.id)}>Set Reminder</button>
+          {
+            daily.id === dailyPlanId && 
+            showReminderForm && 
+            <ReminderForm daily={daily} setShowReminderForm={setShowReminderForm}/>
+          }
+          <RemindersList daily={daily}/>
           <ExercisePlansList dailyPlanId={daily.id}/>
           <Link to="/addExercise" state={{dailyPlanId: daily.id, planId: plan_id}}>Add Exercise</Link>
         </div>

@@ -1,30 +1,46 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../constants/Constants";
 
-export default function ReminderForm() {
-  const [title, setTitle] = useState("");
+export default function ReminderForm(props) {
+
+  const { daily, setShowReminderForm } = props
+  const navigate = useNavigate()
+
+  const [title, setTitle] = useState(daily?.workout_name || "");
   const [remindAt, setRemindAt] = useState("");
+  const [errors, setErrors] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/api/v1/reminders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        reminder: {
-          title,
-          remind_at: remindAt,
-        },
-      }),
-    });
+    const reminderData = {
+      title,
+      remind_at: `${daily.workout_date} ${remindAt}:00`,
+    }
 
-    const data = await response.json();
-    if (data.success) {
-      alert("Reminder set!");
-    } else {
-      alert("Error: " + data.errors.join(", "));
+    try {
+      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/reminders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reminderData),
+      });
+
+      if(response.ok){
+        const { id } = await response.json();
+        alert("Reminder set!");
+        setShowReminderForm(false)
+        navigate(`/users/1/plans/${daily.plan_id}`);
+      } else {
+        const errorData = await response.json();
+        setErrors(errorData.errors)
+      }
+
+    }catch (error){
+      console.error("Error submitting daily plan:", error);
+      setErrors(["Something went wrong. Please try again later."]);
     }
   };
 
@@ -37,9 +53,10 @@ export default function ReminderForm() {
         onChange={(e) => setTitle(e.target.value)}
       />
       <input
-        type="datetime-local"
+        type="time"
         value={remindAt}
         onChange={(e) => setRemindAt(e.target.value)}
+        required
       />
       <button type="submit">Set Reminder</button>
     </form>

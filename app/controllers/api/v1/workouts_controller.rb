@@ -36,7 +36,6 @@ class Api::V1::WorkoutsController < ApplicationController
 
   def summary
     period = params[:period]&.to_sym
-
     begin
       data = Workout.summary_by_period(period)
       render json: data
