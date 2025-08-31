@@ -40,7 +40,7 @@ class Api::V1::WorkoutsController < ApplicationController
       data = Workout.summary_by_period(period)
       render json: data
     rescue ArgumentError => e
-      render json: { error: e.message }, status: :bad_request
+      render json: { errors: e.message }, status: :bad_request
     end
   end
 

@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
 import { Link, useNavigate } from "react-router-dom";
 import WorkoutsSummary from "./WorkoutsSummary";
+import { useError } from "../../contexts/ErrorContext";
 
 function WorkoutsList(){
   const [workouts, setWorkouts] = useState("");
   const navigate = useNavigate()
+  const { errors, setErrors } = useError();
+  
+  useEffect(() => {
+    // clear error after displaying it once
+    return () => setErrors(null);
+  }, []);
 
   useEffect(() => {
     async function loadWorkouts(){
@@ -45,6 +52,12 @@ function WorkoutsList(){
   return(
     <div>
       <h1>Workouts</h1>
+      { errors && 
+        errors.map((error) => (
+          <div key={error.id}>
+            <h2>{error}</h2>
+          </div>
+        )) }
       <h3>Summary</h3>
       <WorkoutsSummary />
       <h3>Workout Entries</h3>

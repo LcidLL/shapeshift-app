@@ -2,25 +2,27 @@ import React, { useState, useEffect } from "react";
 import { API_URL } from "../../constants/Constants";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useError } from "../../contexts/ErrorContext";
 
 function AddExerciseForm(props){
   const { exercise, mode, onSubmit, workoutId} = props
-  const location = useLocation();
-  const { workout } = location.state || {};
-  const { workout_id } = useParams();
+  
+  const location = useLocation()
+  const { workout } = location.state || {}
+  const { workout_id } = useParams()
+  const navigate = useNavigate()
 
-  const [workoutType, setWorkoutType] = useState(() => {
-  return workout ? workout.workout_type : "";
-});
-  const [exerciseName, setExerciseName] = useState("");
-  const [sets, setSets] = useState(0);
-  const [reps, setReps] = useState(0);
-  const [weight, setWeight] = useState(0);
-  const [distance, setDistance] = useState("");
-  const [duration, setDuration] = useState("");
-  const [intensity, setIntensity] = useState("N/A");
-  const [exercisesList, setExercisesList] = useState([])
-  const navigate = useNavigate();
+  const [workoutType, setWorkoutType] = useState(() => {return workout ? workout.workout_type : ""})
+  const [exerciseName, setExerciseName] = useState(exercise?.exercise_name || "")
+  const [sets, setSets] = useState(exercise?.sets || 0)
+  const [reps, setReps] = useState(exercise?.reps || 0)
+  const [weight, setWeight] = useState(exercise?.weight || 0)
+  const [distance, setDistance] = useState(exercise?.distance || "")
+  const [duration, setDuration] = useState(exercise?.duration || "")
+  const [intensity, setIntensity] = useState(exercise?.intensity || "N/A")
+  const [exercisesList, setExercisesList] = useState("")
+  
+  const { errors, setErrors } = useError();
 
   const strengthTypes = [
     "Strength",
@@ -28,48 +30,42 @@ function AddExerciseForm(props){
     "Strongman",
     "Powerlifting",
     "Olympic Weightlifting"
-  ];
+  ]
 
-  const shouldShowStrengthInputs = strengthTypes.includes(workoutType);
+  const shouldShowStrengthInputs = strengthTypes.includes(workoutType)
 
   useEffect(() => {
     async function getExercises(){
       try{
-        const response = await fetch(`${API_URL}/exercise_dbs?workout_type=${workoutType}`);
-        if (response.ok) {
-          const json = await response.json();
-          setExercisesList(json)
-        } else {
-          throw response
+        const response = await fetch(`${API_URL}/exercise_dbs?workout_type=${workoutType}`)
+        if (!response.ok) {
+          const { errors }= await response.json()
+          setErrors(errors)
+          return;
         }
-      } catch (e) {
-        console.log("An error occured")
+        const json = await response.json()
+        setExercisesList(json)
+      } catch (error) {
+        setErrors(['Failed to fetch exercises. Please check your connection or try again later.'])
       }
     }
-      getExercises()
+    getExercises()
   }, [workoutType, props])
 
   useEffect(()=> {
     if(exercise){
-      setExerciseName(exercise.exercise_name);
-      setSets(exercise.sets);
-      setReps(exercise.reps);
-      setWeight(exercise.weight);
-      setDistance(exercise.distance);
-      setDuration(exercise.duration);
-      setIntensity(exercise.intensity);
-
       async function getWorkoutType(){
         try{
-          const response = await fetch(`${API_URL}/users/1/workouts/${workoutId}`);
-          if (response.ok) {
-            const json = await response.json();
-            setWorkoutType(json.workout_type);
-          } else {
-            throw response
+          const response = await fetch(`${API_URL}/users/1/workouts/${workoutId}`)
+          if (!response.ok) {
+            const { errors }= await response.json()
+            setErrors(errors)
+            return;
           }
-        } catch (e) {
-          console.log("An error occured")
+          const json = await response.json()
+          setWorkoutType(json.workout_type)
+        } catch (error) {
+          setErrors(['Failed to fetch. Please check your connection or try again later.'])
         }
       }
       getWorkoutType()
@@ -92,27 +88,36 @@ function AddExerciseForm(props){
     if(mode === "edit"){
       onSubmit(exerciseData)
     } else {
-      const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}/exercises`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(exerciseData)
-      });
+      try{
+        const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}/exercises`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(exerciseData)
+        })
 
-      if(response.ok){
-        const { id } = await response.json();
-        navigate(`/users/1/workouts/${workout_id}`);
-      } else {
-        console.log("Error occured")
+        if (response.ok) {
+          navigate(`/users/1/workouts/${workout_id}`)
+        } else {
+          const { errors } = await response.json()
+          setErrors(errors || ['Something went wrong while adding the exercise.'])
+        }
+      } catch (error) {
+        setErrors(['Failed to add exercise. Please check your connection or try again later.'])
       }
     }
   }
+
+  if (!exercisesList) return(<h1>Loading...</h1>)
 
   return (
     <div>
       <h1>{exercise ? "Update":"Add"} Exercise</h1>
       <h2>{ workoutType }</h2>
+
+      { errors && errors.map((error, index)=> (
+        <span key={index}>{error}</span>
+      ))}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label for="exercise-name">Exercise Name</label>

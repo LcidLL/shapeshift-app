@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
   respond_to :json
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   protected
 
@@ -31,4 +32,8 @@ class ApplicationController < ActionController::API
       :workout_duration, :target_weight
     ])
   end
+
+  def record_not_found
+    render json: {errors: "Sorry, we couldn’t find what you were looking for."}, status: :not_found
+  end 
 end
