@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { Routes, Route, BrowserRouter, Navigate, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -17,6 +17,8 @@ import NewPlanForm from './features/plans/NewPlanForm';
 import NewExerciseForm from './features/plans/NewExerciseForm';
 import GenerateWorkoutForm from './features/plans/GenerateWorkoutForm';
 import GeneratedWorkoutDetails from './features/plans/GeneratedWorkoutDetails';
+import { useError } from './contexts/ErrorContext';
+import { useEffect } from 'react';
 
 function App() {
   return (
@@ -91,6 +93,10 @@ function App() {
             <Route path = "/generate-workout-results" element={<GeneratedWorkoutDetails />} />
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+             {/* {Redirect to dashboard if route not found in react ("to URL temporary")}  */}
+            <Route path="*" element={<Navigate to="/users/1/workouts" replace />} />
+            
           </Routes>
         </div>
       </AuthProvider>

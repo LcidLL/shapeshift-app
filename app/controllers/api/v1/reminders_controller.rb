@@ -32,7 +32,7 @@ class Api::V1::RemindersController < ApplicationController
 
     # temporary comment
     # unless @daily_plan.plan.user == current_user
-    #   render json: { error: 'Access denied' }, status: :forbidden
+    #   render json: { errors: 'Access denied' }, status: :forbidden
     # end
   end
 

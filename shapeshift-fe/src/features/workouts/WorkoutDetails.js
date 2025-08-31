@@ -4,13 +4,22 @@ import { useNavigate, useParams } from "react-router-dom"
 import { Link } from "react-router-dom";
 import ExercisesList from "../exercises/ExercisesList";
 import NewWorkoutForm from "./NewWorkoutForm"
+import { useError } from "../../contexts/ErrorContext";
 
 function WorkoutDetails(){
+
+  const { id } = useParams()
+  const navigate = useNavigate()
+  
   const [workout, setWorkout] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
-  const navigate = useNavigate()
 
-  const { id } = useParams();
+  const { errors, setErrors } = useError();
+
+  useEffect(() => {
+    // clear error after displaying it once
+    return () => setErrors(null);
+  }, []);
 
   useEffect(() => {
     async function displayWorkoutDetails(){
@@ -20,7 +29,9 @@ function WorkoutDetails(){
           const json = await response.json();
           setWorkout(json);
         } else {
-          throw response
+          const { errors } = await response.json();
+          setErrors(errors)
+          navigate("/users/1/workouts")
         }
       } catch (e) {
         console.log("An error occured")
@@ -65,6 +76,12 @@ function WorkoutDetails(){
 
   return (
     <div>
+      { errors && 
+        errors.map((error) => (
+          <div key={error.id}>
+            <h2>{error}</h2>
+          </div>
+        )) }
       <h1>Workout details</h1>
       <button onClick={() => setIsDisplayed(true)}>Edit</button>
       <button onClick={() => deleteWorkout(workout.id)}>Delete</button>
