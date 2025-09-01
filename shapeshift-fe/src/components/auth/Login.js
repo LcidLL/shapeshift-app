@@ -17,14 +17,18 @@ function Login() {
     setError('');
     setLoading(true);
 
+    console.log('About to call login...');
     const result = await login(email, password);
-    
+    console.log('Login result:', result);
+  
     if (result.success) {
+      console.log('Login successful, about to navigate...');
       navigate('/dashboard');
     } else {
+      console.log('Login failed:', result.message);
       setError(result.message);
     }
-    
+  
     setLoading(false);
   };
 
