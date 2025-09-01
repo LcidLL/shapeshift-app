@@ -2,24 +2,44 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import mockData from '../../mockResponse.json'
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../constants/Constants';
 
 function GenerateWorkoutForm(){
   const { register, handleSubmit, formState: { errors } } = useForm()
   const navigate = useNavigate()
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     // Convert comma-separated strings to arrays
-    data.equipment = data.equipment.split(',').map(item => item.trim()).filter(Boolean);
-    if (data.medical_conditions) {
-      data.medical_conditions = data.medical_conditions.split(',').map(item => item.trim()).filter(Boolean);
+    data.equipment = convertToArray(data.equipment);
+    data.medical_conditions = convertToArray(data.medical_conditions);
+    data.exercise_restrictions = convertToArray(data.exercise_restrictions);
+ 
+    try{
+      const response = await fetch(`${API_URL}/users/1/generate-workout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+      if (response.ok){
+        const json = await response.json()
+        console.log(json)
+        navigate('/generate-workout-results', { state: { result: json} })
+      } else {
+        
+      }
+    }catch (error) {
+      console.log('Error')
     }
-    if (data.exercise_restrictions) {
-      data.exercise_restrictions = data.exercise_restrictions.split(',').map(item => item.trim()).filter(Boolean);
-    }
+  }
 
-    console.log('Submitted Data:', JSON.stringify(data));
-    navigate('/generate-workout-results', { state: { result: mockData } })
-  };
+  function convertToArray(value) {
+  return value
+    ? value.split(',').map(item => item.trim()).filter(Boolean)
+    : [];
+}
 
   const sendMock = async () => {
     navigate('/generate-workout-results', { state: { result: mockData } })

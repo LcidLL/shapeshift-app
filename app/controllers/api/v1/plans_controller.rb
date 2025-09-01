@@ -1,6 +1,6 @@
 class Api::V1::PlansController < ApplicationController
-  before_action :set_user
-  before_action :set_plan, except: [ :index, :create ]
+  before_action :set_user, except: [ :generate ]
+  before_action :set_plan, except: [ :index, :create, :generate ]
 
   def index
     @plans = @user.plans
@@ -34,6 +34,12 @@ class Api::V1::PlansController < ApplicationController
     render json: { message: "Workout plan deleted"}
   end
 
+  def generate
+    workout_plan = GenerateWorkoutPlanApi.generate_workout(**workout_params.to_h.symbolize_keys)
+
+    render json: workout_plan, status: :ok
+  end
+
   private
 
   def set_user
@@ -46,5 +52,17 @@ class Api::V1::PlansController < ApplicationController
 
   def plan_params
     params.require(:plan).permit(:plan_name, :description)
+  end
+
+  def workout_params
+    params.permit(
+      :goal,
+      :fitness_level,
+      :days_per_week,
+      :session_duration_minutes,
+      equipment: [],
+      medical_conditions: [],
+      exercise_restrictions: []
+    )
   end
 end
