@@ -6,7 +6,7 @@ class UserMailer < ApplicationMailer
     # @user = @reminder.daily_plan.plan.user --- temporary comment
     
     mail(
-      to: @user?.email || "carljasper.brizuela@gmail.com", 
+      to: "carljasper.brizuela@gmail.com", 
       subject: "🔔 Reminder: #{@reminder.title}"
     )
   end

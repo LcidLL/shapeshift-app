@@ -4,12 +4,21 @@ import { API_URL } from "../../constants/Constants";
 import { Link } from "react-router-dom";
 import NewDailyPlanForm from "./NewDailyPlanForm";
 import DailyPlanList from "./DailyPlanList";
+import { useError } from "../../contexts/ErrorContext";
 
 function PlanDetails(){
 
-  const [plan, setPlan] = useState("")
   const { plan_id } = useParams();
+
+  const [plan, setPlan] = useState("")
   const [refreshFlag, setRefreshFlag] = useState(false)
+
+  const {errors, setErrors} = useError()
+
+  useEffect(() => {
+    // clear error after displaying it once
+    return () => setErrors(null);
+  }, []);
 
   useEffect(()=>{
     async function displayPlanDetails(){

@@ -1,0 +1,4 @@
+:schedule:
+  daily_workout_reminder:
+    cron: "0 19 * * *"   # every day at 19:00 (7pm)
+    class: "DailyWorkoutReminderJob"
