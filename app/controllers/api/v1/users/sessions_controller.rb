@@ -14,6 +14,10 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         }, status: :unauthorized
       end
       
+      token = request.env['warden-jwt_auth.token']
+      
+      response.set_header('Authorization', "Bearer #{token}")
+      
       render json: {
         status: {
           code: 200,
