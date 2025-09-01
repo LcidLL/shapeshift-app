@@ -19,12 +19,15 @@ import GenerateWorkoutForm from './features/plans/GenerateWorkoutForm';
 import GeneratedWorkoutDetails from './features/plans/GeneratedWorkoutDetails';
 import { useError } from './contexts/ErrorContext';
 import { useEffect } from 'react';
+import NavBar from './components/NavBar';
+import Layout  from './components/Layout';
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <div className="App">
+          <Layout>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -98,6 +101,7 @@ function App() {
             <Route path="*" element={<Navigate to="/users/1/workouts" replace />} />
             
           </Routes>
+          </Layout>
         </div>
       </AuthProvider>
     </BrowserRouter>
