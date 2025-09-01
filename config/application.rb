@@ -21,7 +21,7 @@ module ShapeshiftApi
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    config.time_zone = "Asia/Manila"
+    config.time_zone = "Asia/Dubai"
     config.eager_load_paths << Rails.root.join("wrappers")
 
     # Only loads a smaller set of middleware suitable for API only apps.

@@ -36,6 +36,10 @@ class Api::V1::DailyPlansController < ApplicationController
     render json: {all: @daily_plans, outdated: @outdated_plan, future: @future_plan, today: @plan_today, message: "Daily plan deleted"}
   end
 
+  def check_status
+    @plan_today = @daily_plans.where("workout_date = ?", Date.today)
+  end
+
   private
 
   def set_plan

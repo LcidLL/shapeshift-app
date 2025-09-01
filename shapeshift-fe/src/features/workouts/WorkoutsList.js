@@ -5,9 +5,11 @@ import WorkoutsSummary from "./WorkoutsSummary";
 import { useError } from "../../contexts/ErrorContext";
 
 function WorkoutsList(){
-  const [workouts, setWorkouts] = useState("");
+  
   const navigate = useNavigate()
+  const [workouts, setWorkouts] = useState("");
   const { errors, setErrors } = useError();
+  const token = localStorage.getItem('token');
   
   useEffect(() => {
     // clear error after displaying it once
@@ -17,7 +19,12 @@ function WorkoutsList(){
   useEffect(() => {
     async function loadWorkouts(){
       try{
-        const response = await fetch(`${API_URL}/users/1/workouts`);
+        const response = await fetch(`${API_URL}/users/1/workouts`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        })
         if (response.ok) {
           const json = await response.json();
           setWorkouts(json);

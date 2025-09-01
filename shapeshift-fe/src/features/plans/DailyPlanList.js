@@ -5,6 +5,7 @@ import { API_URL } from "../../constants/Constants";
 import NewDailyPlanForm from "./NewDailyPlanForm";
 import ReminderForm from "../../features/reminders/ReminderForm"
 import RemindersList from "../reminders/RemindersList";
+import { useError } from "../../contexts/ErrorContext";
 
 function DailyPlanList(props){
 
@@ -18,14 +19,14 @@ function DailyPlanList(props){
   const [futurePlans, setFuturePlans] = useState("")
   const [dailyPlanId, setDailyPlanId] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
-  const [showReminderForm, setShowReminderForm] = useState(false)  
+  const [showReminderForm, setShowReminderForm] = useState(false)
 
   useEffect(()=>{
     async function displayDailyPlanDetails(){
       try{
         const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`);
         if (response.ok) {
-          const json = await response.json();
+          const json = await response.json()
           setPlanToday(json.today)
           setOutdatedPlans(json.outdated)
           setFuturePlans(json.future)

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 import ExercisePlansList from "./ExercisePlansList";
+import { useError } from "../../contexts/ErrorContext";
 
 const weekdayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
@@ -15,11 +16,12 @@ function NewDailyPlanForm(props){
   const [workoutName, setWorkoutName] = useState(dailyPlan?.workout_name || "")
   const [workoutDate, setWorkoutDate] = useState(dailyPlan?.workout_date || "")
   const [dayOfWeek, setDayOfWeek] = useState(dailyPlan?.day_of_week || "")
-  const [errors, setErrors] = useState(null)
 
   //Get date today and set as minimum in date input
   const today = new Date();
   const minDate = today.toISOString().split("T")[0];
+
+  const {errors, setErrors} = useError()
 
   const handleWorkoutDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -54,6 +56,9 @@ function NewDailyPlanForm(props){
 
       if(response.ok){
         const { id } = await response.json();
+        setWorkoutDate("")
+        setWorkoutName("")
+        setErrors(null)
         onTrigger()
         navigate(`/users/1/plans/${plan_id}`);
       } else {
