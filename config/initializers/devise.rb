@@ -330,6 +330,7 @@ Devise.setup do |config|
   
   config.skip_session_storage = [:http_auth]
   config.navigational_formats = []
+  config.confirm_within = 3.days
   
   config.warden do |manager|
     manager.failure_app = lambda do |env|
