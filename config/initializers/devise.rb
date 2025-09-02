@@ -328,8 +328,9 @@ Devise.setup do |config|
     jwt.expiration_time = 1.day.to_i
   end
   
-  config.skip_session_storage = [:http_auth, :params_auth]
+  config.skip_session_storage = [:http_auth]
   config.navigational_formats = []
+  
   config.warden do |manager|
     manager.failure_app = lambda do |env|
       [401, {'Content-Type' => 'application/json'}, [{ error: 'Unauthorized' }.to_json]]
