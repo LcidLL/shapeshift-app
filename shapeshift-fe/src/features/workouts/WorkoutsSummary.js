@@ -31,14 +31,13 @@ function WorkoutsSummary(){
     
     { 
       dataSummary ? 
-      <div>
+      <div className="flex flex row">
         {dataSummary.map((data, index) => [
-          <div key={index}>
+          <div key={index} className="bg-neutral-card rounded-2xl shadow-md p-4">
             <h2>{data.workoutPeriod}</h2>
             <p>Total Calories Burned:{data.totalCalories}</p>
             <p>Total Workout Duration: {data.totalDuration}</p>
             <p># of Workouts: {data.workoutsCount}</p>
-            <p>Ave. Calories Burned:{data.averageCalories}</p>
             <p>Ave. Workout Duration: {data.averageDuration}</p>
           </div>
         ])}

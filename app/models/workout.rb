@@ -7,6 +7,10 @@ class Workout < ApplicationRecord
   validates :duration, presence: true
   validates :calories_burned, presence: true
 
+  def exercises_count
+    exercises.count
+  end
+
   def self.summary_by_period(period)
     workout_period = 
       case period

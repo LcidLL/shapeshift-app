@@ -164,22 +164,28 @@ function NewWorkoutForm(props){
   }
 
   return (
-    <div>
-      <h1>New workout</h1>
+    <div className="bg-neutral-card rounded-md shadow-md p-6 w-full max-w-md mx-auto">
+       <h2 className="font-heading text-xl text-white mb-4">{workout ? "Update":"New"} Workout</h2>
       { errors && 
         errors.map((error) => (
           <div key={error.id}>
             <h2>{error}</h2>
           </div>
         )) }
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label for="workout-date">Workout Date</label>
-          <input id="workout-date" value={workoutDate} type="date" max={maxDate} onChange={(e) => setWorkoutDate(e.target.value)}></input>
+          <label for="workout-date" className="block text-white text-sm mb-1 font-sans">Workout Date</label>
+          <input 
+            id="workout-date" 
+            value={workoutDate} 
+            type="date" 
+            max={maxDate} 
+            onChange={(e) => setWorkoutDate(e.target.value)}
+            className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"></input>
         </div>
         <div>
-          <label for="workout-type">Workout Type</label>
-          <select id="workout-type" value={workoutType} onChange={(e) => setWorkoutType(e.target.value)}>
+          <label for="workout-type"  className="block text-white text-sm mb-1 font-sans">Workout Type</label>
+          <select id="workout-type" value={workoutType} onChange={(e) => setWorkoutType(e.target.value)} className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green">
             <option value="">-- Select Workout Type --</option>
             { workoutTypeList.map((type) => (
               <option key={type} value={type}>
@@ -189,15 +195,15 @@ function NewWorkoutForm(props){
           </select>
         </div>
         <div>
-          <label for="duration">Duration</label>
-          <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)}></input>
+          <label for="duration" className="block text-white text-sm mb-1 font-sans">Duration</label>
+          <input id="duration" value={duration} type="text" onChange={(e) => setDuration(e.target.value)} className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"></input>
         </div>
         <div>
-          <label for="calories-burned">Calories Burned</label>
-          <input id="calories-burned" value={caloriesBurned} type="text" onChange={(e) => setCaloriesBurned(e.target.value)}></input>
+          <label for="calories-burned" className="block text-white text-sm mb-1 font-sans">Calories Burned</label>
+          <input id="calories-burned" value={caloriesBurned} type="text" onChange={(e) => setCaloriesBurned(e.target.value)}  className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"></input>
         </div>
         <div>
-          <button type="submit">{workout ? "Update Workout":"Add Workout"}</button>
+          <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{workout ? "Update Workout":"Add Workout"}</button>
         </div>
       </form>
       <Link to="/">Back</Link>

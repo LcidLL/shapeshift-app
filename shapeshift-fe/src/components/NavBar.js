@@ -1,18 +1,21 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Home, User, Settings, ChevronLeft, ChevronRight, Utensils, 
+import { Home, User, ChartNoAxesCombined, ChevronRight, Utensils, 
   Dumbbell, CalendarDays, Trophy, LogOut, ChevronDown } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 function NavBar(){
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
+  const { user, logout } = useAuth();
 
   const menuSections = [
     { 
       section: "MAIN",
       items: [
-        {name: "Dashboard", icon: <Home size={20} />, href: "#" },
-        { name: "Profile", icon: <User size={20} />, href: "#" },
+        {name: "Dashboard", icon: <Home size={20} />, href: "/dashboard" },
+        {name: "Profile", icon: <User size={20} />, href: "/profile" },
+        {name: "Analytics", icon: <ChartNoAxesCombined size={20} />, href: "/analytics" }
       ],
     },
     {
@@ -41,14 +44,6 @@ function NavBar(){
          { name: "Challenges", icon: <Trophy size={20} />, href: "/challenges" },
       ],
     },
-    {
-      section: "SETTINGS",
-      items: [
-         { name: "Settings", icon: <Settings size={20} />, href: "#" },
-      ],
-    },
-   
-    // { name: "Log Out", icon: <LogOut size={20} />, href: "#" }
   ];
 
   const toggleMenu = (name) => {
@@ -56,17 +51,17 @@ function NavBar(){
   };
 
   return(
-    <nav className="w-64 bg-gray-900 text-white flex flex-col p-4 h-screen font-sans">
-      <h1 className="text-2xl font-bold mb-6">My App</h1>
+    <nav className="w-64 bg-neutral-card p-6 flex flex-col"> 
+      <h1 className="text-2xl font-bold mb-6">ShapeShift</h1>
 
       {menuSections.map((section) => (
-        <div key={section.section} className="mb-6">
+        <div key={section.section} className="mb-4">
           {/* Subheader */}
-          <h2 className="text-xs font-semibold text-gray-400 tracking-wider mb-2 px-2">
+          <h2 className="text-xs font-semibold text-gray-400 tracking-wider mb-2 px-2 text-left border-b border-neutral-hover pb-1">
             {section.section}
           </h2>
 
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-col gap-1 pl-2">
             {section.items.map((item) => (
               <li key={item.name}>
                 {item.children ? (
@@ -74,11 +69,11 @@ function NavBar(){
                     {/* Parent with submenu */}
                     <button
                       onClick={() => toggleMenu(item.name)}
-                      className="flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-800 transition"
+                      className="text-sm flex items-center justify-between w-full p-2 rounded-lg hover:bg-gray-800 transition"
                     >
                       <span className="flex items-center gap-3">
                         {item.icon}
-                        <span>{item.name}</span>
+                        <span className="font-sans">{item.name}</span>
                       </span>
                       {openMenu === item.name ? (
                         <ChevronDown size={16} />
@@ -89,13 +84,13 @@ function NavBar(){
 
                     {/* Submenu */}
                     {openMenu === item.name && (
-                      <ul className="ml-2 mt-2 flex flex-col gap-1">
+                      <ul className="ml-4 flex flex-col text-left">
                         {item?.children.map((sub) => (
                           <li key={sub.name}>
                             <NavLink
                               to={sub.href}
                               className={({ isActive }) =>
-                                `block p-2 rounded-md transition ${
+                                `block p-2 rounded-md transition  text-sm ${
                                   isActive
                                     ? "bg-gray-700 text-white"
                                     : "text-gray-300 hover:bg-gray-800 hover:text-white"
@@ -113,7 +108,7 @@ function NavBar(){
                   <NavLink
                     to={item.href}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 p-2 rounded-lg transition ${
+                      `flex items-center gap-2 p-2 rounded-lg transition text-sm ${
                         isActive
                           ? "bg-gray-700 text-white"
                           : "text-gray-300 hover:bg-gray-800 hover:text-white"
@@ -121,7 +116,7 @@ function NavBar(){
                     }
                   >
                     {item.icon}
-                    <span>{item.name}</span>
+                    <span className="font-sans">{item.name}</span>
                   </NavLink>
                 )}
               </li>
@@ -129,6 +124,19 @@ function NavBar(){
           </ul>
         </div>
       ))}
+      <NavLink
+        to="/login"
+        className={({ isActive }) =>
+          `flex items-center gap-2 p-2 rounded-lg transition mt-3 text-sm ${
+            isActive
+              ? "bg-gray-700 text-white"
+              : "text-gray-300 hover:bg-gray-800 hover:text-white"
+          }`
+        }
+      >
+        <LogOut size={20} />
+        <span className="font-sans">Log Out</span>
+      </NavLink>
     </nav>
   )
 }

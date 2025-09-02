@@ -21,6 +21,7 @@ import { useError } from './contexts/ErrorContext';
 import { useEffect } from 'react';
 import NavBar from './components/NavBar';
 import Layout  from './components/Layout';
+import WorkoutsSummary from './features/workouts/WorkoutsSummary';
 
 function App() {
   return (
@@ -42,6 +43,12 @@ function App() {
               <ProtectedRoute>
                 <Profile />
               </ProtectedRoute>
+            } />
+
+            <Route path="/analytics" element={
+              // <ProtectedRoute>
+                <WorkoutsSummary />
+              // </ProtectedRoute>
             } />
             
             <Route path="/users/:userId/workouts" element={
