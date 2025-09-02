@@ -34,6 +34,6 @@ class ApplicationController < ActionController::API
   end
 
   def record_not_found
-    render json: {errors: "Sorry, we couldn’t find what you were looking for."}, status: :not_found
+    render json: {errors: "Sorry, we couldn't find what you were looking for."}, status: :not_found
   end 
 end
