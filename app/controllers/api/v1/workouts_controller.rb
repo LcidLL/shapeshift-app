@@ -4,7 +4,7 @@ class Api::V1::WorkoutsController < ApplicationController
 
   def index
     @workouts = @user.workouts.order(workout_date: :desc)
-    render json: @workouts
+    render json: @workouts.as_json(methods: :exercises_count)
   end
 
   def show 
