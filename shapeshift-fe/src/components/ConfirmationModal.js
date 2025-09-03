@@ -1,6 +1,6 @@
 function ConfirmationModal (props) {
 
-  const { open, onClose, onConfirm, workout } = props
+  const { open, onClose, onConfirm, workout, exercise } = props
 
   if (!open) return null;
 
@@ -12,13 +12,16 @@ function ConfirmationModal (props) {
           Confirm Deletion
         </h2>
         <div className="text-md text-gray-300 mb-6 font-sans">
-          <p>Are you sure you want to delete this workout?</p>
+          <p>Are you sure you want to delete this {workout ? "workout" : "exercise"}?</p>
           <br />
-          <p><strong>Workout date:</strong>  {`${workout.workout_date}`}</p>
-          <p><strong>Workout Type:</strong>  {`${workout.workout_type}`}</p>
-          <p><strong>Execises logged:</strong>  {`${workout.exercises_count}`}</p>
-          <br />
-           All exercises logged under this workout will also be deleted. This action cannot be undone.
+          { workout ? <>
+            <p><strong>Workout date:</strong>  {`${workout?.workout_date}`}</p>
+            <p><strong>Workout Type:</strong>  {`${workout?.workout_type}`}</p>
+            <p><strong>Execises logged:</strong>  {`${workout?.exercises_count}`}</p>
+            <br />
+            All exercises logged under this workout will also be deleted. This action cannot be undone.
+            </> : <p><strong>Exercise name:</strong>  {`${exercise?.exercise_name}`}</p>
+          }
         </div>
 
         {/* Actions */}
