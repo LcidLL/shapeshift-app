@@ -26,7 +26,7 @@ class Api::V1::DailyPlansController < ApplicationController
     if @daily_plan.update(daily_plan_params)
       render json: @daily_plan
     else
-      render json: { errors: @daily_plan.errors }, status: :unprocessable_entity
+      render json: { errors: @daily_plan.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

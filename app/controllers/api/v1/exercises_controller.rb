@@ -15,7 +15,7 @@ class Api::V1::ExercisesController < ApplicationController
     @exercise = @workout.exercises.build(exercise_params)
 
     if @exercise.save
-      render json: @exercise, status: :created, location: api_v1_user_workout_exercises_path
+      render json: @exercise, status: :created, location: api_v1_workout_exercises_path
     else
       render json: { errors: @exercise.errors.full_messages }, status: :unprocessable_entity
     end
@@ -25,7 +25,7 @@ class Api::V1::ExercisesController < ApplicationController
     if @exercise.update(exercise_params)
       render json: @exercise
     else
-      render json: { errors: @exercise.errors }, status: :unprocessable_entity
+      render json: { errors: @exercise.errors.full_messages}, status: :unprocessable_entity
     end
   end
 
@@ -35,10 +35,6 @@ class Api::V1::ExercisesController < ApplicationController
   end
 
   private
-
-  def set_user
-    @user = User.find(params[:user_id])
-  end
 
   def set_workout
     @workout = Workout.find(params[:workout_id])

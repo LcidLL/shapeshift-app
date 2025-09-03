@@ -102,23 +102,20 @@ function ExercisePlansList(props){
   }
 
   return(
-    <div>
+    <div className="space-y-2 text-white text-sm">
       { exercisePlans.map((exercise) => [
-        <div key={exercise.id}>
-          {
-            Object.entries(exercise
-              ).filter(([key, value]) => 
-                !excludedKeys.includes(key) && 
-                value !== 0 && 
-                value !== 'N/A' &&
-                value !== null &&
-                value !== ''
-              ).map(([key, value]) => (
-                <li key={key}>
-                  <strong>{key}:</strong> {value?.toString()}
-                </li>
-              ))
-          }
+        <div key={exercise.id} className="bg-neutral-card rounded-lg p-2 hover:bg-neutral-hover/70 transition-colors">
+            <p className="font-medium">{exercise.exercise_name}</p>
+            {exercise.sets && (
+              <p className="text-gray-400 text-xs">
+                {exercise.sets} sets × {exercise.reps} reps
+              </p>
+            )}
+            {/* {dayPlan.type === "Cardio" && (
+              <p className="text-gray-400 text-xs">
+                {ex.distance} · {ex.intensity} · {ex.duration}
+              </p>
+            )} */}
           { exercise.workout_date > today && 
             <div>
               <button onClick={() => displayEditExercisePlan(exercise.id)}>Edit</button>

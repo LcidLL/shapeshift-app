@@ -107,10 +107,10 @@ function DailyPlanList(props){
   if (!outdatedPlans.length && !futurePlans.length && !planToday.length) return <h1>Loading...</h1>;
 
   return(
-    <div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       { planToday.map((daily) => [
-        <div key={daily.id}>
-          <h1>{daily.day_of_week}</h1>
+        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
           <h2>{daily.workout_name}</h2>
           {
             !daily.isAdded && 
@@ -126,8 +126,8 @@ function DailyPlanList(props){
       ])}
 
       { outdatedPlans.map((daily) => [
-        <div key={daily.id}>
-          <h1>{daily.day_of_week}</h1>
+        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
           <h2>{daily.workout_name}</h2>
           {!daily.isAdded && <Link to='/workouts/new' state={{daily}}>Add to Tracker</Link>}
           <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
@@ -136,8 +136,8 @@ function DailyPlanList(props){
       ])}
 
       { futurePlans.map((daily) => [
-        <div key={daily.id}>
-          <h1>{daily.day_of_week}</h1>
+        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
           <h2>{daily.workout_name}</h2>
           <button onClick={()=> displayEditDailyPlan(daily.id)}>Edit</button>
           <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>

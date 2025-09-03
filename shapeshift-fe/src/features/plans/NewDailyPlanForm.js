@@ -8,7 +8,7 @@ const weekdayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday
 
 function NewDailyPlanForm(props){
 
-  const { onTrigger, dailyPlan, mode, onSubmit } = props
+  const { onTrigger, dailyPlan, mode, onSubmit, setIsDisplayed} = props
 
   const { plan_id } = useParams()
   const navigate = useNavigate()
@@ -75,8 +75,8 @@ function NewDailyPlanForm(props){
   }
 
   return(
-    <div>
-      <h2>{dailyPlan ? "Edit" : "Add"} Workout</h2>
+    <div className="bg-neutral-card rounded-md shadow-md p-6 w-full max-w-md mx-auto">
+      <h2 className="font-heading text-xl text-white mb-4">{dailyPlan ? "Edit" : "Add"} Workout</h2>
 
       {errors && (
         <div style={{ color: "red", marginBottom: "1em" }}>
@@ -86,27 +86,33 @@ function NewDailyPlanForm(props){
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
-        <label>Workout Name</label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className="block text-white text-sm mb-1 font-sans">Workout Name</label>
         <input 
           type="text" 
           value={workoutName} 
           onChange={(e)=> setWorkoutName(e.target.value)}
           required
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
         />
-        <label>Workout Date</label>
+        <label className="block text-white text-sm mb-1 font-sans">Workout Date</label>
         <input 
           type="date" 
           min={minDate} 
           value={workoutDate} 
           onChange={(e) => handleWorkoutDateChange(e)}
           required
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
         />
-        <button type="submit">
+        <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">
           {dailyPlan ? "Update" : "Add"}
         </button>
+
+        <button type="submit" onClick={() => setIsDisplayed(false)}>
+          Cancel
+        </button>
       </form>
-      {dayOfWeek && <p>Day of the week: {dayOfWeek}</p>}
+      {dayOfWeek && <p className="block text-white text-sm mb-1 font-sans">Day of the week: {dayOfWeek}</p>}
     </div>
   )
 }

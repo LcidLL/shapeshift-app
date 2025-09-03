@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       resources :search
       get "/get_info" => "search#get_info"
       get "/workouts/summary" => "workouts#summary"
+      get "/workouts/summary-today" => "workouts#daily_summary"
       resources :workouts do
         resources :exercises
       end

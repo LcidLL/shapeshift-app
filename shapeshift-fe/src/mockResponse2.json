@@ -1,0 +1,158 @@
+{
+  "plan_title": "Beginner Endurance Building Plan (3 Days/Week)",
+  "week": [
+    {
+      "day": "Monday",
+      "exercises": [
+        {
+          "name": "Treadmill Walking",
+          "sets": 1,
+          "reps": "",
+          "duration_minutes": 15,
+          "equipment": "Treadmill",
+          "instructions": "Walk at a moderate pace, maintaining a comfortable breathing rate.  Focus on consistency.",
+          "rest_seconds": 0
+        },
+        {
+          "name": "Dumbbell Bicep Curls",
+          "sets": 3,
+          "reps": "10-12",
+          "duration_minutes": 5,
+          "equipment": "Dumbbell",
+          "instructions": "Stand with feet shoulder-width apart, holding a dumbbell in each hand. Curl the dumbbells towards your shoulders, keeping your elbows close to your sides. Slowly lower the dumbbells back to the starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Triceps Extensions",
+          "sets": 3,
+          "reps": "10-12",
+          "duration_minutes": 5,
+          "equipment": "Dumbbell",
+          "instructions": "Hold a dumbbell in both hands above your head. Keeping your elbows close to your head, lower the dumbbell behind your head by bending your elbows. Extend your arms back up to the starting position.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Yoga Sun Salutations (5 rounds)",
+          "sets": 1,
+          "reps": "5",
+          "duration_minutes": 10,
+          "equipment": "Yoga Mat",
+          "instructions": "Perform 5 rounds of sun salutations, focusing on controlled movements and deep breathing. Modify poses as needed.",
+          "rest_seconds": 0
+        },
+        {
+          "name": "Treadmill Cool-Down Walk",
+          "sets": 1,
+          "reps": "",
+          "duration_minutes": 10,
+          "equipment": "Treadmill",
+          "instructions": "Walk at a slow pace to gradually reduce your heart rate.",
+          "rest_seconds": 0
+        }
+      ],
+      "total_duration_minutes": 45
+    },
+    {
+      "day": "Wednesday",
+      "exercises": [
+        {
+          "name": "Treadmill Interval Training (Beginner)",
+          "sets": 3,
+          "reps": "4 minutes walking, 1 minute jogging",
+          "duration_minutes": 15,
+          "equipment": "Treadmill",
+          "instructions": "Alternate between 4 minutes of brisk walking and 1 minute of jogging.  Listen to your body and adjust as needed. ",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Dumbbell Lunges (alternating legs)",
+          "sets": 3,
+          "reps": "10-12 per leg",
+          "duration_minutes": 5,
+          "equipment": "Dumbbell",
+          "instructions": "Hold a dumbbell in each hand. Step forward with one leg, bending both knees to 90 degrees. Push back to starting position and repeat with the other leg. Maintain good posture.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Plank",
+          "sets": 3,
+          "reps": "30-60 seconds",
+          "duration_minutes": 5,
+          "equipment": "Yoga Mat",
+          "instructions": "Hold a plank position, ensuring your body forms a straight line from head to heels. Engage your core muscles throughout.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Yoga Stretching (Hamstrings, Quads, Hips)",
+          "sets": 1,
+          "reps": "",
+          "duration_minutes": 10,
+          "equipment": "Yoga Mat",
+          "instructions": "Perform static stretches focusing on hamstrings, quads, and hip flexors, holding each stretch for 30 seconds.",
+          "rest_seconds": 0
+        },
+        {
+          "name": "Treadmill Cool-Down Walk",
+          "sets": 1,
+          "reps": "",
+          "duration_minutes": 10,
+          "equipment": "Treadmill",
+          "instructions": "Walk at a slow pace to gradually reduce your heart rate.",
+          "rest_seconds": 0
+        }
+      ],
+      "total_duration_minutes": 45
+    },
+    {
+      "day": "Friday",
+      "exercises": [
+        {
+          "name": "Treadmill Walking",
+          "sets": 1,
+          "reps": "",
+          "duration_minutes": 20,
+          "equipment": "Treadmill",
+          "instructions": "Walk at a moderate pace, maintaining a comfortable breathing rate.  Focus on consistency.",
+          "rest_seconds": 0
+        },
+        {
+          "name": "Dumbbell Squats",
+          "sets": 3,
+          "reps": "10-12",
+          "duration_minutes": 5,
+          "equipment": "Dumbbell",
+          "instructions": "Hold a dumbbell in each hand. Stand with feet shoulder-width apart. Squat down until your thighs are parallel to the ground. Maintain good posture and keep your weight in your heels.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Glute Bridges",
+          "sets": 3,
+          "reps": "15-20",
+          "duration_minutes": 5,
+          "equipment": "Yoga Mat",
+          "instructions": "Lie on your back with knees bent and feet flat on the floor. Raise your hips off the floor, squeezing your glutes at the top. Slowly lower your hips back down.",
+          "rest_seconds": 60
+        },
+        {
+          "name": "Yoga Cat-Cow (10 rounds)",
+          "sets": 1,
+          "reps": "10",
+          "duration_minutes": 5,
+          "equipment": "Yoga Mat",
+          "instructions": "Perform 10 rounds of cat-cow, focusing on controlled movements and deep breathing.",
+          "rest_seconds": 0
+        },
+        {
+          "name": "Treadmill Cool-Down Walk",
+          "sets": 1,
+          "reps": "",
+          "duration_minutes": 10,
+          "equipment": "Treadmill",
+          "instructions": "Walk at a slow pace to gradually reduce your heart rate.",
+          "rest_seconds": 0
+        }
+      ],
+      "total_duration_minutes": 45
+    }
+  ]
+}
