@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_03_114813) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_03_131626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "challenges", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.integer "duration_minutes", comment: "Duration in minutes"
     t.integer "value"
     t.string "unit"
     t.string "challengeable_type"

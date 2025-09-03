@@ -1004,6 +1004,21 @@
 #     "exercise_name": "Decline Dumbbell Flyes",
 #     "category": "strength"
 #   },
+
+# --- Normal Level Workout Challenges Seed ---
+30.times do |i|
+  Challenge.create!(
+    name: "Normal Level Group Step Challenge \\##{i+1}",
+    description: "Walk 10,000 steps a day as a group.",
+    duration: 10,
+    duration_type: "seconds",
+    value: 10000,
+    unit: "steps",
+    challengeable_type: "IndividualConfig"
+  )
+end
+# --- End Normal Level Workout Challenges Seed ---
+
 #   {
 #     "exercise_id": "Decline_Dumbbell_Triceps_Extension",
 #     "exercise_name": "Decline Dumbbell Triceps Extension",
@@ -4376,10 +4391,24 @@
 #   }
 # ])
 
-User.create!([
-  { first_name: 'Admin', last_name: 'User', email: 'admin@example.com', password: 'password', admin: true },
-  { first_name: 'Alice', last_name: 'Smith', email: 'alice@example.com', password: 'password', admin: false },
-  { first_name: 'Bob', last_name: 'Brown', email: 'bob@example.com', password: 'password', admin: false },
-  { first_name: 'Charlie', last_name: 'Johnson', email: 'charlie@example.com', password: 'password', admin: false }
-])
+# User.create!([
+#   { first_name: 'Admin', last_name: 'User', email: 'admin@example.com', password: 'password', admin: true },
+#   { first_name: 'Alice', last_name: 'Smith', email: 'alice@example.com', password: 'password', admin: false },
+#   { first_name: 'Bob', last_name: 'Brown', email: 'bob@example.com', password: 'password', admin: false },
+#   { first_name: 'Charlie', last_name: 'Johnson', email: 'charlie@example.com', password: 'password', admin: false }
+# ])
 
+Challenge.create!([
+{ name: "Group Walking Challenge",description: "Walk 15,000 each.",duration: 3,duration_type: "hours",value: 15000,unit: "steps",challengeable_type: "GroupConfig"},
+{ name: "The 5-Minute Flow",description: "A gentle stretching routine to improve flexibility. Hold each stretch for 20-30 seconds.",duration: 5,duration_type: "minutes",value: 5,unit: "minutes",challengeable_type: "IndividualConfig"},
+{ name: "The Core Closer",description: "Build core strength with a basic plank hold. Start with a 30-second hold and a 30 second rest.",duration: 2,duration_type: "minutes",value: 3,unit: "sets",challengeable_type: "IndividualConfig"},
+{ name: "The Two-Minute Push",description: "Perform as many push-ups as you can with proper form. This challenge is about accumulating reps within a time frame. 1 minute push up, 30 second rest in between.",duration: 4,duration_type: "minutes",value: 2,unit: "sets",challengeable_type: "IndividualConfig"},
+{ name: "The Full-Body Five",description: " A quick circuit of five fundamental bodyweight exercises. For this challenge, you will complete three sets of 10 reps each of bodyweight squats, push-ups (on knees or toes), glute bridges, and lunges (per leg), along with a 30-second plank hold, followed by a one-minute rest after each set.",duration: 20,duration_type: "minutes",value: 3,unit: "sets",challengeable_type: "IndividualConfig"},
+{ name: "The 30-Minute Sweat Circuit",description: "A simple, no-equipment cardio and strength workout you can do anywhere. You will do three to five rounds of one minute each of jumping jacks, high knees, bodyweight squats, and push-ups (on knees or toes), with two minutes of rest between each round. ",duration: 30,duration_type: "minutes",value: 5,unit: "sets",challengeable_type: "IndividualConfig"},
+{ name: "The Team Rep-etition Race",description: "A challenge focused on accumulating a set number of total reps as a team.The total duration is 15-20 minutes, and the unit of measurement is a total number of reps, such as 500 total squats or 200 total push-ups. Teams work together, with each member doing as many reps as they can, adding to the team's running total.",duration: 20,duration_type: "minutes",value: 500,unit: "reps",challengeable_type: "GroupConfig"},
+{ name: "The Group Plank Hold",description: "A simple challenge where the group works together to accumulate a total amount of time holding a plank.",duration: 10,duration_type: "minutes",value: 10,unit: "minutes",challengeable_type: "GroupConfig"},
+{ name: "The 3-Set Strength Builder",description: "A foundational challenge to build strength with a clear progression. The goal is to complete three sets of a few key exercises. A sample routine could be: 3 sets of 10 bodyweight squats, 3 sets of 10 push-ups, and 3 sets of 12 glute bridges, with a one-minute rest between each set.",duration: 25,duration_type: "minutes",value: 3,unit: "sets",challengeable_type: "IndividualConfig"},
+{ name: "The Ladder Rep Challenge",description: "A workout where you increase the reps of one exercise with each set while decreasing the reps of another.For example, you could do 10 rounds of: Set 1: 1 rep of push-ups and 10 reps of bodyweight squats; Set 2: 2 push-ups and 9 squats, and so on until you finish with 10 push-ups and 1 squat.",duration: 20,duration_type: "minutes",value: 10,unit: "rounds",challengeable_type: "IndividualConfig"},
+
+
+])
