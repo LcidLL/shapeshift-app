@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_01_065800) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_03_114813) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_01_065800) do
     t.datetime "updated_at", null: false
     t.string "duration_type"
     t.datetime "group_started_at"
+    t.integer "duration", comment: "Duration in minutes or as appropriate for the challenge."
     t.index ["challengeable_type", "challengeable_id"], name: "index_challenges_on_challengeable"
   end
 
