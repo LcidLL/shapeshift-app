@@ -17,7 +17,7 @@ class Api::V1::ExercisePlansController < ApplicationController
     @exercise_plan = @daily_plan.exercise_plans.build(exercise_plan_params)
 
     if @exercise_plan.save
-      render json: @exercise_plan, status: :created, location: api_v1_user_plan_daily_plans_path
+      render json: @exercise_plan, status: :created, location: api_v1_plan_daily_plans_path
     else
       render json: { errors: @exercise_plan.errors.full_messages }, status: :unprocessable_entity
     end

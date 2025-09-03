@@ -21,7 +21,7 @@ function NewExerciseForm(props){
   const [notInDB,setNotInDB] = useState(false)
 
   const [sets, setSets] = useState(exercisePlan?.sets || "")
-  const [reps, setReps] = useState(exercisePlan?.reps || "")
+  const [reps, setReps] = useState(exercisePlan?.reps || "N/A")
   const [distance, setDistance] = useState(exercisePlan?.distance || "")
   const [duration, setDuration] = useState(exercisePlan?.duration || "")
   const [intensity, setIntensity] = useState(exercisePlan?.intensity || "N/A")
@@ -29,6 +29,8 @@ function NewExerciseForm(props){
   
   const [errors, setErrors] = useState("")
   const navigate = useNavigate()
+
+  const token = localStorage.getItem('token');
 
   const strengthTypes = [
     "strength", "plyometrics", "strongman",
@@ -39,7 +41,11 @@ function NewExerciseForm(props){
     async function getExercise(){
       if (exercisePlan){
         try{
-          const response = await fetch(`${API_URL}/exercise_dbs?exercise_name=${exercisePlan.exercise_name}`);
+          const response = await fetch(`${API_URL}/exercise_dbs?exercise_name=${exercisePlan.exercise_name}`,{
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            }
+          });
           if (response.ok) {
             const json = await response.json();
             setShouldShowStrengthInputs(strengthTypes.includes(json[0].category))
@@ -78,7 +84,7 @@ function NewExerciseForm(props){
       exercise_name: exerciseName,
       exercise_id: exerciseId,
       sets: Number(sets), 
-      reps: reps, 
+      reps: reps,
       intensity: intensity,
       distance: Number(distance),
       duration: Number(duration)
@@ -86,9 +92,10 @@ function NewExerciseForm(props){
     if (mode === "edit"){
       onSubmit(exerciseData)
     }else{
-        const response = await fetch(`${API_URL}/users/1/plans/${planId}/daily_plans/${dailyPlanId}/exercise_plans`, {
+        const response = await fetch(`${API_URL}/plans/${planId}/daily_plans/${dailyPlanId}/exercise_plans`, {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(exerciseData)
@@ -97,7 +104,7 @@ function NewExerciseForm(props){
         if(response.ok){
           console.log("ok")
           const { id } = await response.json();
-          navigate(`/users/1/plans/${planId}`);
+          navigate(`/plans/${planId}`);
         } else {
           const errorData = await response.json();
           setErrors(errorData.errors)

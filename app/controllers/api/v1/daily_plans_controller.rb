@@ -16,7 +16,7 @@ class Api::V1::DailyPlansController < ApplicationController
     @daily_plan = @plan.daily_plans.build(daily_plan_params)
 
     if @daily_plan.save
-      render json: @daily_plan, status: :created, location: api_v1_user_plan_daily_plans_path
+      render json: @daily_plan, status: :created, location: api_v1_plan_daily_plans_path
     else
       render json: { errors: @daily_plan.errors.full_messages }, status: :unprocessable_entity
     end

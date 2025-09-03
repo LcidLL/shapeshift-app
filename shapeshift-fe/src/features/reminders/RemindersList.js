@@ -6,10 +6,16 @@ function RemindersList(props) {
   const { daily } = props
   const [reminders, setReminders] = useState("")
 
+  const token = localStorage.getItem('token');
+
   useEffect(()=> {
     async function getRemindersList(){
       try{
-        const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/reminders`)
+        const response = await fetch(`${API_URL}/plans/${daily.plan_id}/daily_plans/${daily.id}/reminders`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        })
         if (response.ok) {
           const json = await response.json();
           console.log(json)

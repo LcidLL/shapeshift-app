@@ -19,9 +19,11 @@ function NewDailyPlanForm(props){
 
   //Get date today and set as minimum in date input
   const today = new Date();
-  const minDate = today.toISOString().split("T")[0];
+  const minDate = today.toISOString().split("T")[0]
 
   const {errors, setErrors} = useError()
+
+  const token = localStorage.getItem('token')
 
   const handleWorkoutDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -46,9 +48,10 @@ function NewDailyPlanForm(props){
     }
 
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(dailyPlanData)
@@ -60,7 +63,7 @@ function NewDailyPlanForm(props){
         setWorkoutName("")
         setErrors(null)
         onTrigger()
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
         const { errors } = await response.json();
         setErrors(errors)

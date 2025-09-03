@@ -14,6 +14,7 @@ function PlanDetails(){
   const [refreshFlag, setRefreshFlag] = useState(false)
 
   const {errors, setErrors} = useError()
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     // clear error after displaying it once
@@ -23,7 +24,11 @@ function PlanDetails(){
   useEffect(()=>{
     async function displayPlanDetails(){
           try{
-            const response = await fetch(`${API_URL}/users/1/plans/${plan_id}`);
+            const response = await fetch(`${API_URL}/plans/${plan_id}`,{
+              headers: {
+                "Authorization": `Bearer ${token}`,
+              }
+            });
             if (response.ok) {
               const json = await response.json();
               setPlan(json);
@@ -48,7 +53,7 @@ function PlanDetails(){
       <p>{plan.description}</p>
       <NewDailyPlanForm onTrigger={triggerRefresh}  />
       <DailyPlanList refreshFlag={refreshFlag}/>
-      <Link to={`/users/1/plans/`}>Back</Link>
+      <Link to={`/plans/`}>Back</Link>
     </div>
   )
 }

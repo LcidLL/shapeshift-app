@@ -21,10 +21,16 @@ function DailyPlanList(props){
   const [isDisplayed, setIsDisplayed] = useState(false)
   const [showReminderForm, setShowReminderForm] = useState(false)
 
+  const token = localStorage.getItem('token')
+
   useEffect(()=>{
     async function displayDailyPlanDetails(){
       try{
-        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`);
+        const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`,{
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         if (response.ok) {
           const json = await response.json()
           setPlanToday(json.today)
@@ -44,8 +50,11 @@ function DailyPlanList(props){
     const confirmed = window.confirm("Are you sure you want to delete this workout?");
     if (!confirmed) return;
 
-    const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${daily_id}`, {
-      method: "DELETE"
+    const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${daily_id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
     });
 
     if(response.ok){
@@ -53,7 +62,7 @@ function DailyPlanList(props){
       setPlanToday(json.today)
       setOutdatedPlans(json.outdated)
       setFuturePlans(json.future)
-      navigate(`/users/1/plans/${plan_id}`);
+      navigate(`/plans/${plan_id}`);
     } else {
       console.log("Error occured")
     }
@@ -66,9 +75,10 @@ function DailyPlanList(props){
 
   const handleSubmitEdit = async (editedData) => {
     try{
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}`, {
         method: "PATCH",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(editedData)
@@ -80,7 +90,7 @@ function DailyPlanList(props){
           prev.map((plan) => (plan.id === dailyPlanId ? json : plan))
         )
         setIsDisplayed(false)
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
         console.log("Error occured")
       } 
@@ -104,7 +114,7 @@ function DailyPlanList(props){
           <h2>{daily.workout_name}</h2>
           {
             !daily.isAdded && 
-            <Link to='/users/1/workouts/new' state={{daily}}>
+            <Link to='/workouts/new' state={{daily}}>
                 Add to Tracker
             </Link>
           }
@@ -119,7 +129,7 @@ function DailyPlanList(props){
         <div key={daily.id}>
           <h1>{daily.day_of_week}</h1>
           <h2>{daily.workout_name}</h2>
-          {!daily.isAdded && <Link to='/users/1/workouts/new' state={{daily}}>Add to Tracker</Link>}
+          {!daily.isAdded && <Link to='/workouts/new' state={{daily}}>Add to Tracker</Link>}
           <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
           <ExercisePlansList dailyPlanId={daily.id} />
         </div>

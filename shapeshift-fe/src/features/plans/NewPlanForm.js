@@ -9,6 +9,8 @@ function NewPlanForm(props){
   const [errors, setErrors] = useState("")
   const navigate = useNavigate()
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     if(plan){
       setPlanName(plan.plan_name)
@@ -27,16 +29,17 @@ function NewPlanForm(props){
     if (mode==="edit"){
       onSubmit(planData)
     }else{
-      const response = await fetch(`${API_URL}/users/1/plans`, {
+      const response = await fetch(`${API_URL}/plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(planData)
       });
       if(response.ok){
         const { id } = await response.json();
-        navigate(`/users/1/plans/${id}`);
+        navigate(`/plans/${id}`);
       } else {
         const errorData = await response.json();
         setErrors(errorData.errors)
