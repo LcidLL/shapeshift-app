@@ -6,7 +6,7 @@ import { useError } from "../../contexts/ErrorContext";
 
 function NewWorkoutForm(props){
   
-  const { workout, mode, onSubmit } = props
+  const { workout, mode, onSubmit, setIsDisplayed} = props
 
   const location = useLocation()
   const { daily } = location.state || {}
@@ -206,7 +206,7 @@ function NewWorkoutForm(props){
           <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{workout ? "Update Workout":"Add Workout"}</button>
         </div>
       </form>
-      <Link to="/">Back</Link>
+      {mode === "edit" ? <button onClick={() => setIsDisplayed(false)}>Back</button> : <Link to="users/1/workouts">Back</Link>}
     </div>
   )
 }

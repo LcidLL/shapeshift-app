@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import ExercisesList from "../exercises/ExercisesList";
 import NewWorkoutForm from "./NewWorkoutForm"
 import { useError } from "../../contexts/ErrorContext";
+import { FilePenLine, Trash2, Edit } from "lucide-react";
 
 function WorkoutDetails(){
 
@@ -75,32 +76,70 @@ function WorkoutDetails(){
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       { errors && 
         errors.map((error) => (
           <div key={error.id}>
             <h2>{error}</h2>
           </div>
         )) }
-      <h1>Workout details</h1>
-      <button onClick={() => setIsDisplayed(true)}>Edit</button>
-      <button onClick={() => deleteWorkout(workout.id)}>Delete</button>
-      <p>{workout.workout_type}</p>
-      <p>{workout.workout_date}</p>
-      <p>{workout.duration}</p>
-      <p>{workout.calories_burned}</p>
-
+        { !isDisplayed && <>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-heading text-2xl text-white flex items-center gap-3">Workout details
+            <span className="flex gap-1">
+              <button
+                onClick={() => setIsDisplayed(true)}
+                className="p-1 rounded-lg hover:bg-neutral-hover"
+                title="Edit exercises"
+              >
+                <Edit className="w-4 h-4 text-accent-green" />
+              </button>
+              <button
+                onClick={() => deleteWorkout(workout.id)}
+                className="p-1 rounded-lg hover:bg-neutral-hover"
+                title="Delete exercises"
+              >
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </button>
+            </span>
+          </h2>
+        </div>
+        
+      <div className="bg-neutral-card rounded-2xl shadow-md p-6 w-full max-w-md mx-auto">
+        <h2 className="font-heading text-xl text-white mb-4">Workout Summary</h2>
+        <div className="space-y-3 text-white">
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-300">Workout Date:</span>
+            <span>{workout.workout_date}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-300">Type:</span>
+            <span>{workout.workout_type}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-300">Calories Burned:</span>
+            <span>{workout.calories_burned} kcal</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-300">Duration:</span>
+            <span>{workout.duration} min</span>
+          </div>
+        </div>
+      </div>  
+      <ExercisesList workout={workout}/>
+      </>
+      }
+        
       {
         isDisplayed && 
         <NewWorkoutForm 
           workout={workout} 
           mode="edit" 
           onSubmit={(data) => editWorkout(data)}
+          setIsDisplayed = {setIsDisplayed}
         />
       }
-      <ExercisesList workoutType = {workout.workout_type}/>
-      <Link to={`/users/1/workouts/${workout.id}/exercises/new`} state={{workout}}>Add Exercise</Link>
-      <Link to="/">Back</Link>
+      
     </div>
   )
 }
