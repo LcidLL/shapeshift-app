@@ -122,6 +122,12 @@ function DailyPlanList(props){
             Delete
           </button>
           <ExercisePlansList dailyPlanId={daily.id}/>
+                    <button onClick={() => getReminderForm(daily.id)}>Set Reminder</button>
+          {
+            daily.id === dailyPlanId && 
+            showReminderForm && 
+            <ReminderForm daily={daily} setShowReminderForm={setShowReminderForm}/>
+          }
         </div>
       ])}
 
