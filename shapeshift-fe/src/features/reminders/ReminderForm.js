@@ -11,6 +11,8 @@ export default function ReminderForm(props) {
   const [remindAt, setRemindAt] = useState("");
   const [errors, setErrors] = useState("")
 
+  const token = localStorage.getItem('token');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -20,9 +22,10 @@ export default function ReminderForm(props) {
     }
 
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/reminders`, {
+      const response = await fetch(`${API_URL}/plans/${daily.plan_id}/daily_plans/${daily.id}/reminders`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(reminderData),
@@ -32,7 +35,7 @@ export default function ReminderForm(props) {
         const { id } = await response.json();
         alert("Reminder set!");
         setShowReminderForm(false)
-        navigate(`/users/1/plans/${daily.plan_id}`);
+        navigate(`/plans/${daily.plan_id}`);
       } else {
         const errorData = await response.json();
         setErrors(errorData.errors)

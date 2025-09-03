@@ -14,7 +14,7 @@ class Api::V1::PlansController < ApplicationController
     @plan = current_user.plans.build(plan_params)
 
     if @plan.save
-      render json: @plan, status: :created, location: api_v1_user_plans_path
+      render json: @plan, status: :created, location: api_v1_plans_path
     else
       render json: { errors: @plan.errors.full_messages }, status: :unprocessable_entity
     end

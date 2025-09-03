@@ -14,6 +14,8 @@ function ExercisePlansList(props){
   const { plan_id } = useParams();
   const navigate = useNavigate()
 
+  const token = localStorage.getItem('token')
+
   const excludedKeys = [
     'id', 'daily_plan_id','created_at', 'updated_at', 
     'exercise_id', 'workout_date', 'isAdded'
@@ -27,7 +29,11 @@ function ExercisePlansList(props){
 
   const loadExercisePlans = async () => {
     try{
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans`);
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans`,{
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      })
       if (response.ok) {
         const json = await response.json();
         setExercisePlans(json);
@@ -50,13 +56,16 @@ function ExercisePlansList(props){
     if (!confirmed) return;
     
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercise_id}`, {
-        method: "DELETE"
-      });
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercise_id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      })
     
       if(response.ok){
         await loadExercisePlans()
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
         throw new Error("Failed to delete");
       }   
@@ -67,18 +76,19 @@ function ExercisePlansList(props){
 
   const handleSubmitEdit= async (editedData) => {
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercisePlanId}`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercisePlanId}`, {
         method: "PATCH",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(editedData)
-      });
+      })
 
       if(response.ok){
         await loadExercisePlans();
         setIsDisplayed(false)
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
          throw new Error("Failed to update exercise");
       }

@@ -8,6 +8,8 @@ function GenerateWorkoutForm(){
   const { register, handleSubmit, formState: { errors } } = useForm()
   const navigate = useNavigate()
 
+  const token = localStorage.getItem('token')
+
   const onSubmit = async (data) => {
     // Convert comma-separated strings to arrays
     data.equipment = convertToArray(data.equipment);
@@ -15,9 +17,10 @@ function GenerateWorkoutForm(){
     data.exercise_restrictions = convertToArray(data.exercise_restrictions);
  
     try{
-      const response = await fetch(`${API_URL}/users/1/generate-workout`, {
+      const response = await fetch(`${API_URL}/generate-workout`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
           'Accept': 'application/json',
         },

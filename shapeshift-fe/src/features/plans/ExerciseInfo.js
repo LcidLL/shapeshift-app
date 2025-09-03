@@ -4,13 +4,17 @@ import { API_URL } from "../../constants/Constants";
 function ExerciseInfo(props){
 
   const { exerciseId } = props
-
   const [exerciseInfo, setExerciseInfo] = useState("")
+  const token = localStorage.getItem('token')
 
   useEffect(() => {
      async function getExerciseInfo(){
       try {
-        const response = await fetch(`${API_URL}/users/1/get_info?exercise_id=${exerciseId}`);
+        const response = await fetch(`${API_URL}/get_info?exercise_id=${exerciseId}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         if (response.ok) {
             const json = await response.json();
             setExerciseInfo(json)

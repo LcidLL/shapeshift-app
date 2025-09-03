@@ -160,7 +160,7 @@ const loadWorkouts = async () => {
       <div className="bg-neutral-card rounded-2xl shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-heading text-xl text-accent-green mb-4">Workout History</h2>
-          <Link to='/users/1/workouts/new' className="bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow">
+          <Link to='/workouts/new' className="bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow">
             + Add Workout
           </Link>
         </div>

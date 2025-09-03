@@ -15,6 +15,8 @@ function GeneratedWorkoutDetails(){
   const [isDone, setIsDone] = useState(false)
   const [statuses, setStatuses] = useState("")
 
+  const token = localStorage.getItem('token')
+
    //Get date today and set as maximum in date input
   const today = new Date();
   const year = today.getFullYear();
@@ -26,7 +28,7 @@ function GeneratedWorkoutDetails(){
   useEffect(() => {
   if (isDone && !hasErrors) {
     const timer = setTimeout(() => {
-      navigate("/users/1/plans");
+      navigate("/plans");
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -47,9 +49,10 @@ function GeneratedWorkoutDetails(){
 
   const addToWorkoutPlan = async () => {
     try{
-      const response = await fetch(`${API_URL}/users/1/plans`, {
+      const response = await fetch(`${API_URL}/plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({plan_name: plan_title})
@@ -90,9 +93,10 @@ function GeneratedWorkoutDetails(){
   const addToDailyPlan = async (data, plan_id, index) => {
     const dayName = data.day_of_week
       try{
-        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
+        const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`, {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(data)
@@ -125,9 +129,10 @@ function GeneratedWorkoutDetails(){
       }
       try{
           
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${daily_plan_id}/exercise_plans`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${daily_plan_id}/exercise_plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(exerciseData)

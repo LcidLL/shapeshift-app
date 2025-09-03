@@ -224,7 +224,7 @@ function NewWorkoutForm(props){
           <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{workout ? "Update Workout":"Add Workout"}</button>
         </div>
       </form>
-      {mode === "edit" ? <button onClick={() => setIsDisplayed(false)}>Back</button> : <Link to="users/1/workouts">Back</Link>}
+      {mode === "edit" ? <button onClick={() => setIsDisplayed(false)}>Back</button> : <Link to="/workouts">Back</Link>}
     </div>
   )
 }

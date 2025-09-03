@@ -14,6 +14,8 @@ function ExerciseSearchForm(props){
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState("")
 
+  const token = localStorage.getItem('token')
+
   const workoutTypeList = [
     "Strength", "Plyometrics", "Strongman", "Powerlifting",
     "Olympic Weightlifting", "Cardio", "Stretching"
@@ -42,7 +44,11 @@ function ExerciseSearchForm(props){
       setDisplay(false)
   
       try {
-        const response = await fetch(`${API_URL}/users/1/search?name=${nameQuery}&workout_type=${workoutType}&mechanic=${mechanic}&muscle=${muscle}&equipment=${equipment}&level=${level}`);
+        const response = await fetch(`${API_URL}/search?name=${nameQuery}&workout_type=${workoutType}&mechanic=${mechanic}&muscle=${muscle}&equipment=${equipment}&level=${level}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         if (response.ok) {
             const json = await response.json();
             setExercisesList(json);
