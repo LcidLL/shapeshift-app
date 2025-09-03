@@ -126,11 +126,13 @@ function NewExerciseForm(props){
     if (shouldShowStrengthInputs || notInDB) {
       return (
         <>
-          <label htmlFor="sets">Sets</label>
-          <input id="sets" type="number" value={sets} onChange={(e) => setSets(e.target.value)} />
+          <label htmlFor="sets" className="block text-white text-sm mb-1 font-sans">Sets</label>
+          <input id="sets" type="number" value={sets} onChange={(e) => setSets(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
 
-          <label htmlFor="reps">Rep Range</label>
-          <input id="reps" type="text" value={reps} onChange={(e) => handleRepRangeInput(e)} />
+          <label htmlFor="reps" className="block text-white text-sm mb-1 font-sans">Rep Range</label>
+          <input id="reps" type="text" value={reps} onChange={(e) => handleRepRangeInput(e)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
         </>
       );
     }
@@ -138,14 +140,17 @@ function NewExerciseForm(props){
     if (isCardio) {
       return (
         <>
-          <label htmlFor="distance">Distance</label>
-          <input id="distance" value={distance} onChange={(e) => setDistance(e.target.value)} />
+          <label htmlFor="distance" className="block text-white text-sm mb-1 font-sans">Distance</label>
+          <input id="distance" value={distance} onChange={(e) => setDistance(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
 
-          <label htmlFor="intensity">Intensity</label>
-          <input id="intensity" value={intensity} onChange={(e) => setIntensity(e.target.value)} />
+          <label htmlFor="intensity" className="block text-white text-sm mb-1 font-sans">Intensity</label>
+          <input id="intensity" value={intensity} onChange={(e) => setIntensity(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
 
-          <label htmlFor="duration">Duration</label>
-          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
+          <label htmlFor="duration" className="block text-white text-sm mb-1 font-sans">Duration</label>
+          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
         </>
       );
     }
@@ -153,8 +158,9 @@ function NewExerciseForm(props){
     if (isStretching) {
       return (
         <>
-          <label htmlFor="duration">Duration</label>
-          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
+          <label htmlFor="duration" className="block text-white text-sm mb-1 font-sans">Duration</label>
+          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
         </>
       );
     }
@@ -186,9 +192,9 @@ function NewExerciseForm(props){
               <button onClick={() => getWorkoutType(exercise)}>Add to Workout</button>
 
               {(exerciseId === exercise.id) && (
-                <form onSubmit={handleSubmitExercise}>
+                <form onSubmit={handleSubmitExercise} className="space-y-4">
                   {renderWorkoutInputs()}
-                  <button type="submit">{exercisePlan ? "Update" : "Add"}</button>
+                  <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{exercisePlan ? "Update" : "Add"}</button>
                 </form>
               )}
             </div> 
@@ -198,9 +204,9 @@ function NewExerciseForm(props){
 
       {
         mode === "edit" && 
-        <form onSubmit={handleSubmitExercise}>
+        <form onSubmit={handleSubmitExercise} className="space-y-4">
           {renderWorkoutInputs()}
-          <button type="submit">{exercisePlan ? "Update" : "Add"}</button>
+          <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{exercisePlan ? "Update" : "Add"}</button>
         </form>
       }
     </div>

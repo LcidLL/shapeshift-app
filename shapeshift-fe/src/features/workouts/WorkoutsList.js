@@ -16,6 +16,7 @@ function WorkoutsList(){
   const [openDelete, setOpenDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [forDeleteWorkout, setForDeleteWorkout] = useState({})
+  const [dailySummary, setDailySummary] = useState("")
   const { errors, setErrors } = useError();
   const token = localStorage.getItem('token');
 
@@ -39,7 +40,29 @@ function WorkoutsList(){
 
   useEffect(() => {
     loadWorkouts()
+    getDailySummary()
   }, [])
+
+const getDailySummary = async () => {
+  try {
+    const response = await fetch(`${API_URL}/workouts/summary-today`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    })
+    if(response.ok){
+      const json = await response.json()
+      console.log(json)
+      setDailySummary(json)
+    } else {
+      setErrors(['Failed to fetch daily summary. Please try again.'])
+    }
+  } catch (error) {
+    setErrors(['Failed to fetch daily summary. Please check your connection or try again later.'])
+  }
+}
 
 const loadWorkouts = async () => {
   try{
@@ -149,11 +172,11 @@ const loadWorkouts = async () => {
         </div>
         <div className="bg-neutral-card rounded-2xl p-4 text-white text-center">
           <p className="text-sm text-gray-400">Calories Burned</p>
-          <p className="text-lg font-bold">420 kcal</p>
+          <p className="text-lg font-bold">{dailySummary.calories_burned_today}  kcal</p>
         </div>
         <div className="bg-neutral-card rounded-2xl p-4 text-white text-center">
           <p className="text-sm text-gray-400">Duration</p>
-          <p className="text-lg font-bold">45 min</p>
+          <p className="text-lg font-bold">{dailySummary.duration_today} min</p>
         </div>
       </div>
 

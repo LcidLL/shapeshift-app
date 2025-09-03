@@ -167,16 +167,27 @@ function GeneratedWorkoutDetails(){
       {errors && <span>{errors}</span>}
       </div>}
       <h3>{plan_title}</h3>
-      { week.map((daily, i) => (
-        <div key={i}>
-          {daily.day} — <em>{statuses[daily.day]}</em>
-          <ul>
-            {daily.exercises.map((exercise, i) => (
-              <li>{exercise?.name || "Rest"}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        { week.map((daily, i) => (
+          <div key={i} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+            <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day} — <em>{statuses[daily.day]}</em></h3> 
+            <ul className="space-y-2 text-white text-sm">
+              {daily.exercises.map((exercise, i) => (
+                <li key={i} 
+                  className="bg-neutral-card rounded-lg p-2 hover:bg-neutral-hover/70 transition-colors"
+                >
+                  <p className="font-medium">{exercise?.name || "Rest"}</p>
+                  {exercise.sets && (
+                    <p className="text-gray-400 text-xs">
+                    {exercise.sets} { exercise.sets > 1 ? "sets" : "set"} × {exercise.reps !== "" ? `${exercise.reps} reps` : `${exercise.duration_minutes} mins`}
+                    </p>
+                   )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
       <button onClick={() => navigate('/generate-workout')} style={{ marginTop: '20px' }}>
         Back 
       </button>

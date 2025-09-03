@@ -1,6 +1,6 @@
 class Api::V1::WorkoutsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_workout, except: [ :index, :create, :summary]
+  before_action :set_workout, except: [ :index, :create, :summary, :daily_summary]
 
   def index
     @workouts = current_user.workouts.order(workout_date: :desc)
@@ -12,10 +12,10 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def create
-    @workout = @user.workouts.build(workout_params)
+    @workout = current_user.workouts.build(workout_params)
 
     if @workout.save
-      render json: @workout, status: :created, location: api_v1_user_workouts_path
+      render json: @workout, status: :created, location: api_v1_workouts_path
     else
       render json: { errors: @workout.errors.full_messages }, status: :unprocessable_entity
     end
@@ -35,13 +35,20 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def summary
+    @workouts = current_user.workouts
     period = params[:period]&.to_sym
     begin
-      data = Workout.summary_by_period(period)
+      data = @workouts.summary_by_period(period)
       render json: data
     rescue ArgumentError => e
       render json: { errors: e.message }, status: :bad_request
     end
+  end
+
+  def daily_summary
+    @workouts = current_user.workouts
+    data = @workouts.summary_today
+    render json: data
   end
 
   private

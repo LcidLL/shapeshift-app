@@ -12,6 +12,7 @@ function PlanDetails(){
 
   const [plan, setPlan] = useState("")
   const [refreshFlag, setRefreshFlag] = useState(false)
+  const [isDisplayed, setIsDisplayed] = useState(false)
 
   const {errors, setErrors} = useError()
   const token = localStorage.getItem('token');
@@ -51,8 +52,17 @@ function PlanDetails(){
     <div>
       <h1>{plan.plan_name}</h1>
       <p>{plan.description}</p>
-      <NewDailyPlanForm onTrigger={triggerRefresh}  />
-      <DailyPlanList refreshFlag={refreshFlag}/>
+      {isDisplayed &&
+      <>
+        <NewDailyPlanForm onTrigger={triggerRefresh} setIsDisplayed={setIsDisplayed}/>
+        </>
+        }
+      {!isDisplayed && 
+      <>
+        <button onClick={() => setIsDisplayed(true)}>Add Workout</button>
+        <DailyPlanList refreshFlag={refreshFlag}/>
+      </>
+      }
       <Link to={`/plans/`}>Back</Link>
     </div>
   )

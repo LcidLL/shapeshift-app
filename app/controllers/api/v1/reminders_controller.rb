@@ -21,7 +21,7 @@ class Api::V1::RemindersController < ApplicationController
     if @reminder.update(dreminder_params)
       render json: @reminder
     else
-      render json: { errors: @daily_plan.errors }, status: :unprocessable_entity
+      render json: { errors: @daily_plan.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

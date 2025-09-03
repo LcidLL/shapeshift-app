@@ -13,6 +13,15 @@ class Workout < ApplicationRecord
     exercises.count
   end
 
+  def self.summary_today
+    total_calories = where(workout_date: Date.today).sum(:calories_burned)
+    total_duration = where(workout_date: Date.today).sum(:duration)
+    {
+      calories_burned_today: total_calories,
+      duration_today: total_duration
+    }
+  end
+
   def self.summary_by_period(period)
     workout_period = 
       case period
@@ -65,7 +74,7 @@ class Workout < ApplicationRecord
         totalDuration: total_duration.round(2),
         workoutsCount: workouts,
         averageCalories: workouts > 0 ? (total_calories / workouts).round(2) : 0.0,
-        averageDuration: workouts > 0 ? (total_duration / workouts).round(2) : 0.0
+        averageDuration: workouts > 0 ? (total_duration / workouts).round(2) : 0.0,
       }
     end
   end
