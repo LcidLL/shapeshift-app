@@ -338,3 +338,12 @@ Devise.setup do |config|
     end
   end
 end
+
+# Debugging by checking logs
+Warden::Manager.after_authentication do |user, auth, opts|
+  Rails.logger.info "[warden] Authenticated user: #{user.inspect}"
+end
+
+Warden::Manager.before_failure do |env, opts|
+  Rails.logger.info "[warden] Authentication failed. Env: #{env['PATH_INFO']}, opts: #{opts.inspect}"
+end
