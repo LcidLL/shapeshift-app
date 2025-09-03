@@ -47,3 +47,5 @@ group :development, :test do
 end
 
 
+
+gem "redis", "~> 5.4"

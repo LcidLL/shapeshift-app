@@ -59,6 +59,7 @@ function NewDailyPlanForm(props){
 
       if(response.ok){
         const { id } = await response.json();
+        setIsDisplayed(false)
         setWorkoutDate("")
         setWorkoutName("")
         setErrors(null)
@@ -72,6 +73,7 @@ function NewDailyPlanForm(props){
         console.error("Error submitting daily plan:", error);
         setErrors(["Something went wrong. Please try again later."]);
     }
+    setIsDisplayed(false)
   }
 
   return(

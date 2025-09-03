@@ -1,0 +1,16 @@
+<h2>Hello <%= @user.first_name %>,</h2>
+
+<p>You missed the following workout plans:</p>
+
+<ul>
+  <% @missed_daily_plans.each do |plan| %>
+    <li>
+      <strong><%= plan.workout_name %></strong> 
+      scheduled for <%= plan.workout_date.strftime("%B %d, %Y") %>
+    </li>
+  <% end %>
+</ul>
+
+<p>Don’t worry — tomorrow is a new chance to stay consistent 💪</p>
+
+<p>– Your Shapeshift Team</p>
