@@ -20,6 +20,8 @@ function ExercisesList(props){
   const [deleteId, setDeleteId] = useState(null);
   const [forDeleteExercsie, setForDeleteExercise] = useState({})
 
+  const token = localStorage.getItem('token');
+
   const workoutType = workout?.workout_type
 
   const strengthTypes = [
@@ -35,14 +37,18 @@ function ExercisesList(props){
   useEffect (() => {
     async function getExercises(){
       try {
-        const response = await fetch(`${API_URL}/users/1/workouts/${id}/exercises`)
+        const response = await fetch(`${API_URL}/workouts/${id}/exercises`,{
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        })
         if (response.ok) {
           const json = await response.json()
           setExercises(json)
         } else {
           const { errors } = await response.json()
           setErrors(errors || ['Failed to fetch exercises. Please try again.'])
-          navigate(`/users/1/workouts/`)
+          navigate(`/workouts`)
         }
       } catch (error) {
         setErrors(['Failed to fetch exercises. Please check your connection or try again later.'])
@@ -53,8 +59,11 @@ function ExercisesList(props){
 
   const deleteExercise = async () => {
     try{
-      const response = await fetch(`${API_URL}/users/1/workouts/${id}/exercises/${deleteId}`, {
-        method: "DELETE"
+      const response = await fetch(`${API_URL}/workouts/${id}/exercises/${deleteId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
       })
 
       if(response.ok){
@@ -62,7 +71,7 @@ function ExercisesList(props){
         setOpenDelete(false)
         setDeleteId(null)
         setForDeleteExercise({})
-        navigate(`/users/1/workouts/${id}`)
+        navigate(`/workouts/${id}`)
       } else {
         const { errors } = await response.json()
         console.log(errors)
@@ -86,16 +95,19 @@ function ExercisesList(props){
     }
 
     try{
-      const response = await fetch(`${API_URL}/users/1/workouts/${id}/exercises/${editingRowId}`, {
+      const response = await fetch(`${API_URL}/workouts/${id}/exercises/${editingRowId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json"},
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(editedData)
       })
       
       if(response.ok){
         setEditingRowId(null)
         setEditForm({});
-        navigate(`/users/1/workouts/${id}`)
+        navigate(`/workouts/${id}`)
       } else {
         const { errors } = await response.json();
         setErrors(errors || ['Something went wrong while updating exercise.']);
@@ -132,7 +144,7 @@ function ExercisesList(props){
           <h2 className="font-heading text-2xl text-white flex items-center gap-3">Exercises
             
           </h2>
-          <Link to={`/users/1/workouts/${id}/exercises/new`} className="flex gap-1 text-sm font-sans text-neutral-subtext" state={{workout}}> 
+          <Link to={`/workouts/${id}/exercises/new`} className="flex gap-1 text-sm font-sans text-neutral-subtext" state={{workout}}> 
               + Add Exercise
             </Link>
       </div>

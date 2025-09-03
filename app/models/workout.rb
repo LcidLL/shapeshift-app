@@ -2,10 +2,12 @@ class Workout < ApplicationRecord
   belongs_to :user
   has_many :exercises, dependent: :destroy
 
+  validate :workout_date_cannot_be_in_the_future
+
   validates :workout_type, presence: true
   validates :workout_date, presence: true
-  validates :duration, presence: true
-  validates :calories_burned, presence: true
+  validates :duration, presence: true, numericality: { greater_than: 0 }
+  validates :calories_burned, presence: true, numericality: { greater_than: 0 }
 
   def exercises_count
     exercises.count
@@ -65,6 +67,14 @@ class Workout < ApplicationRecord
         averageCalories: workouts > 0 ? (total_calories / workouts).round(2) : 0.0,
         averageDuration: workouts > 0 ? (total_duration / workouts).round(2) : 0.0
       }
+    end
+  end
+
+  private
+  
+  def workout_date_cannot_be_in_the_future
+    if workout_date.present? && workout_date > Date.today
+      errors.add(:workout_date, "can't be in the future")
     end
   end
 end

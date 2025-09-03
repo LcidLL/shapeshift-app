@@ -1,9 +1,9 @@
 class Api::V1::WorkoutsController < ApplicationController
-  before_action :set_user
+  before_action :authenticate_user!
   before_action :set_workout, except: [ :index, :create, :summary]
 
   def index
-    @workouts = @user.workouts.order(workout_date: :desc)
+    @workouts = current_user.workouts.order(workout_date: :desc)
     render json: @workouts.as_json(methods: :exercises_count)
   end
 
@@ -25,7 +25,7 @@ class Api::V1::WorkoutsController < ApplicationController
     if @workout.update(workout_params)
       render json: @workout
     else
-      render json: { errors: @workout.errors }, status: :unprocessable_entity
+      render json: { errors: @workout.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -45,10 +45,6 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   private
-
-  def set_user
-    @user = User.find(params[:user_id])
-  end
 
   def workout_params
     params.require(:workout).permit(:workout_type, :workout_date, :duration, :calories_burned)

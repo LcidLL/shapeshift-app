@@ -26,6 +26,8 @@ function NewWorkoutForm(props){
   const day = String(today.getDate()).padStart(2, '0')
   const maxDate = `${year}-${month}-${day}`
 
+  const token = localStorage.getItem('token');
+
   const workoutTypeList = [
     "Strength", "Plyometrics", "Strongman",
     "Powerlifting", "Olympic Weightlifting",
@@ -46,9 +48,12 @@ function NewWorkoutForm(props){
       onSubmit(workoutData)
     }else{
       try {
-        const response = await fetch(`${API_URL}/users/1/workouts`, {
+        const response = await fetch(`${API_URL}/workouts`, {
           method: "POST",
-          headers: { "Content-Type": "application/json"},
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(workoutData)
         })
 
@@ -58,7 +63,7 @@ function NewWorkoutForm(props){
             await updateDailyPlanStatus()
             await loadExercisePlans(id)
           }else{
-            navigate(`/users/1/workouts/${id}`);
+            navigate(`/workouts/${id}`);
           }
         } else {
           const { errors } = await response.json()
@@ -96,9 +101,12 @@ function NewWorkoutForm(props){
         duration: Number(exercise.duration ?? 0),
       }
       try {
-        const response = await fetch(`${API_URL}/users/1/workouts/${id}/exercises`, {
+        const response = await fetch(`${API_URL}/workouts/${id}/exercises`, {
           method: "POST",
-          headers: { "Content-Type": "application/json"},
+          headers: { 
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify(exerciseData)
         })
     
@@ -112,12 +120,16 @@ function NewWorkoutForm(props){
         setErrors(['Failed to add exercise to workout. Please check your connection or try again later.'])
       }
     }
-    navigate(`/`);
+    navigate(`/plans`);
   }
 
   const loadExercisePlans = async(id) => {
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/exercise_plans`)
+      const response = await fetch(`${API_URL}/plans/${daily.plan_id}/daily_plans/${daily.id}/exercise_plans`,{
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      })
       if (response.ok) {
         const json = await response.json()
         await addExercisePlans(json, id)
@@ -132,9 +144,12 @@ function NewWorkoutForm(props){
 
   const updateExercisePlanStatus = async (exercise) => {
     try { 
-      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}/exercise_plans/${exercise.id}`, {
+      const response = await fetch(`${API_URL}/plans/${daily.plan_id}/daily_plans/${daily.id}/exercise_plans/${exercise.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json"},
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({isAdded: true})
       })
       if (!response.ok) {
@@ -148,9 +163,12 @@ function NewWorkoutForm(props){
 
   const updateDailyPlanStatus = async (e) => {
     try { 
-      const response = await fetch(`${API_URL}/users/1/plans/${daily.plan_id}/daily_plans/${daily.id}`, {
+      const response = await fetch(`${API_URL}/plans/${daily.plan_id}/daily_plans/${daily.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json" 
+        },
         body: JSON.stringify({isAdded: true})
       })
   

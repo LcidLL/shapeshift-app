@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
+  
+  # Defines the root path route ("/")
+  # root "api/v1/users#index"
 
 
   devise_for :users,
@@ -27,24 +30,19 @@ Rails.application.routes.draw do
       patch '/profile', to: 'profiles#update'
       post '/daily_weight', to: 'profiles#log_daily_weight'
   
-  # Defines the root path route ("/")
-  # root "api/v1/users#index"
-  
-      # resources :users do
-        resources :search
-        get "/get_info" => "search#get_info"
-        get "/workouts/summary" => "workouts#summary"
-        resources :workouts do
-          resources :exercises
+      resources :search
+      get "/get_info" => "search#get_info"
+      get "/workouts/summary" => "workouts#summary"
+      resources :workouts do
+        resources :exercises
+      end
+      post "/generate-workout" => "plans#generate"
+      resources :plans do
+        resources :daily_plans do
+          resources :reminders
+          resources :exercise_plans
         end
-        post "/generate-workout" => "plans#generate"
-        resources :plans do
-          resources :daily_plans do
-            resources :reminders
-            resources :exercise_plans
-          end
-        end
-      # end
+      end
       resources :exercise_dbs
     end
   end

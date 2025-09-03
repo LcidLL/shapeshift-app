@@ -7,7 +7,7 @@ function Layout({children}){
       <NavBar />
 
       {/* Page content (your other components) */}
-      <main className="flex-1 p-6 bg-neutral-bg overflow-y-hidden">
+      <main className="flex-1 p-6 bg-neutral-bg overflow-y-auto">
         {children}
       </main>
     </div>

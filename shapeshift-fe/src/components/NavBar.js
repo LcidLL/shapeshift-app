@@ -22,7 +22,7 @@ function NavBar(){
       section: "TRACKER",
       items: [
         { name: "Meals", icon: <Utensils size={20} />, href: "/meals" },
-        { name: "Workouts", icon: <Dumbbell size={20} />, href: "user/1/workouts" },
+        { name: "Workouts", icon: <Dumbbell size={20} />, href: "/workouts" },
       ],
     },
     {
@@ -31,8 +31,8 @@ function NavBar(){
         { name: "Training Plan", 
           icon: <CalendarDays size={20} />,
           children: [
-            { name: "Existing Plans", href: "/users/1/plans" },
-            { name: "Create Workout Plan", href: "/users/1/plans/new" },
+            { name: "Existing Plans", href: "/plans" },
+            { name: "Create Workout Plan", href: "/plans/new" },
             { name: "Generate AI Plan", href: "/generate-workout" },
           ],
         },

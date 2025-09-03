@@ -46,57 +46,57 @@ function App() {
             } />
 
             <Route path="/analytics" element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <WorkoutsSummary />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/workouts" element={
-              // <ProtectedRoute>
+            <Route path="/workouts" element={
+              <ProtectedRoute>
                 <WorkoutsList />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/workouts/:id" element={
-              // <ProtectedRoute>
+            <Route path="/workouts/:id" element={
+              <ProtectedRoute>
                 <WorkoutDetails />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/workouts/new" element={
-              // <ProtectedRoute>
+            <Route path="/workouts/new" element={
+              <ProtectedRoute>
                 <NewWorkoutForm />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/workouts/:workout_id/exercises/new" element={
-              // <ProtectedRoute>
+            <Route path="/workouts/:workout_id/exercises/new" element={
+              <ProtectedRoute>
                 <AddExerciseForm />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/plans" element={
-              // <ProtectedRoute>
+            <Route path="/plans" element={
+              <ProtectedRoute>
                 <PlanList />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/plans/:plan_id" element={
-              // <ProtectedRoute>
+            <Route path="/plans/:plan_id" element={
+              <ProtectedRoute>
                 <PlanDetails />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
-            <Route path="/users/:userId/plans/new" element={
-              // <ProtectedRoute>
+            <Route path="/plans/new" element={
+              <ProtectedRoute>
                 <NewPlanForm />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
             
             <Route path="/addExercise" element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <NewExerciseForm />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             } />
 
             <Route path = "/generate-workout" element={<GenerateWorkoutForm />} />
@@ -104,8 +104,8 @@ function App() {
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-             {/* {Redirect to dashboard if route not found in react ("to URL temporary")}  */}
-            <Route path="*" element={<Navigate to="/users/1/workouts" replace />} />
+             {/* {Redirect to dashboard if route not found in react}  */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
             
           </Routes>
           </Layout>
