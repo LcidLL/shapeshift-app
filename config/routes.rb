@@ -7,6 +7,27 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      # --- Begin API app imported routes ---
+      resources :groups, only: [:index]
+      post 'groups/:group_id/rechallenge', to: 'groups#rechallenge'
+
+      resources :challenges do
+        get 'leaderboard', to: 'leaderboards#show'
+      end
+
+      resources :participations, only: [:index, :show, :create, :destroy] do
+        member do
+          patch :complete
+        end
+      end
+      resources :challenges, only: [:index, :show, :create, :destroy]
+      resources :invitations, only: [:index, :show, :create, :destroy] do
+        member do
+          patch :accept
+          patch :reject
+        end
+      end
+      # --- End API app imported routes ---
       devise_for :users,
                 path: '',
                 path_names: {

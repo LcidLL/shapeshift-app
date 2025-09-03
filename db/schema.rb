@@ -10,9 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_25_140206) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_01_065800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "challenges", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "duration_minutes", comment: "Duration in minutes"
+    t.integer "value"
+    t.string "unit"
+    t.string "challengeable_type"
+    t.bigint "challengeable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "duration_type"
+    t.datetime "group_started_at"
+    t.index ["challengeable_type", "challengeable_id"], name: "index_challenges_on_challengeable"
+  end
 
   create_table "daily_plans", force: :cascade do |t|
     t.string "workout_name"
@@ -64,12 +79,47 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_25_140206) do
     t.index ["workout_id"], name: "index_exercises_on_workout_id"
   end
 
+  create_table "group_configs", force: :cascade do |t|
+    t.integer "creator_user_id"
+    t.string "invite_code"
+    t.integer "max_participants"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "individual_configs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "invitations", force: :cascade do |t|
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "challenge_id", null: false
+    t.index ["challenge_id"], name: "index_invitations_on_challenge_id"
+    t.index ["user_id"], name: "index_invitations_on_user_id"
+  end
+
   create_table "jwt_denylists", force: :cascade do |t|
     t.string "jti"
     t.datetime "exp"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["jti"], name: "index_jwt_denylists_on_jti"
+  end
+
+  create_table "participations", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "challenge_id"
+    t.string "status"
+    t.datetime "joined_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "group_config_id"
+    t.integer "progress", default: 0, null: false
+    t.index ["group_config_id"], name: "index_participations_on_group_config_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -112,6 +162,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_25_140206) do
     t.integer "daily_calories_burned"
     t.integer "workout_duration"
     t.float "target_weight"
+    t.boolean "admin", default: false, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -130,6 +181,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_25_140206) do
   add_foreign_key "daily_plans", "plans"
   add_foreign_key "exercise_plans", "daily_plans"
   add_foreign_key "exercises", "workouts"
+  add_foreign_key "invitations", "challenges"
+  add_foreign_key "invitations", "users"
   add_foreign_key "plans", "users"
   add_foreign_key "reminders", "daily_plans"
   add_foreign_key "workouts", "users"
