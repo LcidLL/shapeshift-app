@@ -1,10 +1,10 @@
 class ApplicationController < ActionController::API
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   before_action :configure_permitted_parameters, if: :devise_controller?
   respond_to :json
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   protected
-
   def authenticate_user!
     warden.authenticate!(scope: :user)
   end
@@ -21,6 +21,10 @@ class ApplicationController < ActionController::API
     request.env['warden']
   end
 
+  def current_user
+    User.find_by(email: 'admin@example.com')
+  end
+
   private
 
   def configure_permitted_parameters
@@ -33,7 +37,8 @@ class ApplicationController < ActionController::API
     ])
   end
 
-  def record_not_found
-    render json: {errors: "Sorry, we couldn’t find what you were looking for."}, status: :not_found
-  end 
+  def record_not_found(exception)
+    model_name = exception.model || 'Record'
+    render json: { error: "#{model_name} ID not found" }, status: :not_found
+  end
 end

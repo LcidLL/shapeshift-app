@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   has_many :workouts, dependent: :destroy
   has_many :plans, dependent: :destroy
+  has_many :participations
+  has_many :challenges, through: :participations
 
   validates :first_name, :last_name, presence: true
   validates :age, numericality: {greater_than: 0}, allow_nil: true
@@ -14,4 +16,8 @@ class User < ApplicationRecord
   validates :daily_calorie_intake, :daily_calories_burned,
            :workout_duration, :target_weight, 
            numericality: { greater_than: 0 }, allow_nil: true
+
+  def admin?  
+    self.admin
+  end
 end
