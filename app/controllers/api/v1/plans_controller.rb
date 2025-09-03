@@ -1,9 +1,8 @@
 class Api::V1::PlansController < ApplicationController
-  before_action :set_user, except: [ :generate ]
   before_action :set_plan, except: [ :index, :create, :generate ]
 
   def index
-    @plans = @user.plans
+    @plans = current_user.plans
     render json: @plans
   end
 
@@ -12,7 +11,7 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def create
-    @plan = @user.plans.build(plan_params)
+    @plan = current_user.plans.build(plan_params)
 
     if @plan.save
       render json: @plan, status: :created, location: api_v1_user_plans_path
@@ -25,7 +24,7 @@ class Api::V1::PlansController < ApplicationController
     if @plan.update(plan_params)
       render json: @plan
     else
-      render json: { errors: @plan.errors }, status: :unprocessable_entity
+      render json: { errors: @plan.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -41,10 +40,6 @@ class Api::V1::PlansController < ApplicationController
   end
 
   private
-
-  def set_user
-    @user = User.find(params[:user_id])
-  end
 
   def set_plan
     @plan = Plan.find(params[:id])

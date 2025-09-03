@@ -17,6 +17,8 @@ function WorkoutDetails(){
 
   const { errors, setErrors } = useError();
 
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     // clear error after displaying it once
     return () => setErrors(null);
@@ -25,26 +27,32 @@ function WorkoutDetails(){
   useEffect(() => {
     async function displayWorkoutDetails(){
       try{
-        const response = await fetch(`${API_URL}/users/1/workouts/${id}`);
+        const response = await fetch(`${API_URL}/workouts/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
         if (response.ok) {
           const json = await response.json();
           setWorkout(json);
         } else {
           const { errors } = await response.json();
-          setErrors(errors)
-          navigate("/users/1/workouts")
+          setErrors(errors || ['Failed to fetch workout'])
+          navigate("/workouts")
         }
       } catch (e) {
-        console.log("An error occured")
+        setErrors(['Failed to fetch workout. Please check your connection or try again later.'])
       }
     }
     displayWorkoutDetails()
   }, [id])
 
   const editWorkout = async (editedData) => {
-    const response = await fetch(`${API_URL}/users/1/workouts/${id}`, {
+    const response = await fetch(`${API_URL}/workouts/${id}`, {
       method: "PATCH",
       headers: {
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(editedData)
@@ -54,7 +62,7 @@ function WorkoutDetails(){
       const json = await response.json();
       setWorkout(json)
       setIsDisplayed(false)
-      navigate(`/users/1/workouts/${id}`);
+      navigate(`/workouts/${id}`);
     } else {
       console.log("Error occured")
     }
@@ -64,12 +72,15 @@ function WorkoutDetails(){
     const confirmed = window.confirm("Are you sure you want to delete this workout?");
     if (!confirmed) return;
 
-    const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}`, {
-      method: "DELETE"
+    const response = await fetch(`${API_URL}/workouts/${workout_id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
     });
 
     if(response.ok){
-      navigate(`/`);
+      navigate(`/workouts`);
     } else {
       console.log("Error occured")
     }

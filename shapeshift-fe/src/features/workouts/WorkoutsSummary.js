@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../../constants/Constants"
+import { useError } from "../../contexts/ErrorContext";
 
 function WorkoutsSummary(){
 
+  const {errors, setErrors} = useError()
+
   const [dataSummary, setDataSummary] = useState("")
+  const token = localStorage.getItem('token');
 
   useEffect(()=>{
     getWorkoutSummary("day")
@@ -11,15 +15,20 @@ function WorkoutsSummary(){
 
   const getWorkoutSummary = async (period) => {
     try {
-      const response = await fetch(`${API_URL}/users/1/workouts/summary?period=${period}`);
+      const response = await fetch(`${API_URL}/workouts/summary?period=${period}`,{
+        headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+      })
       if (response.ok) {
           const json = await response.json();
           setDataSummary(json);
         } else {
-          throw response
+          setErrors(["Failed to fetch workout summary."])
         }
-    } catch (e) {
-      console.log("An error occured")
+    } catch (error) {
+      setErrors(["Failed to fetch workout summary."])
     }
   }
 

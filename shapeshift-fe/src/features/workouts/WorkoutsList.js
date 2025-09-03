@@ -42,23 +42,25 @@ function WorkoutsList(){
   }, [])
 
 const loadWorkouts = async () => {
-      try{
-        const response = await fetch(`${API_URL}/users/1/workouts`, {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        })
-        if (response.ok) {
-          const json = await response.json();
-          setWorkouts(json);
-        } else {
-          throw response
-        }
-      } catch (e) {
-        console.log("An error occured")
+  try{
+    const response = await fetch(`${API_URL}/workouts`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
+    })
+    if (response.ok) {
+      const json = await response.json();
+      setErrors([])
+      setWorkouts(json);
+    } else {
+      throw response
     }
+  } catch (e) {
+    console.log("An error occured")
+  }
+}
 
   const handleEdit = (workout) => {
     setOpenMenu(null);
@@ -75,15 +77,17 @@ const loadWorkouts = async () => {
       calories_burned: Number(editForm.calories_burned)
     }
     try{
-      const response = await fetch(`${API_URL}/users/1/workouts/${editingRowId}`, {
+      const response = await fetch(`${API_URL}/workouts/${editingRowId}`, {
             method: "PATCH",
             headers: {
+              "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json"
             },
             body: JSON.stringify(editedData)
           });
       
           if(response.ok){
+            setErrors([])
             setEditingRowId(null);
             await loadWorkouts()
           } else {
@@ -108,17 +112,25 @@ const loadWorkouts = async () => {
   }
 
   const deleteWorkout = async () => {
-    const response = await fetch(`${API_URL}/users/1/workouts/${deleteId}`, {
-      method: "DELETE"
-    });
+    try {
+      const response = await fetch(`${API_URL}/workouts/${deleteId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      })
 
-    if(response.ok){
-      setWorkouts((prev) => prev.filter((workout) => workout.id !== deleteId));
-      setOpenDelete(false);
-      setDeleteId(null);
-      navigate(`/users/1/workouts`);
-    } else {
-      console.log("Error occured")
+      if(response.ok){
+        setErrors([])
+        setWorkouts((prev) => prev.filter((workout) => workout.id !== deleteId));
+        setOpenDelete(false);
+        setDeleteId(null);
+        navigate(`/workouts`);
+      } else {
+        setErrors(['Failed to delete workout. Please try again.'])
+      }
+    } catch (error) {
+      setErrors(['Failed to delete workout. Please check your connection or try again later.'])
     }
   }
 
@@ -175,7 +187,7 @@ const loadWorkouts = async () => {
                 <>
                 <tr 
                   key={workout.id} 
-                  onClick={editingRowId === null ? () => navigate(`/users/1/workouts/${workout.id}`) : undefined} 
+                  onClick={editingRowId === null ? () => navigate(`/workouts/${workout.id}`) : undefined} 
                   className="cursor-pointer hover:bg-neutral-hover transition-colors"
                 >
                   {editingRowId === workout.id ? (
@@ -190,6 +202,7 @@ const loadWorkouts = async () => {
                             setEditForm({ ...editForm, workout_date: e.target.value })
                           }
                           className="w-full bg-neutral-hover text-white rounded px-2 py-1"
+                          required
                         />
                       </td>
                       <td className="p-3">
@@ -199,6 +212,7 @@ const loadWorkouts = async () => {
                             setEditForm({ ...editForm, workout_type: e.target.value })
                           }
                           className="w-full bg-neutral-hover text-white rounded px-2 py-1"
+                          required
                         >
                           { workoutTypeList.map((type,index) => (
                             <option key={index} value={type}>{type}</option>
@@ -213,16 +227,18 @@ const loadWorkouts = async () => {
                             setEditForm({ ...editForm, calories_burned: e.target.value })
                           }
                           className="w-full bg-neutral-hover text-white rounded px-2 py-1"
+                          required
                         />
                       </td>
                       <td className="p-3">
                         <input
                           type="text"
                           value={editForm.duration}
-                          onChange={(e) =>
+                          onChange={(e) =>  
                             setEditForm({ ...editForm, duration: e.target.value })
                           }
                           className="w-full bg-neutral-hover text-white rounded px-2 py-1"
+                          required
                         />
                       </td>
                       <td className="p-3 font-sans text-neutral-text">{workout.exercises_count}</td>

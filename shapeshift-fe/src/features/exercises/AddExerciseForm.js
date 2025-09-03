@@ -24,6 +24,8 @@ function AddExerciseForm(){
   
   const { errors, setErrors } = useError();
 
+  const token = localStorage.getItem('token');
+
   const strengthTypes = [
     "Strength",
     "Plyometrics",
@@ -43,7 +45,11 @@ function AddExerciseForm(){
   useEffect(() => {
     async function getExercises(){
       try{
-        const response = await fetch(`${API_URL}/exercise_dbs?workout_type=${workoutType}`)
+        const response = await fetch(`${API_URL}/exercise_dbs?workout_type=${workoutType}`,{
+          headers: {
+             "Authorization": `Bearer ${token}`,
+          }
+        })
         if (!response.ok) {
           const { errors }= await response.json()
           setErrors(errors)
@@ -72,14 +78,17 @@ function AddExerciseForm(){
     }
 
     try{
-      const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}/exercises`, {
+      const response = await fetch(`${API_URL}/workouts/${workout_id}/exercises`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+           "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json" 
+        },
         body: JSON.stringify(exerciseData)
       })
 
       if (response.ok) {
-        navigate(`/users/1/workouts/${workout_id}`)
+        navigate(`/workouts/${workout_id}`)
       } else {
         const { errors } = await response.json()
         setErrors(errors || ['Something went wrong while adding the exercise.'])
