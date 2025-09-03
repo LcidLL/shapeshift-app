@@ -2,6 +2,7 @@ class ApplicationController < ActionController::API
   before_action :configure_permitted_parameters, if: :devise_controller?
   respond_to :json
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  before_action :debug_headers
 
   protected
 
@@ -36,4 +37,9 @@ class ApplicationController < ActionController::API
   def record_not_found
     render json: {errors: "Sorry, we couldn't find what you were looking for."}, status: :not_found
   end 
+
+  # Checks if header is being sent to backend
+  def debug_headers
+    Rails.logger.info "AUTH HEADER: #{request.headers['Authorization']}"
+  end
 end
