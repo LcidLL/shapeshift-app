@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::API
-  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   respond_to :json
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  before_action :debug_headers
 
   protected
   def authenticate_user!
@@ -37,8 +38,12 @@ class ApplicationController < ActionController::API
     ])
   end
 
-  def record_not_found(exception)
-    model_name = exception.model || 'Record'
-    render json: { error: "#{model_name} ID not found" }, status: :not_found
+  def record_not_found
+    render json: {errors: "Sorry, we couldn't find what you were looking for."}, status: :not_found
+  end 
+
+  # Checks if header is being sent to backend
+  def debug_headers
+    Rails.logger.info "AUTH HEADER: #{request.headers['Authorization']}"
   end
 end

@@ -21,7 +21,7 @@ function NewExerciseForm(props){
   const [notInDB,setNotInDB] = useState(false)
 
   const [sets, setSets] = useState(exercisePlan?.sets || "")
-  const [reps, setReps] = useState(exercisePlan?.reps || "")
+  const [reps, setReps] = useState(exercisePlan?.reps || "N/A")
   const [distance, setDistance] = useState(exercisePlan?.distance || "")
   const [duration, setDuration] = useState(exercisePlan?.duration || "")
   const [intensity, setIntensity] = useState(exercisePlan?.intensity || "N/A")
@@ -29,6 +29,8 @@ function NewExerciseForm(props){
   
   const [errors, setErrors] = useState("")
   const navigate = useNavigate()
+
+  const token = localStorage.getItem('token');
 
   const strengthTypes = [
     "strength", "plyometrics", "strongman",
@@ -39,7 +41,11 @@ function NewExerciseForm(props){
     async function getExercise(){
       if (exercisePlan){
         try{
-          const response = await fetch(`${API_URL}/exercise_dbs?exercise_name=${exercisePlan.exercise_name}`);
+          const response = await fetch(`${API_URL}/exercise_dbs?exercise_name=${exercisePlan.exercise_name}`,{
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            }
+          });
           if (response.ok) {
             const json = await response.json();
             setShouldShowStrengthInputs(strengthTypes.includes(json[0].category))
@@ -78,7 +84,7 @@ function NewExerciseForm(props){
       exercise_name: exerciseName,
       exercise_id: exerciseId,
       sets: Number(sets), 
-      reps: reps, 
+      reps: reps,
       intensity: intensity,
       distance: Number(distance),
       duration: Number(duration)
@@ -86,9 +92,10 @@ function NewExerciseForm(props){
     if (mode === "edit"){
       onSubmit(exerciseData)
     }else{
-        const response = await fetch(`${API_URL}/users/1/plans/${planId}/daily_plans/${dailyPlanId}/exercise_plans`, {
+        const response = await fetch(`${API_URL}/plans/${planId}/daily_plans/${dailyPlanId}/exercise_plans`, {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(exerciseData)
@@ -97,7 +104,7 @@ function NewExerciseForm(props){
         if(response.ok){
           console.log("ok")
           const { id } = await response.json();
-          navigate(`/users/1/plans/${planId}`);
+          navigate(`/plans/${planId}`);
         } else {
           const errorData = await response.json();
           setErrors(errorData.errors)
@@ -119,11 +126,13 @@ function NewExerciseForm(props){
     if (shouldShowStrengthInputs || notInDB) {
       return (
         <>
-          <label htmlFor="sets">Sets</label>
-          <input id="sets" type="number" value={sets} onChange={(e) => setSets(e.target.value)} />
+          <label htmlFor="sets" className="block text-white text-sm mb-1 font-sans">Sets</label>
+          <input id="sets" type="number" value={sets} onChange={(e) => setSets(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
 
-          <label htmlFor="reps">Rep Range</label>
-          <input id="reps" type="text" value={reps} onChange={(e) => handleRepRangeInput(e)} />
+          <label htmlFor="reps" className="block text-white text-sm mb-1 font-sans">Rep Range</label>
+          <input id="reps" type="text" value={reps} onChange={(e) => handleRepRangeInput(e)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
         </>
       );
     }
@@ -131,14 +140,17 @@ function NewExerciseForm(props){
     if (isCardio) {
       return (
         <>
-          <label htmlFor="distance">Distance</label>
-          <input id="distance" value={distance} onChange={(e) => setDistance(e.target.value)} />
+          <label htmlFor="distance" className="block text-white text-sm mb-1 font-sans">Distance</label>
+          <input id="distance" value={distance} onChange={(e) => setDistance(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
 
-          <label htmlFor="intensity">Intensity</label>
-          <input id="intensity" value={intensity} onChange={(e) => setIntensity(e.target.value)} />
+          <label htmlFor="intensity" className="block text-white text-sm mb-1 font-sans">Intensity</label>
+          <input id="intensity" value={intensity} onChange={(e) => setIntensity(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
 
-          <label htmlFor="duration">Duration</label>
-          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
+          <label htmlFor="duration" className="block text-white text-sm mb-1 font-sans">Duration</label>
+          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
         </>
       );
     }
@@ -146,8 +158,9 @@ function NewExerciseForm(props){
     if (isStretching) {
       return (
         <>
-          <label htmlFor="duration">Duration</label>
-          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
+          <label htmlFor="duration" className="block text-white text-sm mb-1 font-sans">Duration</label>
+          <input id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} 
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
         </>
       );
     }
@@ -179,9 +192,9 @@ function NewExerciseForm(props){
               <button onClick={() => getWorkoutType(exercise)}>Add to Workout</button>
 
               {(exerciseId === exercise.id) && (
-                <form onSubmit={handleSubmitExercise}>
+                <form onSubmit={handleSubmitExercise} className="space-y-4">
                   {renderWorkoutInputs()}
-                  <button type="submit">{exercisePlan ? "Update" : "Add"}</button>
+                  <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{exercisePlan ? "Update" : "Add"}</button>
                 </form>
               )}
             </div> 
@@ -191,9 +204,9 @@ function NewExerciseForm(props){
 
       {
         mode === "edit" && 
-        <form onSubmit={handleSubmitExercise}>
+        <form onSubmit={handleSubmitExercise} className="space-y-4">
           {renderWorkoutInputs()}
-          <button type="submit">{exercisePlan ? "Update" : "Add"}</button>
+          <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">{exercisePlan ? "Update" : "Add"}</button>
         </form>
       }
     </div>

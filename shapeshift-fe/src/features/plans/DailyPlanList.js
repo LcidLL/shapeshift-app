@@ -5,6 +5,7 @@ import { API_URL } from "../../constants/Constants";
 import NewDailyPlanForm from "./NewDailyPlanForm";
 import ReminderForm from "../../features/reminders/ReminderForm"
 import RemindersList from "../reminders/RemindersList";
+import { useError } from "../../contexts/ErrorContext";
 
 function DailyPlanList(props){
 
@@ -18,14 +19,20 @@ function DailyPlanList(props){
   const [futurePlans, setFuturePlans] = useState("")
   const [dailyPlanId, setDailyPlanId] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
-  const [showReminderForm, setShowReminderForm] = useState(false)  
+  const [showReminderForm, setShowReminderForm] = useState(false)
+
+  const token = localStorage.getItem('token')
 
   useEffect(()=>{
     async function displayDailyPlanDetails(){
       try{
-        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`);
+        const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`,{
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         if (response.ok) {
-          const json = await response.json();
+          const json = await response.json()
           setPlanToday(json.today)
           setOutdatedPlans(json.outdated)
           setFuturePlans(json.future)
@@ -43,8 +50,11 @@ function DailyPlanList(props){
     const confirmed = window.confirm("Are you sure you want to delete this workout?");
     if (!confirmed) return;
 
-    const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${daily_id}`, {
-      method: "DELETE"
+    const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${daily_id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      }
     });
 
     if(response.ok){
@@ -52,7 +62,7 @@ function DailyPlanList(props){
       setPlanToday(json.today)
       setOutdatedPlans(json.outdated)
       setFuturePlans(json.future)
-      navigate(`/users/1/plans/${plan_id}`);
+      navigate(`/plans/${plan_id}`);
     } else {
       console.log("Error occured")
     }
@@ -65,9 +75,10 @@ function DailyPlanList(props){
 
   const handleSubmitEdit = async (editedData) => {
     try{
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}`, {
         method: "PATCH",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(editedData)
@@ -79,7 +90,7 @@ function DailyPlanList(props){
           prev.map((plan) => (plan.id === dailyPlanId ? json : plan))
         )
         setIsDisplayed(false)
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
         console.log("Error occured")
       } 
@@ -96,14 +107,14 @@ function DailyPlanList(props){
   if (!outdatedPlans.length && !futurePlans.length && !planToday.length) return <h1>Loading...</h1>;
 
   return(
-    <div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       { planToday.map((daily) => [
-        <div key={daily.id}>
-          <h1>{daily.day_of_week}</h1>
+        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
           <h2>{daily.workout_name}</h2>
           {
             !daily.isAdded && 
-            <Link to='/users/1/workouts/new' state={{daily}}>
+            <Link to='/workouts/new' state={{daily}}>
                 Add to Tracker
             </Link>
           }
@@ -111,22 +122,28 @@ function DailyPlanList(props){
             Delete
           </button>
           <ExercisePlansList dailyPlanId={daily.id}/>
+                    <button onClick={() => getReminderForm(daily.id)}>Set Reminder</button>
+          {
+            daily.id === dailyPlanId && 
+            showReminderForm && 
+            <ReminderForm daily={daily} setShowReminderForm={setShowReminderForm}/>
+          }
         </div>
       ])}
 
       { outdatedPlans.map((daily) => [
-        <div key={daily.id}>
-          <h1>{daily.day_of_week}</h1>
+        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
           <h2>{daily.workout_name}</h2>
-          {!daily.isAdded && <Link to='/users/1/workouts/new' state={{daily}}>Add to Tracker</Link>}
+          {!daily.isAdded && <Link to='/workouts/new' state={{daily}}>Add to Tracker</Link>}
           <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
           <ExercisePlansList dailyPlanId={daily.id} />
         </div>
       ])}
 
       { futurePlans.map((daily) => [
-        <div key={daily.id}>
-          <h1>{daily.day_of_week}</h1>
+        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
           <h2>{daily.workout_name}</h2>
           <button onClick={()=> displayEditDailyPlan(daily.id)}>Edit</button>
           <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>

@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import ExercisesList from "../exercises/ExercisesList";
 import NewWorkoutForm from "./NewWorkoutForm"
 import { useError } from "../../contexts/ErrorContext";
+import { FilePenLine, Trash2, Edit } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { PieChart, pieArcClasses, pieArcLabelClasses } from "@mui/x-charts";
 
 function WorkoutDetails(){
 
@@ -16,6 +19,15 @@ function WorkoutDetails(){
 
   const { errors, setErrors } = useError();
 
+  const { user } = useAuth()
+
+  const token = localStorage.getItem('token');
+
+    const settings = {
+    width: 200,
+    height: 200,
+  }
+
   useEffect(() => {
     // clear error after displaying it once
     return () => setErrors(null);
@@ -24,26 +36,32 @@ function WorkoutDetails(){
   useEffect(() => {
     async function displayWorkoutDetails(){
       try{
-        const response = await fetch(`${API_URL}/users/1/workouts/${id}`);
+        const response = await fetch(`${API_URL}/workouts/${id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
         if (response.ok) {
           const json = await response.json();
           setWorkout(json);
         } else {
           const { errors } = await response.json();
-          setErrors(errors)
-          navigate("/users/1/workouts")
+          setErrors(errors || ['Failed to fetch workout'])
+          navigate("/workouts")
         }
       } catch (e) {
-        console.log("An error occured")
+        setErrors(['Failed to fetch workout. Please check your connection or try again later.'])
       }
     }
     displayWorkoutDetails()
   }, [id])
 
   const editWorkout = async (editedData) => {
-    const response = await fetch(`${API_URL}/users/1/workouts/${id}`, {
+    const response = await fetch(`${API_URL}/workouts/${id}`, {
       method: "PATCH",
       headers: {
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(editedData)
@@ -53,7 +71,7 @@ function WorkoutDetails(){
       const json = await response.json();
       setWorkout(json)
       setIsDisplayed(false)
-      navigate(`/users/1/workouts/${id}`);
+      navigate(`/workouts/${id}`);
     } else {
       console.log("Error occured")
     }
@@ -63,44 +81,177 @@ function WorkoutDetails(){
     const confirmed = window.confirm("Are you sure you want to delete this workout?");
     if (!confirmed) return;
 
-    const response = await fetch(`${API_URL}/users/1/workouts/${workout_id}`, {
-      method: "DELETE"
+    const response = await fetch(`${API_URL}/workouts/${workout_id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
     });
 
     if(response.ok){
-      navigate(`/`);
+      navigate(`/workouts`);
     } else {
       console.log("Error occured")
     }
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       { errors && 
         errors.map((error) => (
           <div key={error.id}>
             <h2>{error}</h2>
           </div>
         )) }
-      <h1>Workout details</h1>
-      <button onClick={() => setIsDisplayed(true)}>Edit</button>
-      <button onClick={() => deleteWorkout(workout.id)}>Delete</button>
-      <p>{workout.workout_type}</p>
-      <p>{workout.workout_date}</p>
-      <p>{workout.duration}</p>
-      <p>{workout.calories_burned}</p>
-
+        { !isDisplayed && <>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-heading text-2xl text-white flex items-center gap-3">Workout details
+            <span className="flex gap-1">
+              <button
+                onClick={() => setIsDisplayed(true)}
+                className="p-1 rounded-lg hover:bg-neutral-hover"
+                title="Edit exercises"
+              >
+                <Edit className="w-4 h-4 text-accent-green" />
+              </button>
+              <button
+                onClick={() => deleteWorkout(workout.id)}
+                className="p-1 rounded-lg hover:bg-neutral-hover"
+                title="Delete exercises"
+              >
+                <Trash2 className="w-4 h-4 text-red-500" />
+              </button>
+            </span>
+          </h2>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="bg-neutral-card rounded-2xl shadow-md p-6 w-full max-w-md mx-auto">
+            <h2 className="font-heading text-xl text-white mb-4">Workout Summary</h2>
+            <div className="space-y-3 text-white">
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Workout Date:</span>
+                <span>{workout.workout_date}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Type:</span>
+                <span>{workout.workout_type}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Calories Burned:</span>
+                <span>{workout.calories_burned} kcal</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Duration:</span>
+                <span>{workout.duration} min</span>
+              </div>
+            </div>
+          </div>
+          {/* <div className="bg-neutral-card rounded-2xl shadow-md p-6 w-full max-w-md mx-auto flex flex-row col-span-2"> */}
+            <div className="bg-neutral-card rounded-2xl shadow-md p-4 w-full max-w-md mx-auto">
+               <h3 className="text-white font-heading text-lg mb-3 tracking-wide">Calories</h3>
+            <PieChart series={[{ 
+                              innerRadius: 50, 
+                              outerRadius: 100, 
+                              data: [
+                                {label: "FInished", value: workout.calories_burned, color: "#22C55E"},
+                                {label: "Remaning", value: user?.daily_calories_burned - workout.calories_burned, color: "#1E293B"},
+                              ],
+                              arcLabel: 'value' 
+                          }]}
+                          {...settings}
+                          sx={{
+                              [`& .${pieArcClasses.root}`]: {
+                                stroke: 'none', // remove white border
+                              },
+                              [`& .${pieArcLabelClasses.root}`]: {
+                                fill: '#FFFFFF',
+                                fontSize: '0.75rem',
+                                fontWeight: 300,                 // light
+                                fontFamily: "'Inter', sans-serif",
+                                letterSpacing: '0.5px',          // subtle spacing
+                                textTransform: 'none',   
+                              },
+                            }}
+                            slotProps={{
+                                legend: {
+                                  sx: {
+                                    // Style legend labels
+                                    color: '#FFFFFF',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 300,
+                                    fontFamily: "'Inter', sans-serif",
+                                    letterSpacing: '0.5px',
+                                    // Style legend marks (circles or squares)
+                                    '.MuiChartsLegend-mark': {
+                                      // for example, color of mark
+                                      fill: '#22C55E',
+                                    },
+                                  },
+                                },
+                            }}
+                />
+                </div>
+                <div className="bg-neutral-card rounded-2xl shadow-md p-4 w-full max-w-md mx-auto">
+              <h3 className="text-white font-heading text-lg mb-3 tracking-wide">Duration</h3>
+            <PieChart series={[{ 
+                              innerRadius: 50, 
+                              outerRadius: 100, 
+                              data: [
+                                {label: "FInished", value: workout.duration, color: "#22C55E"},
+                                {label: "Remaning", value: user?.workout_duration - workout.duration, color: "#1E293B"},
+                              ],
+                              arcLabel: 'value' 
+                          }]}
+                          {...settings}
+                          sx={{
+                              [`& .${pieArcClasses.root}`]: {
+                                stroke: 'none', // remove white border
+                              },
+                              [`& .${pieArcLabelClasses.root}`]: {
+                                fill: '#FFFFFF',
+                                fontSize: '0.75rem',
+                                fontWeight: 300,                 // light
+                                fontFamily: "'Inter', sans-serif",
+                                letterSpacing: '0.5px',          // subtle spacing
+                                textTransform: 'none',   
+                              },
+                            }}
+                            slotProps={{
+                                legend: {
+                                  sx: {
+                                    // Style legend labels
+                                    color: '#FFFFFF',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 300,
+                                    fontFamily: "'Inter', sans-serif",
+                                    letterSpacing: '0.5px',
+                                    // Style legend marks (circles or squares)
+                                    '.MuiChartsLegend-mark': {
+                                      // for example, color of mark
+                                      fill: '#22C55E',
+                                    },
+                                  },
+                                },
+                            }}
+                />
+                </div>
+          
+          <div></div>
+      </div>
+      <ExercisesList workout={workout}/>
+      </>
+      }
+        
       {
         isDisplayed && 
         <NewWorkoutForm 
           workout={workout} 
           mode="edit" 
           onSubmit={(data) => editWorkout(data)}
+          setIsDisplayed = {setIsDisplayed}
         />
       }
-      <ExercisesList workoutType = {workout.workout_type}/>
-      <Link to={`/users/1/workouts/${workout.id}/exercises/new`} state={{workout}}>Add Exercise</Link>
-      <Link to="/">Back</Link>
+      
     </div>
   )
 }

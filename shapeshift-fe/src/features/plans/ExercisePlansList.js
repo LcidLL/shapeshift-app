@@ -14,6 +14,8 @@ function ExercisePlansList(props){
   const { plan_id } = useParams();
   const navigate = useNavigate()
 
+  const token = localStorage.getItem('token')
+
   const excludedKeys = [
     'id', 'daily_plan_id','created_at', 'updated_at', 
     'exercise_id', 'workout_date', 'isAdded'
@@ -27,7 +29,11 @@ function ExercisePlansList(props){
 
   const loadExercisePlans = async () => {
     try{
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans`);
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans`,{
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      })
       if (response.ok) {
         const json = await response.json();
         setExercisePlans(json);
@@ -50,13 +56,16 @@ function ExercisePlansList(props){
     if (!confirmed) return;
     
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercise_id}`, {
-        method: "DELETE"
-      });
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercise_id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      })
     
       if(response.ok){
         await loadExercisePlans()
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
         throw new Error("Failed to delete");
       }   
@@ -67,18 +76,19 @@ function ExercisePlansList(props){
 
   const handleSubmitEdit= async (editedData) => {
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercisePlanId}`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${dailyPlanId}/exercise_plans/${exercisePlanId}`, {
         method: "PATCH",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(editedData)
-      });
+      })
 
       if(response.ok){
         await loadExercisePlans();
         setIsDisplayed(false)
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
          throw new Error("Failed to update exercise");
       }
@@ -92,23 +102,20 @@ function ExercisePlansList(props){
   }
 
   return(
-    <div>
+    <div className="space-y-2 text-white text-sm">
       { exercisePlans.map((exercise) => [
-        <div key={exercise.id}>
-          {
-            Object.entries(exercise
-              ).filter(([key, value]) => 
-                !excludedKeys.includes(key) && 
-                value !== 0 && 
-                value !== 'N/A' &&
-                value !== null &&
-                value !== ''
-              ).map(([key, value]) => (
-                <li key={key}>
-                  <strong>{key}:</strong> {value?.toString()}
-                </li>
-              ))
-          }
+        <div key={exercise.id} className="bg-neutral-card rounded-lg p-2 hover:bg-neutral-hover/70 transition-colors">
+            <p className="font-medium">{exercise.exercise_name}</p>
+            {exercise.sets && (
+              <p className="text-gray-400 text-xs">
+                {exercise.sets} sets × {exercise.reps} reps
+              </p>
+            )}
+            {/* {dayPlan.type === "Cardio" && (
+              <p className="text-gray-400 text-xs">
+                {ex.distance} · {ex.intensity} · {ex.duration}
+              </p>
+            )} */}
           { exercise.workout_date > today && 
             <div>
               <button onClick={() => displayEditExercisePlan(exercise.id)}>Edit</button>

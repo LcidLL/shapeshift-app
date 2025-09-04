@@ -313,7 +313,7 @@ Devise.setup do |config|
 
   # ==> Configuration for JWT
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.devise_jwt_secret_key
+    jwt.secret = Rails.application.secret_key_base
 
     # LOGIN
     jwt.dispatch_requests = [
@@ -328,11 +328,22 @@ Devise.setup do |config|
     jwt.expiration_time = 1.day.to_i
   end
   
-  config.skip_session_storage = [:http_auth, :params_auth]
+  config.skip_session_storage = [:http_auth]
   config.navigational_formats = []
+  config.confirm_within = 3.days
+  
   config.warden do |manager|
     manager.failure_app = lambda do |env|
       [401, {'Content-Type' => 'application/json'}, [{ error: 'Unauthorized' }.to_json]]
     end
   end
+end
+
+# Debugging by checking logs
+Warden::Manager.after_authentication do |user, auth, opts|
+  Rails.logger.info "[warden] Authenticated user: #{user.inspect}"
+end
+
+Warden::Manager.before_failure do |env, opts|
+  Rails.logger.info "[warden] Authentication failed. Env: #{env['PATH_INFO']}, opts: #{opts.inspect}"
 end

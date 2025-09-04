@@ -15,6 +15,8 @@ function GeneratedWorkoutDetails(){
   const [isDone, setIsDone] = useState(false)
   const [statuses, setStatuses] = useState("")
 
+  const token = localStorage.getItem('token')
+
    //Get date today and set as maximum in date input
   const today = new Date();
   const year = today.getFullYear();
@@ -26,7 +28,7 @@ function GeneratedWorkoutDetails(){
   useEffect(() => {
   if (isDone && !hasErrors) {
     const timer = setTimeout(() => {
-      navigate("/users/1/plans");
+      navigate("/plans");
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -47,9 +49,10 @@ function GeneratedWorkoutDetails(){
 
   const addToWorkoutPlan = async () => {
     try{
-      const response = await fetch(`${API_URL}/users/1/plans`, {
+      const response = await fetch(`${API_URL}/plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({plan_name: plan_title})
@@ -90,9 +93,10 @@ function GeneratedWorkoutDetails(){
   const addToDailyPlan = async (data, plan_id, index) => {
     const dayName = data.day_of_week
       try{
-        const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
+        const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`, {
           method: "POST",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify(data)
@@ -125,9 +129,10 @@ function GeneratedWorkoutDetails(){
       }
       try{
           
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans/${daily_plan_id}/exercise_plans`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans/${daily_plan_id}/exercise_plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(exerciseData)
@@ -162,16 +167,27 @@ function GeneratedWorkoutDetails(){
       {errors && <span>{errors}</span>}
       </div>}
       <h3>{plan_title}</h3>
-      { week.map((daily, i) => (
-        <div key={i}>
-          {daily.day} — <em>{statuses[daily.day]}</em>
-          <ul>
-            {daily.exercises.map((exercise, i) => (
-              <li>{exercise?.name || "Rest"}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        { week.map((daily, i) => (
+          <div key={i} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
+            <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day} — <em>{statuses[daily.day]}</em></h3> 
+            <ul className="space-y-2 text-white text-sm">
+              {daily.exercises.map((exercise, i) => (
+                <li key={i} 
+                  className="bg-neutral-card rounded-lg p-2 hover:bg-neutral-hover/70 transition-colors"
+                >
+                  <p className="font-medium">{exercise?.name || "Rest"}</p>
+                  {exercise.sets && (
+                    <p className="text-gray-400 text-xs">
+                    {exercise.sets} { exercise.sets > 1 ? "sets" : "set"} × {exercise.reps !== "" ? `${exercise.reps} reps` : `${exercise.duration_minutes} mins`}
+                    </p>
+                   )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
       <button onClick={() => navigate('/generate-workout')} style={{ marginTop: '20px' }}>
         Back 
       </button>

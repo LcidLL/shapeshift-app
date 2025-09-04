@@ -16,7 +16,7 @@ class Api::V1::ExerciseDbsController < ApplicationController
     if @exercise_db.update(exercise_plan_params)
       render json: @exercise_plan
     else
-      render json: { errors: @exercise_plan.errors }, status: :unprocessable_entity
+      render json: { errors: @exercise_plan.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

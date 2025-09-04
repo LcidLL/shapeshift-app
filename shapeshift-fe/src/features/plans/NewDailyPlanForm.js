@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 import ExercisePlansList from "./ExercisePlansList";
+import { useError } from "../../contexts/ErrorContext";
 
 const weekdayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 function NewDailyPlanForm(props){
 
-  const { onTrigger, dailyPlan, mode, onSubmit } = props
+  const { onTrigger, dailyPlan, mode, onSubmit, setIsDisplayed} = props
 
   const { plan_id } = useParams()
   const navigate = useNavigate()
@@ -15,11 +16,14 @@ function NewDailyPlanForm(props){
   const [workoutName, setWorkoutName] = useState(dailyPlan?.workout_name || "")
   const [workoutDate, setWorkoutDate] = useState(dailyPlan?.workout_date || "")
   const [dayOfWeek, setDayOfWeek] = useState(dailyPlan?.day_of_week || "")
-  const [errors, setErrors] = useState(null)
 
   //Get date today and set as minimum in date input
   const today = new Date();
-  const minDate = today.toISOString().split("T")[0];
+  const minDate = today.toISOString().split("T")[0]
+
+  const {errors, setErrors} = useError()
+
+  const token = localStorage.getItem('token')
 
   const handleWorkoutDateChange = (e) => {
     const selectedDate = e.target.value;
@@ -44,9 +48,10 @@ function NewDailyPlanForm(props){
     }
 
     try {
-      const response = await fetch(`${API_URL}/users/1/plans/${plan_id}/daily_plans`, {
+      const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`, {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(dailyPlanData)
@@ -54,8 +59,12 @@ function NewDailyPlanForm(props){
 
       if(response.ok){
         const { id } = await response.json();
+        setIsDisplayed(false)
+        setWorkoutDate("")
+        setWorkoutName("")
+        setErrors(null)
         onTrigger()
-        navigate(`/users/1/plans/${plan_id}`);
+        navigate(`/plans/${plan_id}`);
       } else {
         const { errors } = await response.json();
         setErrors(errors)
@@ -64,11 +73,12 @@ function NewDailyPlanForm(props){
         console.error("Error submitting daily plan:", error);
         setErrors(["Something went wrong. Please try again later."]);
     }
+    setIsDisplayed(false)
   }
 
   return(
-    <div>
-      <h2>{dailyPlan ? "Edit" : "Add"} Workout</h2>
+    <div className="bg-neutral-card rounded-md shadow-md p-6 w-full max-w-md mx-auto">
+      <h2 className="font-heading text-xl text-white mb-4">{dailyPlan ? "Edit" : "Add"} Workout</h2>
 
       {errors && (
         <div style={{ color: "red", marginBottom: "1em" }}>
@@ -78,27 +88,33 @@ function NewDailyPlanForm(props){
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
-        <label>Workout Name</label>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <label className="block text-white text-sm mb-1 font-sans">Workout Name</label>
         <input 
           type="text" 
           value={workoutName} 
           onChange={(e)=> setWorkoutName(e.target.value)}
           required
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
         />
-        <label>Workout Date</label>
+        <label className="block text-white text-sm mb-1 font-sans">Workout Date</label>
         <input 
           type="date" 
           min={minDate} 
           value={workoutDate} 
           onChange={(e) => handleWorkoutDateChange(e)}
           required
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
         />
-        <button type="submit">
+        <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">
           {dailyPlan ? "Update" : "Add"}
         </button>
+
+        <button type="submit" onClick={() => setIsDisplayed(false)}>
+          Cancel
+        </button>
       </form>
-      {dayOfWeek && <p>Day of the week: {dayOfWeek}</p>}
+      {dayOfWeek && <p className="block text-white text-sm mb-1 font-sans">Day of the week: {dayOfWeek}</p>}
     </div>
   )
 }

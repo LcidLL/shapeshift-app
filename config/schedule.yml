@@ -1,0 +1,9 @@
+todays_workout_reminder:
+  cron: "0 7 * * *"   # 7AM
+  class: "TodaysWorkoutReminderJob"
+  cron_timezone: "Asia/Dubai"
+
+missed_workouts_reminder:
+  cron: "0 21 * * *"  # 9PM
+  class: "MissedWorkoutsReminderJob"
+  cron_timezone: "Asia/Dubai"

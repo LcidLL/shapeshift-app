@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_03_131626) do
+ActiveRecord::Schema[7.2].define(version: 2025_09_04_023130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,27 +79,21 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_03_131626) do
     t.index ["workout_id"], name: "index_exercises_on_workout_id"
   end
 
-  create_table "group_configs", force: :cascade do |t|
-    t.integer "creator_user_id"
-    t.string "invite_code"
-    t.integer "max_participants"
+  create_table "food_items", force: :cascade do |t|
+    t.bigint "meal_id", null: false
+    t.string "food_name", null: false
+    t.string "meal_time", null: false
+    t.float "quantity", null: false
+    t.string "unit", null: false
+    t.integer "calories", default: 0, null: false
+    t.float "carbs", default: 0.0, null: false
+    t.float "protein", default: 0.0, null: false
+    t.float "fat", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "individual_configs", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "invitations", force: :cascade do |t|
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.bigint "challenge_id", null: false
-    t.index ["challenge_id"], name: "index_invitations_on_challenge_id"
-    t.index ["user_id"], name: "index_invitations_on_user_id"
+    t.index ["meal_id", "meal_time"], name: "index_food_items_on_meal_id_and_meal_time"
+    t.index ["meal_id"], name: "index_food_items_on_meal_id"
+    t.index ["meal_time"], name: "index_food_items_on_meal_time"
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
@@ -110,16 +104,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_03_131626) do
     t.index ["jti"], name: "index_jwt_denylists_on_jti"
   end
 
-  create_table "participations", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "challenge_id"
-    t.string "status"
-    t.datetime "joined_at"
+  create_table "meals", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.date "meal_date", null: false
+    t.integer "daily_calorie_goal", default: 2000, null: false
+    t.integer "daily_carbs_goal", default: 250, null: false
+    t.integer "daily_protein_goal", default: 150, null: false
+    t.integer "daily_fat_goal", default: 80, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "group_config_id"
-    t.integer "progress", default: 0, null: false
-    t.index ["group_config_id"], name: "index_participations_on_group_config_id"
+    t.index ["user_id", "meal_date"], name: "index_meals_on_user_id_and_meal_date", unique: true
+    t.index ["user_id"], name: "index_meals_on_user_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -163,7 +158,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_03_131626) do
     t.integer "daily_calories_burned"
     t.integer "workout_duration"
     t.float "target_weight"
-    t.boolean "admin", default: false, null: false
+    t.string "jti"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -182,8 +177,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_03_131626) do
   add_foreign_key "daily_plans", "plans"
   add_foreign_key "exercise_plans", "daily_plans"
   add_foreign_key "exercises", "workouts"
-  add_foreign_key "invitations", "challenges"
-  add_foreign_key "invitations", "users"
+  add_foreign_key "food_items", "meals"
+  add_foreign_key "meals", "users"
   add_foreign_key "plans", "users"
   add_foreign_key "reminders", "daily_plans"
   add_foreign_key "workouts", "users"

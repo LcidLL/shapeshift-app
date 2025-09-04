@@ -2,10 +2,25 @@ class Workout < ApplicationRecord
   belongs_to :user
   has_many :exercises, dependent: :destroy
 
+  validate :workout_date_cannot_be_in_the_future
+
   validates :workout_type, presence: true
   validates :workout_date, presence: true
-  validates :duration, presence: true
-  validates :calories_burned, presence: true
+  validates :duration, presence: true, numericality: { greater_than: 0 }
+  validates :calories_burned, presence: true, numericality: { greater_than: 0 }
+
+  def exercises_count
+    exercises.count
+  end
+
+  def self.summary_today
+    total_calories = where(workout_date: Date.today).sum(:calories_burned)
+    total_duration = where(workout_date: Date.today).sum(:duration)
+    {
+      calories_burned_today: total_calories,
+      duration_today: total_duration
+    }
+  end
 
   def self.summary_by_period(period)
     workout_period = 
@@ -59,8 +74,16 @@ class Workout < ApplicationRecord
         totalDuration: total_duration.round(2),
         workoutsCount: workouts,
         averageCalories: workouts > 0 ? (total_calories / workouts).round(2) : 0.0,
-        averageDuration: workouts > 0 ? (total_duration / workouts).round(2) : 0.0
+        averageDuration: workouts > 0 ? (total_duration / workouts).round(2) : 0.0,
       }
+    end
+  end
+
+  private
+  
+  def workout_date_cannot_be_in_the_future
+    if workout_date.present? && workout_date > Date.today
+      errors.add(:workout_date, "can't be in the future")
     end
   end
 end

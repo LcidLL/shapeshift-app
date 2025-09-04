@@ -32,6 +32,8 @@ gem 'devise-jwt'
 gem 'jsonapi-serializer'
 gem "rack-cors"
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'sidekiq'
+gem 'sidekiq-cron'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -45,3 +47,5 @@ group :development, :test do
 end
 
 
+
+gem "redis", "~> 5.4"
