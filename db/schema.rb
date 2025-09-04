@@ -96,6 +96,29 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_04_023130) do
     t.index ["meal_time"], name: "index_food_items_on_meal_time"
   end
 
+  create_table "group_configs", force: :cascade do |t|
+    t.integer "creator_user_id"
+    t.string "invite_code"
+    t.integer "max_participants"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "individual_configs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "invitations", force: :cascade do |t|
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.bigint "challenge_id", null: false
+    t.index ["challenge_id"], name: "index_invitations_on_challenge_id"
+    t.index ["user_id"], name: "index_invitations_on_user_id"
+  end
+
   create_table "jwt_denylists", force: :cascade do |t|
     t.string "jti"
     t.datetime "exp"
@@ -115,6 +138,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_04_023130) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "meal_date"], name: "index_meals_on_user_id_and_meal_date", unique: true
     t.index ["user_id"], name: "index_meals_on_user_id"
+  end
+
+  create_table "participations", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "challenge_id"
+    t.string "status"
+    t.datetime "joined_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "group_config_id"
+    t.integer "progress", default: 0, null: false
+    t.index ["group_config_id"], name: "index_participations_on_group_config_id"
   end
 
   create_table "plans", force: :cascade do |t|
@@ -159,6 +194,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_04_023130) do
     t.integer "workout_duration"
     t.float "target_weight"
     t.string "jti"
+    t.boolean "admin", default: false, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -178,6 +214,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_04_023130) do
   add_foreign_key "exercise_plans", "daily_plans"
   add_foreign_key "exercises", "workouts"
   add_foreign_key "food_items", "meals"
+  add_foreign_key "invitations", "challenges"
+  add_foreign_key "invitations", "users"
   add_foreign_key "meals", "users"
   add_foreign_key "plans", "users"
   add_foreign_key "reminders", "daily_plans"
