@@ -45,6 +45,18 @@ Rails.application.routes.draw do
         end
       end
       resources :exercise_dbs
+
+      # meal routes
+      resources :meals do
+        resources :food_items, except: [:new, :edit]
+        
+        collection do
+          get :today
+          get :summary
+        end
+      end
+
+      post '/search_nutrition', to: 'food_items#search_nutrition'
     end
   end
 
