@@ -3,8 +3,12 @@ import { API_URL } from "../../constants/Constants";
 import { Link, useNavigate } from "react-router-dom";
 import WorkoutsSummary from "./WorkoutsSummary";
 import { useError } from "../../contexts/ErrorContext";
-import { MoreHorizontal } from "lucide-react";
+import { Bold, MoreHorizontal } from "lucide-react";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
+import { useAuth } from "../../contexts/AuthContext";
+import { Box } from "@mui/material";
+import { PieChart, pieArcClasses, pieArcLabelClasses} from "@mui/x-charts/PieChart";
 
 function WorkoutsList(){
   
@@ -18,6 +22,7 @@ function WorkoutsList(){
   const [forDeleteWorkout, setForDeleteWorkout] = useState({})
   const [dailySummary, setDailySummary] = useState("")
   const { errors, setErrors } = useError();
+  const { user } = useAuth();
   const token = localStorage.getItem('token');
 
   const workoutTypeList = [
@@ -25,6 +30,16 @@ function WorkoutsList(){
     "Powerlifting", "Olympic Weightlifting",
     "Cardio", "Stretching"
   ]
+
+   const data1 = [
+        {label: "Burned", value: dailySummary.calories_burned_today, color: "#22C55E"},
+        {label: "Remaning", value: user?.daily_calories_burned - dailySummary.calories_burned_today, color: "#1E293B"},
+      ]
+
+  const settings = {
+    width: 200,
+    height: 200,
+  }
 
   //Get date today and set as maximum in date input
   const today = new Date();
@@ -160,30 +175,109 @@ const loadWorkouts = async () => {
   if (!workouts) return(<h1>Loading...</h1>)
 
   return(
-    <div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-neutral-card rounded-2xl p-4 text-white text-center">
-          <p className="text-sm text-gray-400">Workout Date</p>
-          <p className="text-lg font-bold">2025-09-02</p>
-        </div>
-        <div className="bg-neutral-card rounded-2xl p-4 text-white text-center">
-          <p className="text-sm text-gray-400">Type</p>
-          <p className="text-lg font-bold">Strength</p>
-        </div>
-        <div className="bg-neutral-card rounded-2xl p-4 text-white text-center">
-          <p className="text-sm text-gray-400">Calories Burned</p>
-          <p className="text-lg font-bold">{dailySummary.calories_burned_today}  kcal</p>
-        </div>
-        <div className="bg-neutral-card rounded-2xl p-4 text-white text-center">
-          <p className="text-sm text-gray-400">Duration</p>
-          <p className="text-lg font-bold">{dailySummary.duration_today} min</p>
+    <div className="grid grid-cols-3 gap-4 h-full">
+      <div className="flex flex-col justify-around col-span-1">
+        <div></div>
+        {/* <div className="row-span-3 h-full flex flex-col justify-around"> */}
+            <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
+              <h3 className="text-white font-heading text-lg mb-2 tracking-wide">Workout Duration (mins)</h3>
+              <div className="mx-auto">
+                <PieChart series={[{ 
+                              innerRadius: 50, 
+                              outerRadius: 100, 
+                              data: [
+                                {label: "FInished", value: dailySummary.duration_today, color: "#22C55E"},
+                                {label: "Remaning", value: user?.workout_duration - dailySummary.duration_today, color: "#1E293B"},
+                              ],
+                              arcLabel: 'value' 
+                          }]}
+                          {...settings}
+                          sx={{
+                              [`& .${pieArcClasses.root}`]: {
+                                stroke: 'none', // remove white border
+                              },
+                              [`& .${pieArcLabelClasses.root}`]: {
+                                fill: '#FFFFFF',
+                                fontSize: '0.75rem',
+                                fontWeight: 300,                 // light
+                                fontFamily: "'Inter', sans-serif",
+                                letterSpacing: '0.5px',          // subtle spacing
+                                textTransform: 'none',   
+                              },
+                            }}
+                            slotProps={{
+                                legend: {
+                                  sx: {
+                                    // Style legend labels
+                                    color: '#FFFFFF',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 300,
+                                    fontFamily: "'Inter', sans-serif",
+                                    letterSpacing: '0.5px',
+                                    // Style legend marks (circles or squares)
+                                    '.MuiChartsLegend-mark': {
+                                      // for example, color of mark
+                                      fill: '#22C55E',
+                                    },
+                                  },
+                                },
+                            }}
+                />
+              </div>
+            </div>
+        
+            <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
+              <h3 className="text-white font-heading text-lg mb-2 tracking-wide">Calories Burned (kcal)</h3>
+              <div className="mx-auto">
+                <PieChart series={[{ 
+                              innerRadius: 50, 
+                              outerRadius: 100, 
+                              data: [
+                                {label: "Burned", value: dailySummary.calories_burned_today, color: "#22C55E"},
+                                {label: "Remaning", value: user?.daily_calories_burned - dailySummary.calories_burned_today, color: "#1E293B"},
+                              ],
+                              arcLabel: 'value' 
+                          }]}
+                          {...settings}
+                          sx={{
+                              [`& .${pieArcClasses.root}`]: {
+                                stroke: 'none', // remove white border
+                              },
+                              [`& .${pieArcLabelClasses.root}`]: {
+                                fill: '#FFFFFF',
+                                fontSize: '0.75rem',
+                                fontWeight: 300,                 // light
+                                fontFamily: "'Inter', sans-serif",
+                                letterSpacing: '0.5px',          // subtle spacing
+                                textTransform: 'none',   
+                              },
+                            }}
+                            slotProps={{
+                                legend: {
+                                  sx: {
+                                    // Style legend labels
+                                    color: '#FFFFFF',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 300,
+                                    fontFamily: "'Inter', sans-serif",
+                                    letterSpacing: '0.5px',
+                                    // Style legend marks (circles or squares)
+                                    '.MuiChartsLegend-mark': {
+                                      // for example, color of mark
+                                      fill: '#22C55E',
+                                    },
+                                  },
+                                },
+                            }}
+                />
+              </div>
+            {/* </div> */}
         </div>
       </div>
-
-      <div className="bg-neutral-card rounded-2xl shadow-md p-6">
+      <div className="bg-neutral-card rounded-2xl shadow-md p-6 col-span-2 h-full overflow-hidden flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-heading text-xl text-accent-green mb-4">Workout History</h2>
-          <Link to='/workouts/new' className="bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow">
+          <Link to='/workouts/new' className="text-xs bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow">
             + Add Workout
           </Link>
         </div>
@@ -193,16 +287,16 @@ const loadWorkouts = async () => {
               <h2>{error}</h2>
             </div>
           ))}
-        <div className="overflow-x-auto text-sm">
+        <div className="text-sm overflow-y-auto h-[calc(100%-3rem)]">
           <table className="w-full text-left border-collapse">
-            <thead>
+            <thead className="sticky top-0">
               <tr className="text-neutral-subtext border-b border-neutral-hover">
-                <th className="p-3 font-sans">Workout Date</th>
-                <th className="p-3 font-sans">Workout Type</th>
-                <th className="p-3 font-sans">Calories Burned (kcal)</th>
-                <th className="p-3 font-sans">Duration (mins)</th>
-                <th className="p-3 font-sans">No. of Exercises Done</th>
-                <th className="p-3 font-sans"></th>
+                <th className="text-left px-4 py-2 text-sm font-semibold text-white">Workout Date</th>
+                <th className="text-left px-4 py-2 text-sm font-semibold text-white">Workout Type</th>
+                <th className="text-left px-4 py-2 text-sm font-semibold text-white">Calories Burned (kcal)</th>
+                <th className="text-left px-4 py-2 text-sm font-semibold text-white">Duration (mins)</th>
+                <th className="text-left px-4 py-2 text-sm font-semibold text-white">No. of Exercises Done</th>
+                <th className="text-left px-4 py-2 text-sm font-semibold text-white"></th>
               </tr>
             </thead>
             <tbody>
@@ -211,7 +305,7 @@ const loadWorkouts = async () => {
                 <tr 
                   key={workout.id} 
                   onClick={editingRowId === null ? () => navigate(`/workouts/${workout.id}`) : undefined} 
-                  className="cursor-pointer hover:bg-neutral-hover transition-colors"
+                 className="border-b border-neutral-hover hover:bg-neutral-hover/50"
                 >
                   {editingRowId === workout.id ? (
                     <>

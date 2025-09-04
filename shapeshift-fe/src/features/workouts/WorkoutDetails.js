@@ -6,6 +6,8 @@ import ExercisesList from "../exercises/ExercisesList";
 import NewWorkoutForm from "./NewWorkoutForm"
 import { useError } from "../../contexts/ErrorContext";
 import { FilePenLine, Trash2, Edit } from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { PieChart, pieArcClasses, pieArcLabelClasses } from "@mui/x-charts";
 
 function WorkoutDetails(){
 
@@ -17,7 +19,14 @@ function WorkoutDetails(){
 
   const { errors, setErrors } = useError();
 
+  const { user } = useAuth()
+
   const token = localStorage.getItem('token');
+
+    const settings = {
+    width: 200,
+    height: 200,
+  }
 
   useEffect(() => {
     // clear error after displaying it once
@@ -115,28 +124,120 @@ function WorkoutDetails(){
             </span>
           </h2>
         </div>
-        
-      <div className="bg-neutral-card rounded-2xl shadow-md p-6 w-full max-w-md mx-auto">
-        <h2 className="font-heading text-xl text-white mb-4">Workout Summary</h2>
-        <div className="space-y-3 text-white">
-          <div className="flex justify-between">
-            <span className="font-medium text-gray-300">Workout Date:</span>
-            <span>{workout.workout_date}</span>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="bg-neutral-card rounded-2xl shadow-md p-6 w-full max-w-md mx-auto">
+            <h2 className="font-heading text-xl text-white mb-4">Workout Summary</h2>
+            <div className="space-y-3 text-white">
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Workout Date:</span>
+                <span>{workout.workout_date}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Type:</span>
+                <span>{workout.workout_type}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Calories Burned:</span>
+                <span>{workout.calories_burned} kcal</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium text-gray-300">Duration:</span>
+                <span>{workout.duration} min</span>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium text-gray-300">Type:</span>
-            <span>{workout.workout_type}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="font-medium text-gray-300">Calories Burned:</span>
-            <span>{workout.calories_burned} kcal</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="font-medium text-gray-300">Duration:</span>
-            <span>{workout.duration} min</span>
-          </div>
-        </div>
-      </div>  
+          {/* <div className="bg-neutral-card rounded-2xl shadow-md p-6 w-full max-w-md mx-auto flex flex-row col-span-2"> */}
+            <div className="bg-neutral-card rounded-2xl shadow-md p-4 w-full max-w-md mx-auto">
+               <h3 className="text-white font-heading text-lg mb-3 tracking-wide">Calories</h3>
+            <PieChart series={[{ 
+                              innerRadius: 50, 
+                              outerRadius: 100, 
+                              data: [
+                                {label: "FInished", value: workout.calories_burned, color: "#22C55E"},
+                                {label: "Remaning", value: user?.daily_calories_burned - workout.calories_burned, color: "#1E293B"},
+                              ],
+                              arcLabel: 'value' 
+                          }]}
+                          {...settings}
+                          sx={{
+                              [`& .${pieArcClasses.root}`]: {
+                                stroke: 'none', // remove white border
+                              },
+                              [`& .${pieArcLabelClasses.root}`]: {
+                                fill: '#FFFFFF',
+                                fontSize: '0.75rem',
+                                fontWeight: 300,                 // light
+                                fontFamily: "'Inter', sans-serif",
+                                letterSpacing: '0.5px',          // subtle spacing
+                                textTransform: 'none',   
+                              },
+                            }}
+                            slotProps={{
+                                legend: {
+                                  sx: {
+                                    // Style legend labels
+                                    color: '#FFFFFF',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 300,
+                                    fontFamily: "'Inter', sans-serif",
+                                    letterSpacing: '0.5px',
+                                    // Style legend marks (circles or squares)
+                                    '.MuiChartsLegend-mark': {
+                                      // for example, color of mark
+                                      fill: '#22C55E',
+                                    },
+                                  },
+                                },
+                            }}
+                />
+                </div>
+                <div className="bg-neutral-card rounded-2xl shadow-md p-4 w-full max-w-md mx-auto">
+              <h3 className="text-white font-heading text-lg mb-3 tracking-wide">Duration</h3>
+            <PieChart series={[{ 
+                              innerRadius: 50, 
+                              outerRadius: 100, 
+                              data: [
+                                {label: "FInished", value: workout.duration, color: "#22C55E"},
+                                {label: "Remaning", value: user?.workout_duration - workout.duration, color: "#1E293B"},
+                              ],
+                              arcLabel: 'value' 
+                          }]}
+                          {...settings}
+                          sx={{
+                              [`& .${pieArcClasses.root}`]: {
+                                stroke: 'none', // remove white border
+                              },
+                              [`& .${pieArcLabelClasses.root}`]: {
+                                fill: '#FFFFFF',
+                                fontSize: '0.75rem',
+                                fontWeight: 300,                 // light
+                                fontFamily: "'Inter', sans-serif",
+                                letterSpacing: '0.5px',          // subtle spacing
+                                textTransform: 'none',   
+                              },
+                            }}
+                            slotProps={{
+                                legend: {
+                                  sx: {
+                                    // Style legend labels
+                                    color: '#FFFFFF',
+                                    fontSize: '0.75rem',
+                                    fontWeight: 300,
+                                    fontFamily: "'Inter', sans-serif",
+                                    letterSpacing: '0.5px',
+                                    // Style legend marks (circles or squares)
+                                    '.MuiChartsLegend-mark': {
+                                      // for example, color of mark
+                                      fill: '#22C55E',
+                                    },
+                                  },
+                                },
+                            }}
+                />
+                </div>
+          
+          <div></div>
+      </div>
       <ExercisesList workout={workout}/>
       </>
       }
