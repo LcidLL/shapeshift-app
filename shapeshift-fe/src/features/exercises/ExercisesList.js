@@ -4,6 +4,9 @@ import { API_URL } from "../../constants/Constants";
 import AddExerciseForm from "./AddExerciseForm";
 import { MoreHorizontal } from "lucide-react";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 function ExercisesList(props){
   const { workout } = props
@@ -136,10 +139,26 @@ function ExercisesList(props){
     setEditForm({});
   }
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event, exercise) => {
+    setOpenMenu(openMenu === exercise.id ? null : exercise.id)
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const modalId = open ? 'simple-popover' : undefined;
+
   if (!exercises) return(<h1>Loading...</h1>)
 
   return(
     <div>
+      
+
       <div className="flex items-center justify-between mb-4">
           <h2 className="font-heading text-2xl text-white flex items-center gap-3">Exercises
             
@@ -156,7 +175,7 @@ function ExercisesList(props){
         )) }
 
          <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse h-full">
             <thead>
               <tr className="text-neutral-subtext border-b border-neutral-hover">
                 <th className="p-3 font-sans">Name</th>
@@ -190,7 +209,7 @@ function ExercisesList(props){
 
                 <tr
                   key={index}
-                  className="hover:bg-neutral-hover transition-colors text-white"
+                  className="hover:bg-neutral-hover/30 transition-colors text-white"
                 >
                 <td className="p-3">{exercise.exercise_name}</td>
                 {editingRowId === exercise.id ? (
@@ -277,7 +296,7 @@ function ExercisesList(props){
                       </td></>)}
         
 
-                      <td className="p-3 flex gap-2">
+                      <td className="p-3 flex gap-2 flex-row justify-center item-center">
                         <button
                           onClick={handleSave}
                           className="bg-accent-green hover:bg-green-600 text-white text-xs px-3 py-1 rounded-lg"
@@ -321,9 +340,7 @@ function ExercisesList(props){
                       >
                         <div className="relative group inline-block">
                           <button
-                            onClick={() =>
-                              setOpenMenu(openMenu === exercise.id ? null : exercise.id)
-                            }
+                            onClick={(e) => handleClick(e, exercise)}
                             className="p-2 rounded-full hover:bg-neutral-hover"
                           >
                             <MoreHorizontal className="w-5 h-5 text-white" />
@@ -336,29 +353,36 @@ function ExercisesList(props){
                         </div>
 
                         {openMenu === exercise.id && (
-                          <div className="absolute right-6 top-10 bg-neutral-card border border-neutral-hover rounded-lg shadow-lg w-40 z-10">
-                            <button
-                              onClick={() => {
-                                setOpenMenu(null);
-                              }}
-                              className="block w-full text-left px-4 py-2 text-white hover:bg-neutral-hover font-sans"
-                            >
-                              Add Exercise
-                            </button>
+ <>
+                                <Popover
+                                  id={modalId}
+                                  open={open}
+                                  anchorEl={anchorEl}
+                                  onClose={handleClose}
+                                  anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                  }}
+                                >
+                                  <Typography sx ={{backgroundColor: "#1A1D23"}}>
+
+                          <div className="w-40">
                             <button
                               onClick={() => handleEdit(exercise)}
-                              className="block w-full text-left px-4 py-2 text-white hover:bg-neutral-hover font-sans"
+                              className="text-sm block w-full text-left px-4 py-2 text-white hover:bg-neutral-hover font-sans"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => handleDelete(exercise)}
-                              className="block w-full text-left px-4 py-2 text-red-500 hover:bg-neutral-hover font-sans"
+                              className="text-sm block w-full text-left px-4 py-2 text-red-500 hover:bg-neutral-hover font-sans"
                             >
                               Delete
                             </button>
                           </div>
-                        )}</td>
+                          </Typography>
+                                </Popover>
+                      </>  )}</td>
                     </>)}
                  </tr>
               )) }

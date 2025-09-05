@@ -5,6 +5,10 @@ import { Link } from "react-router-dom";
 import NewDailyPlanForm from "./NewDailyPlanForm";
 import DailyPlanList from "./DailyPlanList";
 import { useError } from "../../contexts/ErrorContext";
+import { AlarmClock, Plus } from "lucide-react";
+import { Tooltip } from "@mui/material";
+import ReminderForm from "../reminders/ReminderForm";
+import RemindersList from "../reminders/RemindersList";
 
 function PlanDetails(){
 
@@ -13,6 +17,7 @@ function PlanDetails(){
   const [plan, setPlan] = useState("")
   const [refreshFlag, setRefreshFlag] = useState(false)
   const [isDisplayed, setIsDisplayed] = useState(false)
+  const [showReminderForm, setShowReminderForm] = useState(false)
 
   const {errors, setErrors} = useError()
   const token = localStorage.getItem('token');
@@ -50,23 +55,75 @@ function PlanDetails(){
 
   return(
     <div className="mt-2">
-      <h1 className="text-2xl font-semibold text-accent-green mb-3">{plan.plan_name}</h1>
+      <div className="flex items-center justify-center mb-4">
+        <h1 className="text-2xl font-heading font-semibold text-accent-white mb-3 flex flex-row">{plan.plan_name}
+          <span className="flex ml-2">
+            <Tooltip title="Add Workout" placement="bottom" arrow
+              slotProps={{
+                popper: {
+                  modifiers: [
+                    {
+                      name: 'offset',
+                      options: {
+                        offset: [0, -10],
+                      },
+                    },
+                  ],
+                },
+              }}>
+              <span>
+                <button
+                  onClick={() => setIsDisplayed(true)}
+                  className="p-1 rounded-lg hover:bg-neutral-hover"
+                  title="Edit exercises"
+                >
+                  <Plus className="w-4 h-4 text-accent-green" />
+                </button>
+              </span>
+            </Tooltip>
+            <Tooltip title="Set Reminder" placement="bottom" arrow
+              slotProps={{
+                popper: {
+                  modifiers: [
+                    {
+                      name: 'offset',
+                      options: {
+                        offset: [0, -10],
+                      },
+                    },
+                  ],
+                },
+              }}>
+              <span>
+                <button
+                  onClick={() => setShowReminderForm(true)}
+                  className="p-1 rounded-lg hover:bg-neutral-hover"
+                >
+                  <AlarmClock className="w-4 h-4 text-blue-500" />
+                </button>
+              </span>
+            </Tooltip>
+          </span>
+        </h1>
+      </div>
+      
       <p className="text-sm font-sans text-neutral-text mb-3">{plan.description}</p>
-      <button 
-        onClick={() => setIsDisplayed(true)} 
-        className="text-xs bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow mb-4">
-          + Add Workout
-      </button>
+
       {isDisplayed &&
-      <>
+      <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
         <NewDailyPlanForm onTrigger={triggerRefresh} setIsDisplayed={setIsDisplayed}/>
-        </>
+        </div>
         }
-      {!isDisplayed && 
-      <>
+      
         <DailyPlanList refreshFlag={refreshFlag}/>
-      </>
-      }
+
+        {showReminderForm && 
+            <>
+            <ReminderForm setShowReminderForm={setShowReminderForm}/>
+            <RemindersList />
+            </>
+          }
+    
     </div>
   )
 }

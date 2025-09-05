@@ -92,7 +92,7 @@ function PlansList() {
 
   return (
     <div>
-      <h2>Plans</h2>
+      <h1 className="text-2xl font-heading font-semibold text-accent-white mb-3 flex flex-row">Workout Plans</h1>
       <Link to='/generate-workout'>Generate Workout Plan</Link>
       <Link to='/plans/new'>New Workout Plan</Link>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

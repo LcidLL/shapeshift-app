@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
 import { useNavigate, useParams } from "react-router-dom";
 import NewExerciseForm from "./NewExerciseForm"
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, X } from "lucide-react";
 
 function ExercisePlansList(props){
 
@@ -105,7 +105,7 @@ function ExercisePlansList(props){
   return(
     <div className="space-y-2 text-white text-sm">
       { exercisePlans.map((exercise) => [
-        <div key={exercise.id} className="bg-neutral-card rounded-lg p-2 hover:bg-neutral-hover/70 transition-colors">
+        <div key={exercise.id} className="relative bg-neutral-card rounded-lg p-3 transition-colors">
             <p className="font-medium">{exercise.exercise_name}</p>
             {exercise.sets && (
               <p className="text-gray-400 text-xs">
@@ -118,16 +118,14 @@ function ExercisePlansList(props){
               </p>
             )} */}
           { exercise.workout_date > today &&   
-            <div className="relative">
-              <div className="absolute bottom-0 right-0 flex flex-row justify-evenly">
-              <button onClick={() => displayEditExercisePlan(exercise.id)}>
+            <div className="absolute top-1 right-1 flex flex-row justify-evenly">
+              {/* <button onClick={() => displayEditExercisePlan(exercise.id)}>
                 <Edit className="w-3 h-3 text-gray-500"/>
+              </button> */}
+              <button onClick={() => deleteExercisePlan(exercise.id)}>
+                <X className="w-3 h-3 text-gray-500 hover:cursor-pointer hover:text-neutral-subtext" />
               </button>
-            <button onClick={() => deleteExercisePlan(exercise.id)}>
-              <Trash2 className="w-3 h-3 text-gray-500" />
-          </button>
-          </div>
-          </div>
+            </div>
           }
           {
             exercise.id === exercisePlanId &&

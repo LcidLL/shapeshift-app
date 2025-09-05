@@ -177,7 +177,10 @@ const loadWorkouts = async () => {
   return(
     <div className="grid grid-cols-3 gap-4 h-full">
       <div className="flex flex-col justify-around col-span-1">
-        <div></div>
+        <div className="flex flex-col text-left">
+        <h1 className="text-2xl font-heading font-semibold text-accent-white flex flex-row">Today's Workout Summary</h1>
+        <span className="text-white rounded px-2 py-1">{maxDate}</span>
+        </div>
         {/* <div className="row-span-3 h-full flex flex-col justify-around"> */}
             <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
               <h3 className="text-white font-heading text-lg mb-2 tracking-wide">Workout Duration (mins)</h3>
