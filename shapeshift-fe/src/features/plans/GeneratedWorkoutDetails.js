@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 
-function GeneratedWorkoutDetails(){
-
+function GeneratedWorkoutDetails(props){
+const {result} = props
+console.log(result)
   const location = useLocation()
   const navigate = useNavigate() 
-  const result = location.state?.result
+  // const result = location.state?.result
   const {plan_title, week} = result
   const [startDate, setStartDate] = useState("")
   const [startDateInput, setStartDateInput] = useState(false)
@@ -153,7 +154,7 @@ function GeneratedWorkoutDetails(){
   }
 
   return(
-    <div>
+    <div className="w-full">
       <div style={{ padding: '20px' }}>
       <h2>Workout Plan Result</h2>
       <button onClick={() => setStartDateInput(true)}>

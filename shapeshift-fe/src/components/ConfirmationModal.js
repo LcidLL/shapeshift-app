@@ -1,6 +1,6 @@
 function ConfirmationModal (props) {
 
-  const { open, onClose, onConfirm, workout, exercise } = props
+  const { open, onClose, onConfirm, workout, exercise, daily} = props
 
   if (!open) return null;
 
@@ -12,15 +12,26 @@ function ConfirmationModal (props) {
           Confirm Deletion
         </h2>
         <div className="text-md text-gray-300 mb-6 font-sans">
-          <p>Are you sure you want to delete this {workout ? "workout" : "exercise"}?</p>
+          <p>Are you sure you want to delete this {workout || daily ? "workout" : "exercise"}?</p>
           <br />
-          { workout ? <>
+          { workout && <>
             <p><strong>Workout date:</strong>  {`${workout?.workout_date}`}</p>
             <p><strong>Workout Type:</strong>  {`${workout?.workout_type}`}</p>
             <p><strong>Execises logged:</strong>  {`${workout?.exercises_count}`}</p>
             <br />
             All exercises logged under this workout will also be deleted. This action cannot be undone.
-            </> : <p><strong>Exercise name:</strong>  {`${exercise?.exercise_name}`}</p>
+            </>
+          }
+          { exercise &&
+            <p><strong>Exercise name:</strong>  {`${exercise?.exercise_name}`}</p>
+          }
+          { daily && <>
+            <p><strong>Workout Name:</strong>  {`${daily?.workout_name}`}</p>
+            <p><strong>Workout Date:</strong>  {`${daily?.workout_date}`}</p>
+            <p><strong>Day of Week:</strong>  {`${daily?.day_of_week}`}</p>
+            <br />
+            All exercises logged under this workout will also be deleted. This action cannot be undone.
+            </>
           }
         </div>
 

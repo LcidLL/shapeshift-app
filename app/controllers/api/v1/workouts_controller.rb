@@ -8,7 +8,8 @@ class Api::V1::WorkoutsController < ApplicationController
   end
 
   def show 
-    render json: @workout
+    remaining_data = get_remaining
+    render json: {data: @workout, remaining:  remaining_data}
   end
 
   def create
@@ -47,7 +48,7 @@ class Api::V1::WorkoutsController < ApplicationController
 
   def daily_summary
     @workouts = current_user.workouts
-    data = @workouts.summary_today
+    data = @workouts.summary_today(current_user.daily_calories_burned, current_user.workout_duration)
     render json: data
   end
 
@@ -59,5 +60,12 @@ class Api::V1::WorkoutsController < ApplicationController
 
   def set_workout
     @workout = Workout.find(params[:id])
+  end
+
+  def get_remaining
+    {
+      calories: current_user.daily_calories_burned - @workout.calories_burned,
+      duration: current_user.workout_duration - @workout.duration
+    }
   end
 end

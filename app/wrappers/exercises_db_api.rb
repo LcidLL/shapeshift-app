@@ -21,10 +21,10 @@ class ExercisesDbApi
 
     # Determine if you want to filter
     filters = {}
-    filters[:equipment] = equipment if equipment.present?
-    filters[:muscle] = muscle if muscle.present?
-    filters[:level] = level if level.present?
-    filters[:mechanic] = mechanic if mechanic.present?
+    filters[:equipment] = equipment.sub(/^./, &:downcase).gsub(' ', '_') if equipment.present?
+    filters[:muscle] = muscle.sub(/^./, &:downcase).gsub(' ', '_') if muscle.present?
+    filters[:level] = level.sub(/^./, &:downcase) if level.present?
+    filters[:mechanic] = mechanic.sub(/^./, &:downcase) if mechanic.present?
 
     url = URI(base_url)
     url.query = URI.encode_www_form(filters) if filters.any?

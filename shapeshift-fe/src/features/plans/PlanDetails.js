@@ -49,9 +49,14 @@ function PlanDetails(){
 
 
   return(
-    <div>
-      <h1>{plan.plan_name}</h1>
-      <p>{plan.description}</p>
+    <div className="mt-2">
+      <h1 className="text-2xl font-semibold text-accent-green mb-3">{plan.plan_name}</h1>
+      <p className="text-sm font-sans text-neutral-text mb-3">{plan.description}</p>
+      <button 
+        onClick={() => setIsDisplayed(true)} 
+        className="text-xs bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow mb-4">
+          + Add Workout
+      </button>
       {isDisplayed &&
       <>
         <NewDailyPlanForm onTrigger={triggerRefresh} setIsDisplayed={setIsDisplayed}/>
@@ -59,11 +64,9 @@ function PlanDetails(){
         }
       {!isDisplayed && 
       <>
-        <button onClick={() => setIsDisplayed(true)}>Add Workout</button>
         <DailyPlanList refreshFlag={refreshFlag}/>
       </>
       }
-      <Link to={`/plans/`}>Back</Link>
     </div>
   )
 }

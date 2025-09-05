@@ -1,17 +1,38 @@
 import { useEffect, useState } from "react"
 import { API_URL } from "../../constants/Constants"
 import { useError } from "../../contexts/ErrorContext";
+import LineChartGraph from "../../components/LineChartGraph";
+import { data } from "react-router-dom";
 
 function WorkoutsSummary(){
 
   const {errors, setErrors} = useError()
 
   const [dataSummary, setDataSummary] = useState("")
+  const [period, setPeriod] = useState("")
+  const [dates, setDates] = useState("")
+  const [caloriesData, setCaloriesData] = useState({})
+  const [durationData, setDurationData] = useState({})
   const token = localStorage.getItem('token');
 
   useEffect(()=>{
     getWorkoutSummary("day")
   }, [])
+
+  const getXAxis = async (data,period) => {
+    if (period === "day") {
+    const minDate = new Date(Math.min(...data.map(item => new Date(item.periodStart))))
+    const maxDate = new Date(Math.max(...data.map(item => new Date(item.periodStart))))
+    setDates({
+      minDate,
+      maxDate
+    })
+  }
+
+    if (period === "week") {
+      setDates(data.map(item => item.workoutPeriod))
+    }
+  }
 
   const getWorkoutSummary = async (period) => {
     try {
@@ -23,7 +44,11 @@ function WorkoutsSummary(){
       })
       if (response.ok) {
           const json = await response.json();
+          console.log(json)
           setDataSummary(json);
+          setCaloriesData(json.map((data) => ({periodStart: data.periodStart, totalCalories: data.totalCalories})));
+          setDurationData(json.map((data) => ({periodStart: data.periodStart, totalCalories: data.totalDuration})));
+          setPeriod(period)
         } else {
           setErrors(["Failed to fetch workout summary."])
         }
@@ -51,6 +76,8 @@ function WorkoutsSummary(){
           </div>
         ])}
       </div> : <h1>Loading data...</h1>}
+      {dataSummary&&<LineChartGraph dataSummary={caloriesData} period={period}/>}
+      {dataSummary&&<LineChartGraph dataSummary={durationData} period={period}/>}
     </div>
   )
 }
