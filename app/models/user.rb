@@ -4,6 +4,8 @@ class User < ApplicationRecord
          :confirmable,
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
+  before_create :set_jti
+
   has_many :workouts, dependent: :destroy
   has_many :plans, dependent: :destroy
   has_many :meals, dependent: :destroy
@@ -46,5 +48,11 @@ class User < ApplicationRecord
   # meal log checker
   def active_meal_logger?
     meals.where(meal_date: 3.days.ago..Date.current).exists?
+  end
+
+  private
+
+  def set_jti
+    self.jti ||= SecureRandom.uuid
   end
 end

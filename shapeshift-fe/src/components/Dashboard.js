@@ -24,8 +24,8 @@ function Dashboard() {
       <div>
         <h2>Navigation</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <Link to={`/users/${user?.id}/workouts`}>My Workouts</Link>
-          <Link to={`/users/${user?.id}/plans`}>Workout Plans</Link>
+          <Link to="/workouts">My Workouts</Link>
+          <Link to="/plans">Workout Plans</Link>
           <Link to="/profile">Manage Profile</Link>
         </div>
       </div>
