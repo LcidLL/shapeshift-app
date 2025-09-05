@@ -18,7 +18,8 @@ class Participation < ApplicationRecord
     data.merge(
       progress: progress,
       challenge_name: challenge&.name,
-      user_name: user&.name
+      user_name: [user&.first_name, user&.last_name].compact.join(' '),
+      times_completed: Participation.where(user_id: user_id, challenge_id: challenge_id).select { |p| p.progress == 100 }.count
     )
   end
 

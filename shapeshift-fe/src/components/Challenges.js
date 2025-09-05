@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChallengeForm from './ChallengeForm';
+import InvitesModal from './InvitesModal';
 
 const Challenges = () => {
+  const [showInvites, setShowInvites] = useState(false);
   const [challenges, setChallenges] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -59,6 +61,7 @@ const Challenges = () => {
 
   return (
     <div className="challenges-page">
+      <InvitesModal show={showInvites} onClose={() => setShowInvites(false)} />
       <h1>Challenges</h1>
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
         <button
@@ -72,6 +75,12 @@ const Challenges = () => {
           onClick={() => navigate('/my-challenges')}
         >
           My Challenges
+        </button>
+        <button
+          style={{ background: '#6c63ff', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+          onClick={() => setShowInvites(true)}
+        >
+          Invites
         </button>
       </div>
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
@@ -89,7 +98,7 @@ const Challenges = () => {
         >
           <option value="all">All Types</option>
           <option value="group">Group</option>
-          <option value="individual">Individual</option>
+          <option value="individual">Solo</option>
         </select>
       </div>
       {filteredChallenges.length === 0 ? (
@@ -99,7 +108,7 @@ const Challenges = () => {
           {filteredChallenges.map((challenge) => (
             <li
               key={challenge.id}
-              style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
+              style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline', position: 'relative' }}
               onClick={() => navigate(`/challenges/${challenge.id}`)}
             >
               {challenge.name} <span style={{color: '#555', fontWeight: 'bold', marginLeft: 8}}>

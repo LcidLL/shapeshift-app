@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   before_create :set_jti
 
+  has_many :participations, dependent: :destroy
   has_many :workouts, dependent: :destroy
   has_many :plans, dependent: :destroy
   has_many :meals, dependent: :destroy

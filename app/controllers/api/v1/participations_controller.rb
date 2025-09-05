@@ -3,8 +3,7 @@ class Api::V1::ParticipationsController < ApplicationController
   
   def index
     participations = current_user.participations.includes(:challenge, :user)
-    challenges = participations.map(&:challenge)
-    render json: challenges, except: %i[created_at updated_at group_started_at challengeable_id duration_minutes]
+    render json: participations, include: :challenge
   end
 
   def show

@@ -39,13 +39,21 @@ const MyChallenges = () => {
         <p>You haven't joined any challenges yet.</p>
       ) : (
         <ul>
-          {[...new Map(challenges.map(ch => [ch.id, ch])).values()].map((challenge) => (
+          {Object.values(
+            challenges.reduce((acc, p) => {
+              const cid = p.challenge.id;
+              if (!acc[cid] || new Date(p.joined_at) > new Date(acc[cid].joined_at)) {
+                acc[cid] = p;
+              }
+              return acc;
+            }, {})
+          ).map((p) => (
             <li
-              key={challenge.id}
+              key={p.id}
               style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
-              onClick={() => navigate(`/challenges/${challenge.id}`, { state: { fromMyChallenges: true } })}
+              onClick={() => navigate(`/challenges/${p.challenge.id}`, { state: { fromMyChallenges: true } })}
             >
-              {challenge.name}
+              {p.challenge.name}
             </li>
           ))}
         </ul>
