@@ -1,5 +1,5 @@
 class Api::V1::ChallengesController < ApplicationController
-  before_action :require_admin, only: %i[update destroy]
+  before_action :require_admin, only: %i[update]
   before_action :set_challenge, only: %i[show update destroy]
 
   def index

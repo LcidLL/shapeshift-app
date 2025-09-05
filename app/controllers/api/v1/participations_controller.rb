@@ -1,24 +1,10 @@
 class Api::V1::ParticipationsController < ApplicationController
   before_action :set_participation, only: %i[show destroy]
-
+  
   def index
-    participations = Participation.includes(:challenge, :user).all
-    grouped = participations.group_by { |p| [p.challenge_id, p.group_config_id] }
-    render json: grouped.map { |(challenge_id, group_config_id), parts|
-      challenge_type = parts.first.challenge&.challengeable_type
-      base = {
-        challenge_id: challenge_id,
-        group_config_id: group_config_id,
-        challenge_type: challenge_type,
-        progress: parts.first.progress
-      }
-      if challenge_type == 'IndividualConfig'
-        base.merge!(user: { id: parts.first.user_id, name: parts.first.user&.name })
-      else
-        base.merge!(members: parts.map { |part| { id: part.user_id, name: part.user&.name } })
-      end
-      base
-    }
+    participations = current_user.participations.includes(:challenge, :user)
+    challenges = participations.map(&:challenge)
+    render json: challenges, except: %i[created_at updated_at group_started_at challengeable_id duration_minutes]
   end
 
   def show
@@ -28,6 +14,7 @@ class Api::V1::ParticipationsController < ApplicationController
   def create
     challenge = Challenge.find_by(id: params[:participation][:challenge_id])
     participation_attrs = participation_params.to_h
+    participation_attrs['user_id'] = current_user.id
 
     if challenge&.challengeable_type == 'IndividualConfig'
       participation_attrs.delete('group_config_id')

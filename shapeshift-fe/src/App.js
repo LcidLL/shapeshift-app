@@ -24,6 +24,10 @@ import Layout  from './components/Layout';
 import WorkoutsSummary from './features/workouts/WorkoutsSummary';
 import Analytics from './components/Analytics';
 import ExerciseInfo from './features/plans/ExerciseInfo';
+import Challenges from './components/Challenges';
+import ChallengeDetails from './components/ChallengeDetails';
+import CreateChallengePage from './components/CreateChallengePage';
+import MyChallenges from './components/MyChallenges';
 
 function App() {
   return (
@@ -118,6 +122,21 @@ function App() {
             <Route path="/challenges" element={
               <ProtectedRoute>
                 <Challenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/new" element={
+              <ProtectedRoute>
+                <CreateChallengePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-challenges" element={
+              <ProtectedRoute>
+                <MyChallenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/:id" element={
+              <ProtectedRoute>
+                <ChallengeDetails />
               </ProtectedRoute>
             } />
           </Routes>

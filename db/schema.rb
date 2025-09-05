@@ -193,8 +193,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_04_023130) do
     t.integer "daily_calories_burned"
     t.integer "workout_duration"
     t.float "target_weight"
-    t.string "jti"
     t.boolean "admin", default: false, null: false
+    t.string "jti", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
