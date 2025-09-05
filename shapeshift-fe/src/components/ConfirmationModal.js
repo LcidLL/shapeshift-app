@@ -17,7 +17,7 @@ function ConfirmationModal (props) {
           { workout && <>
             <p><strong>Workout date:</strong>  {`${workout?.workout_date}`}</p>
             <p><strong>Workout Type:</strong>  {`${workout?.workout_type}`}</p>
-            <p><strong>Execises logged:</strong>  {`${workout?.exercises_count}`}</p>
+            {workout.exercises_count && <p><strong>Execises logged:</strong>  {`${workout?.exercises_count}`}</p>}
             <br />
             All exercises logged under this workout will also be deleted. This action cannot be undone.
             </>

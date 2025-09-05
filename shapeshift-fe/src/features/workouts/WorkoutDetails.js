@@ -9,6 +9,7 @@ import { FilePenLine, Trash2, Edit } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { PieChart, pieArcClasses, pieArcLabelClasses } from "@mui/x-charts";
 import { Tooltip } from "@mui/material";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 function WorkoutDetails(){
 
@@ -18,6 +19,9 @@ function WorkoutDetails(){
   const [workout, setWorkout] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
   const [remaining, setRemaining] = useState("")
+
+  const [forDeleteWorkout, setForDeleteWorkout] = useState("")
+  const [openDelete, setOpenDelete] = useState(false)
 
   const { errors, setErrors } = useError();
 
@@ -98,6 +102,11 @@ function WorkoutDetails(){
     }
   }
 
+  const handleDelete = (workout) => {
+    setForDeleteWorkout(workout)
+    setOpenDelete(true);
+  }
+
   return (
     <div className="space-y-6">
       { errors && 
@@ -148,9 +157,8 @@ function WorkoutDetails(){
               }}>
                 <span>
                   <button
-                    onClick={() => deleteWorkout(workout.id)}
+                    onClick={() => handleDelete(workout)}
                     className="p-1 rounded-lg hover:bg-neutral-hover"
-                    title="Delete exercises"
                   >
                     <Trash2 className="w-4 h-4 text-red-500" />
                   </button>
@@ -286,6 +294,13 @@ function WorkoutDetails(){
           setIsDisplayed = {setIsDisplayed}
         />
       }
+
+        <ConfirmationModal
+            open={openDelete}
+            onClose={() => setOpenDelete(false)}
+            onConfirm={deleteWorkout}
+            workout = {forDeleteWorkout}
+          />
       
     </div>
   )
