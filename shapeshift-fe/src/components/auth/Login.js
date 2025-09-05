@@ -8,6 +8,7 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -34,7 +35,9 @@ function Login() {
 
   return (
     <div className="login-container">
-      <h1 className="login-title">Login</h1>
+      <h1 className="login-title">ShapeShift</h1>
+      <h2>Welcome Back!</h2>
+      
       <form className="login-form" onSubmit={handleSubmit}>
         {error && (
           <div className="error-message">
@@ -50,6 +53,7 @@ function Login() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
             required
           />
         </div>
@@ -62,18 +66,23 @@ function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
             required
           />
         </div>
-
+        
         <button 
           className="login-button"
           type="submit" 
           disabled={loading}
         >
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Signing In...' : 'Sign In'}
         </button>
       </form>
+
+      <div className="divider">
+        <span>or</span>
+      </div>
 
       <div className="signup-link">
         Don't have an account? <Link to="/signup">Sign up</Link>
