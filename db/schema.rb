@@ -120,8 +120,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_05_091138) do
   end
 
   create_table "jwt_denylists", force: :cascade do |t|
-    t.string "jti"
-    t.datetime "exp"
+    t.string "jti", null: false
+    t.datetime "exp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["jti"], name: "index_jwt_denylists_on_jti"
@@ -194,7 +194,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_05_091138) do
     t.integer "workout_duration"
     t.float "target_weight"
     t.boolean "admin", default: false, null: false
-    t.string "jti", null: false
+    t.string "jti"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
