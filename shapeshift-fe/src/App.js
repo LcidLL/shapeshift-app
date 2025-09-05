@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import NavBar from './components/NavBar';
 import Layout  from './components/Layout';
 import WorkoutsSummary from './features/workouts/WorkoutsSummary';
+import Challenges from './components/Challenges';
 
 function App() {
   return (
@@ -107,6 +108,11 @@ function App() {
              {/* {Redirect to dashboard if route not found in react}  */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
             
+            <Route path="/challenges" element={
+              <ProtectedRoute>
+                <Challenges />
+              </ProtectedRoute>
+            } />
           </Routes>
           </Layout>
         </div>
