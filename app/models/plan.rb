@@ -3,4 +3,8 @@ class Plan < ApplicationRecord
   has_many :daily_plans, dependent: :destroy
 
   validates :plan_name, presence: true
+
+  def daily_plans_count
+    daily_plans.count
+  end
 end

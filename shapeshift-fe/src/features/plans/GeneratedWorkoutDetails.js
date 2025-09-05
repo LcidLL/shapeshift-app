@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
+import { CircularProgress } from "@mui/material";
+import { X } from "lucide-react";
 
 function GeneratedWorkoutDetails(){
 
@@ -14,6 +16,7 @@ function GeneratedWorkoutDetails(){
   const [hasErrors, setHasErrors] = useState(false)
   const [isDone, setIsDone] = useState(false)
   const [statuses, setStatuses] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const token = localStorage.getItem('token')
 
@@ -24,6 +27,7 @@ function GeneratedWorkoutDetails(){
   const day = String(today.getDate()).padStart(2, '0');
 
   const minDate = `${year}-${month}-${day}`;
+  const column = week.length
 
   useEffect(() => {
   if (isDone && !hasErrors) {
@@ -40,6 +44,7 @@ function GeneratedWorkoutDetails(){
     const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
 
     if (dayOfWeek === "Monday"){
+      setIsLoading(true)
       addToWorkoutPlan()
       setErrors("")
     }else{
@@ -154,21 +159,39 @@ function GeneratedWorkoutDetails(){
   }
 
   return(
-    <div className="w-full">
-      <div style={{ padding: '20px' }}>
-      <h1 className="text-2xl font-heading font-semibold text-accent-white mb-3">Workout Plan Result</h1>
-      <button onClick={() => setStartDateInput(true)}>
-        Add to Workout Plan
-      </button>
-      { startDateInput && <div>
-      <input type="date" min={minDate} value={startDate} onChange={(e) => setStartDate(e.target.value)}/>
-       <button onClick={() => checkIfMonday()}>
-        Add to Workout Plan
-      </button>
-      {errors && <span>{errors}</span>}
-      </div>}
-      <h3>{plan_title}</h3>
-      <div className="grid grid-cols-1 lg:grid-cols-7 gap-1">
+      <div>
+        <div className="mt-2">
+      <div className="flex flex-col mb-4 text-left">
+        <h1 className="text-2xl font-heading font-semibold text-accent-white mb-3 flex flex-row">Generated Workout Plan</h1>
+        <div className="mx-auto flex flex-col items-center">
+          <h3 className="text-2xl font-heading text-accent-green text-center">{plan_title}</h3>
+          <button onClick={() => setStartDateInput(true)} className="w-[210px] mt-2 text-sm bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-xl shadow">
+            + Add to Personal Plans
+          </button>
+        </div>
+        </div>
+      { 
+        startDateInput &&     
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70">
+          <div className="relative bg-neutral-card rounded-2xl shadow-lg p-6 w-full max-w-sm">
+            <span onClick={() =>setStartDateInput(false)} className="absolute top-2 right-2 hover:text-neutral-subtext hover:cursor-pointer">
+                <X className="w-4 h-4 text-gray-500 hover:cursor-pointer hover:text-neutral-subtext" />
+              </span>
+              <p className="block text-white text-lg font-sans text-left py-2 mb-2">Set start date (Monday)</p>
+        <input 
+          type="date" min={minDate} value={startDate} onChange={(e) => setStartDate(e.target.value)}
+          className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"/>
+          <button onClick={() => checkIfMonday()}
+          className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-xl shadow mt-4">
+            Add to Workout Plan
+          </button>
+        {errors && <span>{errors}</span>}
+        </div>
+        </div>
+      }
+
+      
+      <div className={`grid grid-cols-1 lg:grid-cols-3 gap-4`}>
         { week.map((daily, i) => (
           <div key={i} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
             <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day} — <em>{statuses[daily.day]}</em></h3> 
@@ -178,7 +201,7 @@ function GeneratedWorkoutDetails(){
                   className="bg-neutral-card rounded-lg p-2 hover:bg-neutral-hover/70 transition-colors"
                 >
                   <p className="font-medium">{exercise?.name || "Rest"}</p>
-                  {exercise.sets && (
+                  {exercise.sets && exercise.name && (
                     <p className="text-gray-400 text-xs">
                     {exercise.sets} { exercise.sets > 1 ? "sets" : "set"} × {exercise.reps !== "" ? `${exercise.reps} reps` : `${exercise.duration_minutes} mins`}
                     </p>

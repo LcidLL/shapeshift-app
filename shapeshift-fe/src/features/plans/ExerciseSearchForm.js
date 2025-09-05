@@ -1,6 +1,6 @@
 import React, { useState, useEffect }from "react";
 import { API_URL } from "../../constants/Constants";
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import { Navigate, useNavigate, Link} from "react-router-dom";
 
 function ExerciseSearchForm(props){
@@ -19,6 +19,7 @@ function ExerciseSearchForm(props){
   const [errors, setErrors] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
   const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(false)
 
   const token = localStorage.getItem('token')
 
@@ -47,6 +48,7 @@ function ExerciseSearchForm(props){
       e.preventDefault()
       setIsSubmitting(true); // Start loading
       setDisplay(false)
+      setIsLoading(true)
   
       try {
         const response = await fetch(`${API_URL}/search?name=${nameQuery}&workout_type=${workoutType}&mechanic=${mechanic}&muscle=${muscle}&equipment=${equipment}&level=${level}`, {
@@ -57,8 +59,7 @@ function ExerciseSearchForm(props){
         if (response.ok) {
             const json = await response.json();
             setExercisesList(json);
-            console.log(json)
-            // setIsDisplayed(false)
+            setIsLoading(true)  
           } else {
             const { errors } = await response.json();
             setErrors(errors);
@@ -92,8 +93,8 @@ function ExerciseSearchForm(props){
     //       }
     }
   return(
-    <div className="flex flex-col items-center justify-between w-full">
-      <h2 className="font-heading text-xl text-white mb-4">Exercise Search</h2>
+    <div className="flex flex-col justify-between w-full">
+      <h2 className="text-2xl font-heading font-semibold text-accent-white mb-3 text-left">Exercise Search</h2>
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col justify-around">
           <div className="row-span-1">
@@ -134,7 +135,7 @@ function ExerciseSearchForm(props){
           </div>
 
           <div>
-            <div className="bg-neutral-card rounded-2xl shadow-lg p-4">
+            <div className="bg-neutral-card rounded-2xl shadow-lg p-4 w-[580px]">
               <h2 className="block text-white text-md mb-3 font-sans mt-2">Search by Filter</h2>
               <form onSubmit={handleSubmit}>
                 <div className="relative bg-neutral-card rounded-2xl shadow-lg p-2 grid grid-cols-2">
@@ -222,10 +223,10 @@ function ExerciseSearchForm(props){
             </div>
           </div>
         </div>
-        <div className="relative bg-neutral-card rounded-2xl shadow-lg p-2 h-4/5 h-[550px]"> 
+        <div className="relative bg-neutral-card rounded-2xl shadow-lg p-2 h-[620px]"> 
           {
-            exercisesList  &&<>
-            <h1>Filter Results</h1>
+            exercisesList  ? <>
+            <h1 className="block text-white text-md mb-3 font-sans mt-2">Exercises Results</h1>
             <div 
               className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-y-scroll mx-auto my-4 p-2 max-h-[550px]">
               {exercisesList.map((exercise, index) => (
@@ -240,7 +241,7 @@ function ExerciseSearchForm(props){
                 </div>
               ))}
             </div>
-            </>
+            </> : <div className="flex flex-col justify-center items-center h-[620px]">{isLoading && <CircularProgress />}</div>
           }
           </div>
           </div>

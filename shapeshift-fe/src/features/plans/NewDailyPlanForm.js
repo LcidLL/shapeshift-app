@@ -47,7 +47,6 @@ function NewDailyPlanForm(props){
       onSubmit(dailyPlanData)
       return
     }
-
     try {
       const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`, {
         method: "POST",
@@ -110,11 +109,14 @@ function NewDailyPlanForm(props){
           required
           className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
         />
+
+        {dayOfWeek && <p className="block text-white text-sm my-2 font-sans">Day of the week: {dayOfWeek}</p>}
+
         <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">
           {dailyPlan ? "Update" : "Add"}
         </button>
       </form>
-      {dayOfWeek && <p className="block text-white text-sm mb-1 font-sans">Day of the week: {dayOfWeek}</p>}
+      
     </div>
   )
 }

@@ -1,27 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 import { X } from "lucide-react";
 
 export default function ReminderForm(props) {
 
-  const { daily, setShowReminderForm } = props
+  const { daily, setShowReminderForm, planId } = props
   const navigate = useNavigate()
 
   const [title, setTitle] = useState(daily?.workout_name || "");
   const [remindAt, setRemindAt] = useState("");
   const [errors, setErrors] = useState("")
+  const [futurePlans, setFuturePlans] = useState("")
 
   const token = localStorage.getItem('token');
+
+  useEffect(()=> {
+    getDailyPlans()
+  },[])
+
+ const getDailyPlans = async () =>{
+        try{
+          const response = await fetch(`${API_URL}/plans/${planId}/daily_plans`,{
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            }
+          });
+          if (response.ok) {
+            const json = await response.json()
+            setFuturePlans(json.future)
+          } else {
+            throw response
+          }
+        } catch (error) {
+          console.error("Fetch error:", error);
+        }
+      }
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+for (const daily of futurePlans){
     const reminderData = {
       title,
       remind_at: `${daily.workout_date} ${remindAt}:00`,
     }
-
     try {
       const response = await fetch(`${API_URL}/plans/${daily.plan_id}/daily_plans/${daily.id}/reminders`, {
         method: "POST",
@@ -34,9 +59,7 @@ export default function ReminderForm(props) {
 
       if(response.ok){
         const { id } = await response.json();
-        alert("Reminder set!");
         setShowReminderForm(false)
-        navigate(`/plans/${daily.plan_id}`);
       } else {
         const errorData = await response.json();
         setErrors(errorData.errors)
@@ -46,6 +69,7 @@ export default function ReminderForm(props) {
       console.error("Error submitting daily plan:", error);
       setErrors(["Something went wrong. Please try again later."]);
     }
+  }
   };
 
   return (

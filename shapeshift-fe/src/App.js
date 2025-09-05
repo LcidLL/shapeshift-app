@@ -118,8 +118,16 @@ function App() {
               </ProtectedRoute>
             } />
 
-            <Route path = "/generate-workout" element={<GenerateWorkoutForm />} />
-            <Route path = "/generate-workout-results" element={<GeneratedWorkoutDetails />} />
+            <Route path = "/generate-workout" element={
+              <ProtectedRoute>
+                <GenerateWorkoutForm />
+              </ProtectedRoute>
+            }/>
+            <Route path = "/generate-workout-results" element={
+              <ProtectedRoute>
+                <GeneratedWorkoutDetails />
+               </ProtectedRoute>
+              } />
             
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 

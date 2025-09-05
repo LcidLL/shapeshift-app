@@ -55,7 +55,7 @@ function NavBar(){
   };
 
   return(
-    <nav className="w-64 bg-neutral-card p-6 flex flex-col"> 
+    <nav className="sticky top-0 z-50 w-64 bg-neutral-card p-6 flex flex-col h-screen"> 
       <h1 className="text-2xl font-bold mb-6">ShapeShift</h1>
 
       {menuSections.map((section) => (

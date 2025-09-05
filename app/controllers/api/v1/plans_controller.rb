@@ -3,7 +3,7 @@ class Api::V1::PlansController < ApplicationController
 
   def index
     @plans = current_user.plans
-    render json: @plans
+    render json: @plans.as_json(methods: :daily_plans_count)
   end
 
   def show
