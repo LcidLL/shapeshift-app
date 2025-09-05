@@ -187,7 +187,7 @@ const loadWorkouts = async () => {
                               outerRadius: 100, 
                               data: [
                                 {label: "FInished", value: dailySummary.duration_today, color: "#22C55E"},
-                                {label: "Remaning", value: user?.workout_duration - dailySummary.duration_today, color: "#1E293B"},
+                                {label: "Remaning", value: dailySummary.remaining_duration, color: "#1E293B"},
                               ],
                               arcLabel: 'value' 
                           }]}
@@ -234,7 +234,7 @@ const loadWorkouts = async () => {
                               outerRadius: 100, 
                               data: [
                                 {label: "Burned", value: dailySummary.calories_burned_today, color: "#22C55E"},
-                                {label: "Remaning", value: user?.daily_calories_burned - dailySummary.calories_burned_today, color: "#1E293B"},
+                                {label: "Remaning", value: dailySummary.remaining_calories, color: "#1E293B"},
                               ],
                               arcLabel: 'value' 
                           }]}

@@ -50,6 +50,10 @@ function NavBar(){
     setOpenMenu(openMenu === name ? null : name);
   };
 
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return(
     <nav className="w-64 bg-neutral-card p-6 flex flex-col"> 
       <h1 className="text-2xl font-bold mb-6">ShapeShift</h1>
@@ -125,14 +129,9 @@ function NavBar(){
         </div>
       ))}
       <NavLink
-        to="/login"
-        className={({ isActive }) =>
-          `flex items-center gap-2 p-2 rounded-lg transition mt-3 text-sm ${
-            isActive
-              ? "bg-gray-700 text-white"
-              : "text-gray-300 hover:bg-gray-800 hover:text-white"
-          }`
-        }
+        onClick={()=> handleLogout()}
+        className=
+          "flex items-center gap-2 p-2 rounded-lg transition mt-3 text-sm text-gray-300 hover:bg-gray-800 hover:text-white"
       >
         <LogOut size={20} />
         <span className="font-sans">Log Out</span>

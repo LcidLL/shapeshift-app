@@ -56,7 +56,7 @@ function AddExerciseForm(){
           return;
         }
         const json = await response.json()
-        setExercisesList(json)
+        setExercisesList(json.data)
       } catch (error) {
         setErrors(['Failed to fetch exercises. Please check your connection or try again later.'])
       }

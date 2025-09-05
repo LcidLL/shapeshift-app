@@ -51,80 +51,101 @@ function GenerateWorkoutForm(){
   }
 
   return(
-    <div>
-    <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 600, margin: 'auto' }} className="space-y-4">
-      <h2>Fitness Plan Setup</h2>
+    <div className="flex flex-col">
+      <h1 className="font-heading text-2xl text-accent-white mb-4 font-semibold">Fitness Plan Setup</h1>
       <button onClick={()=> sendMock()}>Send</button>
-      {/* Goal */}
-      <label className="block text-white text-sm mb-1 font-sans">Fitness Goal *</label>
-      <select {...register('goal', { required: true })} className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green">
-        <option value="">Select your goal</option>
-        <option value="Build muscle">Build muscle</option>
-        <option value="Lose fat">Lose fat</option>
-        <option value="General fitness">General fitness</option>
-        <option value="Improve endurance">Improve endurance</option>
-        <option value="Strength training">Strength training</option>
-      </select>
-      {errors.goal && <p style={{ color: 'red' }}>Goal is required</p>}
+      <form onSubmit={handleSubmit(onSubmit)} style={{ maxWidth: 1000, margin: 'auto' }}>
+        {/* Goal */}
+        <div className="space-y-4 flex flex-col w-[700px]">
+          <div className='flex flex-row justify-between'>
+            <label className="block text-white text-sm mb-1 font-sans">Fitness Goal *</label>
+            <select {...register('goal', { required: true })} className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green">
+              <option value="">Select your goal</option>
+              <option value="Build muscle">Build muscle</option>
+              <option value="Lose fat">Lose fat</option>
+              <option value="General fitness">General fitness</option>
+              <option value="Improve endurance">Improve endurance</option>
+              <option value="Strength training">Strength training</option>
+            </select>
+            {errors.goal && <p style={{ color: 'red' }}>Goal is required</p>}
+          </div>
 
-      {/* Fitness Level */}
-      <label className="block text-white text-sm mb-1 font-sans">Fitness Level *</label>
-      <select {...register('fitness_level', { required: true })} className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green">
-        <option value="">Select your fitness level</option>
-        <option value="Beginner">Beginner</option>
-        <option value="Intermediate">Intermediate</option>
-        <option value="Advanced">Advanced</option>
-      </select>
-      {errors.fitness_level && <p style={{ color: 'red' }}>Fitness level is required</p>}
+        {/* Fitness Level */}
+          <div className='flex flex-row justify-between'>
+            <label className="block text-white text-sm mb-1 font-sans">Fitness Level *</label>
+            <select {...register('fitness_level', { required: true })} className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green">
+              <option value="">Select your fitness level</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+            {errors.fitness_level && <p style={{ color: 'red' }}>Fitness level is required</p>}
+        </div>
 
-      {/* Equipment */}
-      <label className="block text-white text-sm mb-1 font-sans">Available Equipment *</label>
-      <input
-        type="text"
-        placeholder="Comma separated (e.g. Dumbbells, Pull-up bar)"
-        {...register('equipment', { required: true })}
-        className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
-      />
-      {errors.equipment && <p style={{ color: 'red' }}>Equipment is required</p>}
+        {/* Equipment */}
+        <div className='flex flex-row justify-between'>
+          <label className="block text-white text-sm mb-1 font-sans">Available Equipment *</label>
+          <input
+            type="text"
+            placeholder="Comma separated (e.g. Dumbbells, Pull-up bar)"
+            {...register('equipment', { required: true })}
+            className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
+          />
+          {errors.equipment && <p style={{ color: 'red' }}>Equipment is required</p>}
+        </div>
 
-      {/* Days per week */}
-      <label className="block text-white text-sm mb-1 font-sans">Workout Days per Week *</label>
-      <input
-        type="number"
-        {...register('days_per_week', { required: true, min: 1, max: 7 })}
-        className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
-      />
-      {errors.days_per_week && <p style={{ color: 'red' }}>Must be between 1 and 7</p>}
+        {/* Days per week */}
+        <div className='flex flex-row justify-between'>
+          <label className="block text-white text-sm mb-1 font-sans">Workout Days per Week *</label>
+          <input
+            type="number"
+            {...register('days_per_week', { required: true, min: 1, max: 7 })}
+            className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
+          />
+          {errors.days_per_week && <p style={{ color: 'red' }}>Must be between 1 and 7</p>}
+        </div>
 
-      {/* Session Duration */}
-      <label className="block text-white text-sm mb-1 font-sans">Session Duration (Minutes) *</label>
-      <input
-        type="number"
-        {...register('session_duration_minutes', { required: true, min: 15, max: 180 })}
-        className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
-      />
-      {errors.session_duration_minutes && <p style={{ color: 'red' }}>Must be between 15 and 180</p>}
+        {/* Session Duration */}
+        <div className='flex flex-row justify-between'>
+          <label className="block text-white text-sm mb-1 font-sans">Session Duration (Minutes) *</label>
+          <input
+            type="number"
+            {...register('session_duration_minutes', { required: true, min: 15, max: 180 })}
+            className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
+          />
+          {errors.session_duration_minutes && <p style={{ color: 'red' }}>Must be between 15 and 180</p>}
+        </div>
 
-      {/* Medical Conditions */}
-      <label className="block text-white text-sm mb-1 font-sans">Medical Conditions (Optional)</label>
-      <input
-        type="text"
-        placeholder="Comma separated (e.g. knee injury, back pain)"
-        {...register('medical_conditions')}
-        className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
-      />
+        {/* Medical Conditions */}
+        <div className='flex flex-row justify-between'>
+          <label className="block text-white text-sm mb-1 font-sans">Medical Conditions (Optional)</label>
+          <input
+            type="text"
+            placeholder="Comma separated (e.g. knee injury, back pain)"
+            {...register('medical_conditions')}
+            className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
+          />
+        </div>
 
-      {/* Exercise Restrictions */}
-      <label className="block text-white text-sm mb-1 font-sans">Exercise Restrictions (Optional)</label>
-      <input
-        type="text"
-        placeholder="Comma separated (e.g. squats, deadlifts)"
-        {...register('exercise_restrictions')}
-        className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
-      />
+        {/* Exercise Restrictions */}
+        <div className='flex flex-row justify-between'>
+          <label className="block text-white text-sm mb-1 font-sans">Exercise Restrictions (Optional)</label>
+          <input
+            type="text"
+            placeholder="Comma separated (e.g. squats, deadlifts)"
+            {...register('exercise_restrictions')}
+            className="w-[500px] bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
+          />
+        </div>
+      </div>
 
-        <button type="submit" style={{ marginTop: 20 }} className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">Submit</button>
-      </form>
+
+          <button 
+            type="submit" style={{ marginTop: 20 }} 
+            className="w-1/2 bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">
+              Submit
+          </button>
+        </form>
     </div>
   )
 }

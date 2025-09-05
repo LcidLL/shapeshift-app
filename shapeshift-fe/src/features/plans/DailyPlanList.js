@@ -6,6 +6,8 @@ import NewDailyPlanForm from "./NewDailyPlanForm";
 import ReminderForm from "../../features/reminders/ReminderForm"
 import RemindersList from "../reminders/RemindersList";
 import { useError } from "../../contexts/ErrorContext";
+import { Trash2 } from "lucide-react";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 function DailyPlanList(props){
 
@@ -20,6 +22,9 @@ function DailyPlanList(props){
   const [dailyPlanId, setDailyPlanId] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
   const [showReminderForm, setShowReminderForm] = useState(false)
+  const [openDelete, setOpenDelete] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [forDeleteDaily, setForDeleteDaily] = useState({})
 
   const token = localStorage.getItem('token')
 
@@ -104,25 +109,44 @@ function DailyPlanList(props){
     setDailyPlanId(dailyId)
   }
 
+  const handleDelete = (daily) => {
+    setForDeleteDaily(daily)
+    setDeleteId(daily.id);
+    setOpenDelete(true);
+  }
+
   if (!outdatedPlans.length && !futurePlans.length && !planToday.length) return <h1>Loading...</h1>;
 
   return(
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 gap-1 md:grid-cols-7">
+{/* flex flex-row */}
+      { outdatedPlans.map((daily) => [
+        <div key={daily.id} className="relative bg-neutral-hover rounded-xl p-4 flex flex-col min-h-[500px] max-h-[600px]">
+          <h3 className="text-2xl font-bold text-neutral-text mb-2">{daily.day_of_week}</h3>
+          <h2 className="text-neutral-subtext mb-2">{daily.workout_name}</h2>
+          <ExercisePlansList dailyPlanId={daily.id} />
+          {!daily.isAdded && <Link to='/workouts/new' state={{daily}}>Add to Tracker</Link>}
+          <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
+            <Trash2 className="w-4 h-4 text-gray-600" />
+          </button>
+        </div>
+      ])}
+
       { planToday.map((daily) => [
-        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
-          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
-          <h2>{daily.workout_name}</h2>
+        <div key={daily.id} className="relative bg-neutral-today rounded-xl p-4 flex flex-col min-h-[500px] max-h-[600px]">
+          <h3 className="text-2xl font-bold text-neutral-text mb-2">{daily.day_of_week}</h3>
+          <h2 className="text-neutral-subtext mb-2">{daily.workout_name}</h2>
           {
             !daily.isAdded && 
             <Link to='/workouts/new' state={{daily}}>
                 Add to Tracker
             </Link>
           }
-          <button onClick={()=> deleteDailyPlan(daily.id)}>
-            Delete
-          </button>
           <ExercisePlansList dailyPlanId={daily.id}/>
-                    <button onClick={() => getReminderForm(daily.id)}>Set Reminder</button>
+              
+          <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
+            <Trash2 className="w-4 h-4 text-gray-500" />
+          </button>
           {
             daily.id === dailyPlanId && 
             showReminderForm && 
@@ -131,22 +155,12 @@ function DailyPlanList(props){
         </div>
       ])}
 
-      { outdatedPlans.map((daily) => [
-        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
-          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
-          <h2>{daily.workout_name}</h2>
-          {!daily.isAdded && <Link to='/workouts/new' state={{daily}}>Add to Tracker</Link>}
-          <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
-          <ExercisePlansList dailyPlanId={daily.id} />
-        </div>
-      ])}
-
       { futurePlans.map((daily) => [
-        <div key={daily.id} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
-          <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day_of_week}</h3>
-          <h2>{daily.workout_name}</h2>
+        <div key={daily.id} className="relative bg-neutral-future rounded-xl p-4 flex flex-col min-h-[500px] max-h-[600px]">
+          <h3 className="text-2xl font-bold text-neutral-text mb-2">{daily.day_of_week}</h3>
+          <h2 className="text-neutral-subtext mb-2">{daily.workout_name}</h2>
           <button onClick={()=> displayEditDailyPlan(daily.id)}>Edit</button>
-          <button onClick={()=> deleteDailyPlan(daily.id)}>Delete</button>
+
           {
               daily.id === dailyPlanId &&
               isDisplayed &&
@@ -167,9 +181,22 @@ function DailyPlanList(props){
           }
           <RemindersList daily={daily}/>
           <ExercisePlansList dailyPlanId={daily.id}/>
-          <Link to="/addExercise" state={{dailyPlanId: daily.id, planId: plan_id}}>Add Exercise</Link>
+          <Link to="/addExercise"  
+            className="text-sm bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow w-3/4 mx-auto mt-2" 
+            state={{dailyPlanId: daily.id, planId: plan_id}}>
+              Add Exercise
+          </Link>
+          <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
+            <Trash2 className="w-4 h-4 text-gray-500" />
+          </button>
         </div>
       ])}
+      <ConfirmationModal
+                  open={openDelete}
+                  onClose={() => setOpenDelete(false)}
+                  onConfirm={deleteDailyPlan}
+                  daily = {forDeleteDaily}
+                />
     </div>
   )
 }
