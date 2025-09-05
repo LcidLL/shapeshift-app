@@ -29,6 +29,8 @@ Rails.application.routes.draw do
       get '/profile', to: 'profiles#show'
       patch '/profile', to: 'profiles#update'
       post '/daily_weight', to: 'profiles#log_daily_weight'
+      resources :challenges
+      resources :participations, only: [:index, :create]
   
       resources :search
       get "/get_info" => "search#get_info"

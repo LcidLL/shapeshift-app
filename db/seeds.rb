@@ -1006,17 +1006,7 @@
 #   },
 
 # --- Normal Level Workout Challenges Seed ---
-30.times do |i|
-  Challenge.create!(
-    name: "Normal Level Group Step Challenge \\##{i+1}",
-    description: "Walk 10,000 steps a day as a group.",
-    duration: 10,
-    duration_type: "seconds",
-    value: 10000,
-    unit: "steps",
-    challengeable_type: "IndividualConfig"
-  )
-end
+
 # --- End Normal Level Workout Challenges Seed ---
 
 #   {
@@ -4409,6 +4399,5 @@ Challenge.create!([
 { name: "The Group Plank Hold",description: "A simple challenge where the group works together to accumulate a total amount of time holding a plank.",duration: 10,duration_type: "minutes",value: 10,unit: "minutes",challengeable_type: "GroupConfig"},
 { name: "The 3-Set Strength Builder",description: "A foundational challenge to build strength with a clear progression. The goal is to complete three sets of a few key exercises. A sample routine could be: 3 sets of 10 bodyweight squats, 3 sets of 10 push-ups, and 3 sets of 12 glute bridges, with a one-minute rest between each set.",duration: 25,duration_type: "minutes",value: 3,unit: "sets",challengeable_type: "IndividualConfig"},
 { name: "The Ladder Rep Challenge",description: "A workout where you increase the reps of one exercise with each set while decreasing the reps of another.For example, you could do 10 rounds of: Set 1: 1 rep of push-ups and 10 reps of bodyweight squats; Set 2: 2 push-ups and 9 squats, and so on until you finish with 10 push-ups and 1 squat.",duration: 20,duration_type: "minutes",value: 10,unit: "rounds",challengeable_type: "IndividualConfig"},
-
 
 ])

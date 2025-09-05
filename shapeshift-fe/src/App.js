@@ -6,6 +6,7 @@ import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import Dashboard from './components/Dashboard';
 import Profile from './components/profile/Profile';
+import MealsList from './features/meals/MealsList';
 
 import WorkoutsList from "./features/workouts/WorkoutsList"
 import WorkoutDetails from './features/workouts/WorkoutDetails';
@@ -24,6 +25,10 @@ import Layout  from './components/Layout';
 import WorkoutsSummary from './features/workouts/WorkoutsSummary';
 import Analytics from './components/Analytics';
 import ExerciseInfo from './features/plans/ExerciseInfo';
+import Challenges from './components/Challenges';
+import ChallengeDetails from './components/ChallengeDetails';
+import CreateChallengePage from './components/CreateChallengePage';
+import MyChallenges from './components/MyChallenges';
 
 function App() {
   return (
@@ -50,6 +55,12 @@ function App() {
             <Route path="/analytics" element={
               <ProtectedRoute>
                 <Analytics />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/meals" element={
+              <ProtectedRoute>
+                <MealsList />
               </ProtectedRoute>
             } />
             
@@ -115,6 +126,26 @@ function App() {
              {/* {Redirect to dashboard if route not found in react}  */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
             
+            <Route path="/challenges" element={
+              <ProtectedRoute>
+                <Challenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/new" element={
+              <ProtectedRoute>
+                <CreateChallengePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-challenges" element={
+              <ProtectedRoute>
+                <MyChallenges />
+              </ProtectedRoute>
+            } />
+            <Route path="/challenges/:id" element={
+              <ProtectedRoute>
+                <ChallengeDetails />
+              </ProtectedRoute>
+            } />
           </Routes>
           </Layout>
         </div>
