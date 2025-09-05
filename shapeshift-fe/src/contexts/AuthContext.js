@@ -56,10 +56,11 @@ export const AuthProvider = ({ children }) => {
         }),
       });
 
+      console.log('Response status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (response.ok && data.data && data.data.user) {
-        // Get JWT token from response body instead of headers
         const jwtToken = data.data.token;
         
         if (jwtToken) {
