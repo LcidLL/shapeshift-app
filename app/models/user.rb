@@ -4,9 +4,8 @@ class User < ApplicationRecord
          :confirmable,
          :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
-  before_create :generate_jti
+  before_create :set_jti
 
-  has_many :participations, dependent: :destroy
   has_many :workouts, dependent: :destroy
   has_many :plans, dependent: :destroy
   has_many :meals, dependent: :destroy
@@ -51,13 +50,9 @@ class User < ApplicationRecord
     meals.where(meal_date: 3.days.ago..Date.current).exists?
   end
 
-  def name
-    "#{first_name} #{last_name}"
-  end
-
   private
 
-  def generate_jti
-    self.jti = SecureRandom.uuid
+  def set_jti
+    self.jti ||= SecureRandom.uuid
   end
 end
