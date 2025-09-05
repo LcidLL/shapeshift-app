@@ -22,10 +22,6 @@ class ApplicationController < ActionController::API
     request.env['warden']
   end
 
-  def current_user
-    User.find_by(email: 'admin@example.com')
-  end
-
   private
 
   def configure_permitted_parameters

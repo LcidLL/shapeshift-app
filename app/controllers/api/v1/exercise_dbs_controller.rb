@@ -9,7 +9,7 @@ class Api::V1::ExerciseDbsController < ApplicationController
       singularized_name = exercise_name.singularize.downcase
       data = exercise_dbs.select { |exercise| exercise["exercise_name"].downcase.include?(singularized_name) }
     end
-    render json: data
+    render json: {data: data, all: exercise_dbs}
   end
 
   def update

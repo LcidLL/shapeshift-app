@@ -13,12 +13,14 @@ class Workout < ApplicationRecord
     exercises.count
   end
 
-  def self.summary_today
+  def self.summary_today(target_calories, target_duration)
     total_calories = where(workout_date: Date.today).sum(:calories_burned)
     total_duration = where(workout_date: Date.today).sum(:duration)
     {
       calories_burned_today: total_calories,
-      duration_today: total_duration
+      duration_today: total_duration,
+      remaining_calories: target_calories - total_calories,
+      remaining_duration: target_duration - total_duration
     }
   end
 
@@ -43,7 +45,7 @@ class Workout < ApplicationRecord
                 "COUNT(*) AS workouts_count"
               )
               .order("period_start")
-
+              
     records.map do |r|
       workouts = r.workouts_count.to_i
       total_calories = r.total_calories.to_f

@@ -95,21 +95,25 @@ function PlansList() {
       <h2>Plans</h2>
       <Link to='/generate-workout'>Generate Workout Plan</Link>
       <Link to='/plans/new'>New Workout Plan</Link>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       { plans.map((plan) => [
-        <div key={plan.id}>
-          <h1>{plan.plan_name}</h1>
-          <button onClick={()=> displayEditPlan(plan.id)}>Edit</button>
-          <button onClick={()=> deletePlan(plan.id)}>Delete</button>
-          <Link to={`/plans/${plan.id}/`}>Details</Link>
+        <Link to={`/plans/${plan.id}`} 
+        key={plan.id}
+        className="bg-neutral-card hover:bg-neutral-hover/70 rounded-2xl shadow-md p-4 w-full max-w-md mx-auto">
+          <h1 className="text-md font-semibold text-accent-green mb-3">{plan.plan_name}</h1>
+          <p className="text-md font-semibold text-neutral-subtext mb-3">{plan.description}</p>
+           <button onClick={()=> displayEditPlan(plan.id)}>Edit</button>
+          {/*<button onClick={()=> deletePlan(plan.id)}>Delete</button>*/}
           { planId == plan.id && isDisplayed && 
-            <div>
-              <NewPlanForm plan={plan} mode="edit" onSubmit={(data) => handleSubmitEdit(data)}/>
-              <p onClick={() => setIsDisplayed(false)}>Close</p>
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 w-full">
+              <div className="relative">
+                <p onClick={() => setIsDisplayed(false)} className="absolute top-0 right-2 hover:cursor-pointer hover:text-neutral-subtext">x</p>
+                <NewPlanForm plan={plan} mode="edit" onSubmit={(data) => handleSubmitEdit(data)}/>
+              </div>
             </div>
           }
-                   
-        </div>
-      ])}
+        </Link>
+      ])}</div>
     </div>
   )
 }

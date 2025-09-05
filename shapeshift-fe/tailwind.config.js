@@ -14,7 +14,9 @@ module.exports = {
           card: "#1A1D23",   // card background
           hover: "#262A33",  // hover
           text: "#E5E7EB",   // main text
-          subtext: "#9CA3AF" // secondary text
+          subtext: "#9CA3AF", // secondary text
+          today: "#101e3eff",
+          future: "#18367dff"
         },
         accent: {
           green: "#22C55E",  // neon green

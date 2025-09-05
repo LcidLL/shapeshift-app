@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { API_URL } from "../../constants/Constants";
 import { useNavigate, useParams } from "react-router-dom";
 import NewExerciseForm from "./NewExerciseForm"
+import { Edit, Trash2 } from "lucide-react";
 
 function ExercisePlansList(props){
 
@@ -116,11 +117,17 @@ function ExercisePlansList(props){
                 {ex.distance} · {ex.intensity} · {ex.duration}
               </p>
             )} */}
-          { exercise.workout_date > today && 
-            <div>
-              <button onClick={() => displayEditExercisePlan(exercise.id)}>Edit</button>
-              <button onClick={() => deleteExercisePlan(exercise.id)}>Delete</button>
-            </div>
+          { exercise.workout_date > today &&   
+            <div className="relative">
+              <div className="absolute bottom-0 right-0 flex flex-row justify-evenly">
+              <button onClick={() => displayEditExercisePlan(exercise.id)}>
+                <Edit className="w-3 h-3 text-gray-500"/>
+              </button>
+            <button onClick={() => deleteExercisePlan(exercise.id)}>
+              <Trash2 className="w-3 h-3 text-gray-500" />
+          </button>
+          </div>
+          </div>
           }
           {
             exercise.id === exercisePlanId &&

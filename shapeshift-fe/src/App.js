@@ -22,7 +22,8 @@ import { useEffect } from 'react';
 import NavBar from './components/NavBar';
 import Layout  from './components/Layout';
 import WorkoutsSummary from './features/workouts/WorkoutsSummary';
-import Challenges from './components/Challenges';
+import Analytics from './components/Analytics';
+import ExerciseInfo from './features/plans/ExerciseInfo';
 
 function App() {
   return (
@@ -48,7 +49,7 @@ function App() {
 
             <Route path="/analytics" element={
               <ProtectedRoute>
-                <WorkoutsSummary />
+                <Analytics />
               </ProtectedRoute>
             } />
             
@@ -97,6 +98,12 @@ function App() {
             <Route path="/addExercise" element={
               <ProtectedRoute>
                 <NewExerciseForm />
+              </ProtectedRoute>
+            } />
+
+             <Route path="/exercise-info" element={
+              <ProtectedRoute>
+                <ExerciseInfo />
               </ProtectedRoute>
             } />
 

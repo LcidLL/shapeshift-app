@@ -16,6 +16,7 @@ function WorkoutDetails(){
   
   const [workout, setWorkout] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
+  const [remaining, setRemaining] = useState("")
 
   const { errors, setErrors } = useError();
 
@@ -44,7 +45,8 @@ function WorkoutDetails(){
         });
         if (response.ok) {
           const json = await response.json();
-          setWorkout(json);
+          setWorkout(json.data)
+          setRemaining(json.remaining)
         } else {
           const { errors } = await response.json();
           setErrors(errors || ['Failed to fetch workout'])
@@ -153,8 +155,8 @@ function WorkoutDetails(){
                               innerRadius: 50, 
                               outerRadius: 100, 
                               data: [
-                                {label: "FInished", value: workout.calories_burned, color: "#22C55E"},
-                                {label: "Remaning", value: user?.daily_calories_burned - workout.calories_burned, color: "#1E293B"},
+                                {label: "Burned", value: workout.calories_burned, color: "#22C55E"},
+                                {label: "Remaning", value: remaining.calories, color: "#1E293B"},
                               ],
                               arcLabel: 'value' 
                           }]}
@@ -197,8 +199,8 @@ function WorkoutDetails(){
                               innerRadius: 50, 
                               outerRadius: 100, 
                               data: [
-                                {label: "FInished", value: workout.duration, color: "#22C55E"},
-                                {label: "Remaning", value: user?.workout_duration - workout.duration, color: "#1E293B"},
+                                {label: "Finished", value: workout.duration, color: "#22C55E"},
+                                {label: "Remaning", value: remaining.duration, color: "#1E293B"},
                               ],
                               arcLabel: 'value' 
                           }]}
