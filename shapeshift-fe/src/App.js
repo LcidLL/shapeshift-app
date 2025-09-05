@@ -6,6 +6,7 @@ import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import Dashboard from './components/Dashboard';
 import Profile from './components/profile/Profile';
+import MealsList from './features/meals/MealsList';
 
 import WorkoutsList from "./features/workouts/WorkoutsList"
 import WorkoutDetails from './features/workouts/WorkoutDetails';
@@ -54,6 +55,12 @@ function App() {
             <Route path="/analytics" element={
               <ProtectedRoute>
                 <Analytics />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/meals" element={
+              <ProtectedRoute>
+                <MealsList />
               </ProtectedRoute>
             } />
             

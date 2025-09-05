@@ -313,7 +313,7 @@ Devise.setup do |config|
 
   # ==> Configuration for JWT
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.secret_key_base || Rails.application.secret_key_base
+    jwt.secret = Rails.application.secret_key_base
 
     # LOGIN
     jwt.dispatch_requests = [
