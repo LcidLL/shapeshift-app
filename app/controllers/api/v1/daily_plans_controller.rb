@@ -59,8 +59,8 @@ class Api::V1::DailyPlansController < ApplicationController
   end
 
   def get_plans_by_date
-    @outdated_plan = @daily_plans.where("workout_date < ?", Date.today)
-    @future_plan = @daily_plans.where("workout_date > ?", Date.today)
+    @outdated_plan = @daily_plans.where("workout_date < ?", Date.today).order(workout_date: :asc)
+    @future_plan = @daily_plans.where("workout_date > ?", Date.today).order(workout_date: :asc)
     @plan_today = @daily_plans.where("workout_date = ?", Date.today)
   end
 end

@@ -47,7 +47,7 @@ function GenerateWorkoutForm(){
 
   const sendMock = async () => {
     //navigate('/generate-workout-results', { state: { result: mockData } })
-    navigate('/generate-workout-results', { state: { result: mockData2 } })
+    navigate('/generate-workout-results', { state: { result: mockData } })
   }
 
   return(

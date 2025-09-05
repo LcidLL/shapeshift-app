@@ -8,6 +8,7 @@ import RemindersList from "../reminders/RemindersList";
 import { useError } from "../../contexts/ErrorContext";
 import { Trash2 } from "lucide-react";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { Tooltip } from "@mui/material";
 
 function DailyPlanList(props){
 
@@ -25,6 +26,7 @@ function DailyPlanList(props){
   const [openDelete, setOpenDelete] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [forDeleteDaily, setForDeleteDaily] = useState({})
+  const [column, setColumn] = useState("")
 
   const token = localStorage.getItem('token')
 
@@ -38,6 +40,7 @@ function DailyPlanList(props){
         });
         if (response.ok) {
           const json = await response.json()
+          setColumn(json.all.length)
           setPlanToday(json.today)
           setOutdatedPlans(json.outdated)
           setFuturePlans(json.future)
@@ -104,11 +107,6 @@ function DailyPlanList(props){
     }
   }
 
-  const getReminderForm = async (dailyId) => {
-    setShowReminderForm(true)
-    setDailyPlanId(dailyId)
-  }
-
   const handleDelete = (daily) => {
     setForDeleteDaily(daily)
     setDeleteId(daily.id);
@@ -118,7 +116,7 @@ function DailyPlanList(props){
   if (!outdatedPlans.length && !futurePlans.length && !planToday.length) return <h1>Loading...</h1>;
 
   return(
-    <div className="grid grid-cols-1 gap-1 md:grid-cols-7">
+    <div className={`grid grid-cols-1 gap-1 md:grid-cols-${column}`}>
 {/* flex flex-row */}
       { outdatedPlans.map((daily) => [
         <div key={daily.id} className="relative bg-neutral-hover rounded-xl p-4 flex flex-col min-h-[500px] max-h-[600px]">
@@ -126,9 +124,25 @@ function DailyPlanList(props){
           <h2 className="text-neutral-subtext mb-2">{daily.workout_name}</h2>
           <ExercisePlansList dailyPlanId={daily.id} />
           {!daily.isAdded && <Link to='/workouts/new' state={{daily}}>Add to Tracker</Link>}
-          <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
-            <Trash2 className="w-4 h-4 text-gray-600" />
-          </button>
+          <Tooltip title="Delete Workout" placement="bottom" arrow
+            slotProps={{
+              popper: {
+                modifiers: [
+                  {
+                    name: 'offset',
+                    options: {
+                      offset: [0, -10],
+                    },
+                  },
+                ],
+              },
+            }}>
+            <span>
+              <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
+                <Trash2 className="w-4 h-4 text-gray-600" />
+              </button>
+            </span>
+          </Tooltip>
         </div>
       ])}
 
@@ -143,20 +157,30 @@ function DailyPlanList(props){
             </Link>
           }
           <ExercisePlansList dailyPlanId={daily.id}/>
-              
-          <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
-            <Trash2 className="w-4 h-4 text-gray-500" />
-          </button>
-          {
-            daily.id === dailyPlanId && 
-            showReminderForm && 
-            <ReminderForm daily={daily} setShowReminderForm={setShowReminderForm}/>
-          }
+          <Tooltip title="Delete Workout" placement="bottom" arrow
+            slotProps={{
+              popper: {
+                modifiers: [
+                  {
+                    name: 'offset',
+                    options: {
+                      offset: [0, -10],
+                    },
+                  },
+                ],
+              },
+            }}>
+            <span>
+              <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
+                <Trash2 className="w-4 h-4 text-gray-500" />
+              </button>
+            </span>
+          </Tooltip>
         </div>
       ])}
 
       { futurePlans.map((daily) => [
-        <div key={daily.id} className="relative bg-neutral-future rounded-xl p-4 flex flex-col min-h-[500px] max-h-[600px]">
+        <div key={daily.id} className="relative bg-neutral-future rounded-xl p-4 flex flex-col min-h-[500px] max-h-[600px] pb-8">
           <h3 className="text-2xl font-bold text-neutral-text mb-2">{daily.day_of_week}</h3>
           <h2 className="text-neutral-subtext mb-2">{daily.workout_name}</h2>
           <button onClick={()=> displayEditDailyPlan(daily.id)}>Edit</button>
@@ -173,22 +197,33 @@ function DailyPlanList(props){
                 <p onClick={() => setIsDisplayed(false)}>Close</p>
               </div>
           }
-          <button onClick={() => getReminderForm(daily.id)}>Set Reminder</button>
-          {
-            daily.id === dailyPlanId && 
-            showReminderForm && 
-            <ReminderForm daily={daily} setShowReminderForm={setShowReminderForm}/>
-          }
-          <RemindersList daily={daily}/>
+          
           <ExercisePlansList dailyPlanId={daily.id}/>
           <Link to="/addExercise"  
-            className="text-sm bg-accent-green hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-xl shadow w-3/4 mx-auto mt-2" 
+            className="text-xs p-1 hover:bg-gray-600 transition-colors mt-1 border-2 border-dashed border-gray-500 rounded-lg"
             state={{dailyPlanId: daily.id, planId: plan_id}}>
-              Add Exercise
+              + Add Exercise
           </Link>
-          <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
-            <Trash2 className="w-4 h-4 text-gray-500" />
-          </button>
+          <Tooltip title="Delete Workout" placement="bottom" arrow
+            slotProps={{
+              popper: {
+                modifiers: [
+                  {
+                    name: 'offset',
+                    options: {
+                      offset: [0, -10],
+                    },
+                  },
+                ],
+              },
+            }}>
+            <span>
+              <button onClick={()=> handleDelete(daily)} className="absolute bottom-2 right-2">
+                <Trash2 className="w-4 h-4 text-gray-500" />
+              </button>
+            </span>
+          </Tooltip>
+
         </div>
       ])}
       <ConfirmationModal

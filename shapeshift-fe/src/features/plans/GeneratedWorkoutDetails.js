@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 
-function GeneratedWorkoutDetails(props){
-const {result} = props
-console.log(result)
+function GeneratedWorkoutDetails(){
+
   const location = useLocation()
   const navigate = useNavigate() 
-  // const result = location.state?.result
+  const result = location.state?.result
   const {plan_title, week} = result
   const [startDate, setStartDate] = useState("")
   const [startDateInput, setStartDateInput] = useState(false)
@@ -61,6 +60,7 @@ console.log(result)
       if(response.ok){
         const { id } = await response.json();
         await sendAllDays(id)
+        navigate(`/plans/${id}`)
       } else {
         setErrors("Error creating workout")
       }
@@ -156,7 +156,7 @@ console.log(result)
   return(
     <div className="w-full">
       <div style={{ padding: '20px' }}>
-      <h2>Workout Plan Result</h2>
+      <h1 className="text-2xl font-heading font-semibold text-accent-white mb-3">Workout Plan Result</h1>
       <button onClick={() => setStartDateInput(true)}>
         Add to Workout Plan
       </button>
@@ -168,7 +168,7 @@ console.log(result)
       {errors && <span>{errors}</span>}
       </div>}
       <h3>{plan_title}</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-7 gap-1">
         { week.map((daily, i) => (
           <div key={i} className="bg-neutral-hover rounded-xl p-4 flex flex-col">
             <h3 className="text-lg font-semibold text-accent-green mb-3">{daily.day} — <em>{statuses[daily.day]}</em></h3> 

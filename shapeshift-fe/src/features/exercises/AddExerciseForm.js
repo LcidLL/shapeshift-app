@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams, useSearchParams } from "react-rout
 import { Link } from "react-router-dom";
 import { useError } from "../../contexts/ErrorContext";
 import { Autocomplete, TextField } from '@mui/material';
+import { continuousColorLegendClasses } from "@mui/x-charts";
 
 function AddExerciseForm(){
   
@@ -66,9 +67,10 @@ function AddExerciseForm(){
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log(exerciseName)
 
     const exerciseData = { 
-      exercise_name: exerciseName, 
+      exercise_name: exerciseName.exercise_name, 
       sets: Number(sets), 
       reps: Number(reps), 
       weight: Number(weight),
