@@ -5,6 +5,7 @@ class Participation < ApplicationRecord
 
 
   def progress
+    # For group challenges, always allow progress to update based on timer
     return 0 unless joined_at && challenge&.duration && challenge&.duration_type
     elapsed = (Time.current - joined_at).to_f
     total_duration = duration_in_seconds
@@ -14,13 +15,12 @@ class Participation < ApplicationRecord
 
   def as_json(options = {})
     data = super(options)
-    data.delete('progress')
-    data.merge(
-      progress: progress,
-      challenge_name: challenge&.name,
-      user_name: [user&.first_name, user&.last_name].compact.join(' '),
-      times_completed: Participation.where(user_id: user_id, challenge_id: challenge_id).select { |p| p.progress == 100 }.count
-    )
+    data['progress'] = progress
+    data['joined_at'] = joined_at
+    data['challenge_name'] = challenge&.name
+    data['user_name'] = [user&.first_name, user&.last_name].compact.join(' ')
+    data['times_completed'] = Participation.where(user_id: user_id, challenge_id: challenge_id).select { |p| p.progress == 100 }.count
+    data
   end
 
   private

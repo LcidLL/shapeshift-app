@@ -3,17 +3,7 @@ class Api::V1::ChallengesController < ApplicationController
   before_action :set_challenge, only: %i[show update destroy leaderboard]
 
   def leaderboard
-    participations = @challenge.participations.includes(:user)
-    leaderboard = participations.group_by(&:user_id).map do |user_id, parts|
-      user = parts.first.user
-      {
-        user_id: user.id,
-        user_name: [user.first_name, user.last_name].compact.join(' '),
-        times_completed: parts.select { |p| p.progress == 100 }.count
-      }
-    end
-    leaderboard = leaderboard.sort_by { |entry| -entry[:times_completed] }
-    render json: leaderboard
+    render json: @challenge.leaderboard
   end
 
   def index

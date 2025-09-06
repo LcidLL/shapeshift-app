@@ -41,25 +41,14 @@ const ChallengeInvitations = ({ challengeId }) => {
               'Content-Type': 'application/json',
             },
           });
-          console.log('Profile fetch status:', profileRes.status);
           if (profileRes.ok) {
             const profile = await profileRes.json();
-            console.log('Profile response:', profile);
             userId = profile.data && profile.data.user && profile.data.user.id;
-            console.log('Extracted userId:', userId);
-          } else {
-            const errText = await profileRes.text();
-            console.log('Profile fetch error:', errText);
           }
         } catch (e) { 
           userId = undefined;
-          console.log('Profile fetch exception:', e);
         }
-        console.log('Current userId:', userId);
-        console.log('Fetched invitations (details):', details);
-        details.forEach(inv => console.log('Invitation:', inv));
         const filteredInvs = details.filter(inv => (inv.status === 'pending' || inv.status === null) && inv.user_id === userId);
-        console.log('Filtered invitations for user', userId, ':', filteredInvs);
         setInvitations(filteredInvs);
       } catch (err) {
         setError(err.message);

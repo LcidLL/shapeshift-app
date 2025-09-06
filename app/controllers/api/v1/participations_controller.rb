@@ -3,7 +3,13 @@ class Api::V1::ParticipationsController < ApplicationController
   
   def index
     participations = current_user.participations.includes(:challenge, :user)
-    render json: participations, include: :challenge
+    # Exclude participations where the record was destroyed (forfeited)
+    participations = participations.select { |p| !p.destroyed? }
+    # For each challenge, pick the latest participation (by joined_at or created_at)
+    latest_participations = participations.group_by(&:challenge_id).map do |_, parts|
+      parts.max_by { |p| p.joined_at || p.created_at }
+    end
+    render json: latest_participations, include: :challenge
   end
 
   def show
@@ -18,21 +24,18 @@ class Api::V1::ParticipationsController < ApplicationController
     if challenge&.challengeable_type == 'IndividualConfig'
       participation_attrs.delete('group_config_id')
     else
-      if participation_attrs.key?('group_config_id') && participation_attrs['group_config_id'].blank?
-        participation_attrs['group_config_id'] = nil
-      end
-      if participation_attrs['group_config_id'].nil?
-        group = GroupConfig.create!
-        participation_attrs['group_config_id'] = group.id
-      end
+      # Always create a new group for every join
+      group = GroupConfig.create!
+      participation_attrs['group_config_id'] = group.id
     end
 
     if challenge&.challengeable_type == 'IndividualConfig'
-      existing = Participation.where(user_id: participation_attrs['user_id'], challenge_id: participation_attrs['challenge_id']).order(created_at: :desc).first
-      if existing && existing.progress < 100
-        render json: { error: 'User is already participating in this individual challenge and has not completed it yet.' }, status: :unprocessable_entity
+      last_participation = Participation.where(user_id: participation_attrs['user_id'], challenge_id: participation_attrs['challenge_id']).order(joined_at: :desc).first
+      if last_participation && last_participation.progress < 100
+        render json: { error: 'You must complete or forfeit your current participation before joining again.' }, status: :unprocessable_entity
         return
       end
+      # allow new participation if previous is complete
     else
       if Participation.exists?(user_id: participation_attrs['user_id'], challenge_id: participation_attrs['challenge_id'], group_config_id: participation_attrs['group_config_id'])
         render json: { error: 'User is already a participant of this challenge and group.' }, status: :unprocessable_entity
@@ -42,10 +45,11 @@ class Api::V1::ParticipationsController < ApplicationController
 
     participation = Participation.new(participation_attrs)
     participation.joined_at = Time.current
+    participation.progress = 0
     if participation.save
       render json: participation, status: :created
     else
-      render json: participation.errors, status: :unprocessable_entity
+      render json: { error: participation.errors.full_messages.join(', ') }, status: :unprocessable_entity
     end
   end
 

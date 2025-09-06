@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LeaderboardSection = ({ challengeId }) => {
+const LeaderboardSection = ({ challengeId, challengeType }) => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,7 +18,9 @@ const LeaderboardSection = ({ challengeId }) => {
         },
       });
       if (!response.ok) throw new Error('Failed to fetch leaderboard');
-      const data = await response.json();
+      const result = await response.json();
+      const data = result.leaderboard || result;
+      console.debug('[LeaderboardSection] challengeType:', challengeType, 'leaderboard:', data);
       setLeaderboard(data);
     } catch (err) {
       setError(err.message);
@@ -49,16 +51,34 @@ const LeaderboardSection = ({ challengeId }) => {
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                   <tr>
-                    <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>User</th>
-                    <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Times Completed</th>
+                    {challengeType === 'GroupConfig' && leaderboard.length > 0 ? (
+                      <>
+                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Group Name</th>
+                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Members</th>
+                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Times Completed</th>
+                      </>
+                    ) : (
+                      <>
+                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>User</th>
+                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Times Completed</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {leaderboard.map((entry, idx) => (
-                    <tr key={entry.user_id} style={{ background: idx % 2 ? '#f7f7f7' : 'white' }}>
-                      <td>{entry.user_name || (entry.user && `${entry.user.first_name} ${entry.user.last_name}`)}</td>
-                      <td>{entry.times_completed ?? '-'}</td>
-                    </tr>
+                    challengeType === 'GroupConfig' ? (
+                      <tr key={entry.group_id || idx} style={{ background: idx % 2 ? '#f7f7f7' : 'white' }}>
+                        <td>{entry.group_name}</td>
+                        <td>{Array.isArray(entry.members) ? entry.members.join(', ') : ''}</td>
+                        <td>{entry.times_completed ?? '-'}</td>
+                      </tr>
+                    ) : (
+                      <tr key={entry.user_id || idx} style={{ background: idx % 2 ? '#f7f7f7' : 'white' }}>
+                        <td>{entry.user_name || (entry.user && `${entry.user.first_name} ${entry.user.last_name}`) || entry.name}</td>
+                        <td>{entry.times_completed ?? '-'}</td>
+                      </tr>
+                    )
                   ))}
                 </tbody>
               </table>

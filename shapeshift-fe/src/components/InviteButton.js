@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 
 const InviteButton = ({ challengeId, onInvite }) => {
   const [show, setShow] = useState(false);
+  const { user } = useAuth();
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const [userOptions, setUserOptions] = useState([]);
@@ -29,6 +31,7 @@ const InviteButton = ({ challengeId, onInvite }) => {
       if (!response.ok) throw new Error('Failed to search users');
       // Filter by name match
       const filtered = data.filter(u =>
+        u.id !== user?.id &&
         (`${u.first_name} ${u.last_name}`.toLowerCase().includes(query.toLowerCase()) ||
          u.first_name.toLowerCase().includes(query.toLowerCase()) ||
          u.last_name.toLowerCase().includes(query.toLowerCase()))
