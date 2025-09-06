@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       post "/generate-workout" => "plans#generate"
       resources :plans do
         resources :daily_plans do
+          post :duplicate, on: :member
           resources :reminders
           resources :exercise_plans
         end

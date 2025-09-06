@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../constants/Constants";
 import ExercisePlansList from "./ExercisePlansList";
 import { useError } from "../../contexts/ErrorContext";
+import { X } from "lucide-react";
 
 const weekdayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
@@ -46,7 +47,6 @@ function NewDailyPlanForm(props){
       onSubmit(dailyPlanData)
       return
     }
-
     try {
       const response = await fetch(`${API_URL}/plans/${plan_id}/daily_plans`, {
         method: "POST",
@@ -77,7 +77,10 @@ function NewDailyPlanForm(props){
   }
 
   return(
-    <div className="bg-neutral-card rounded-md shadow-md p-6 w-full max-w-md mx-auto">
+    <div className="relative bg-neutral-card rounded-md shadow-md p-6 w-full max-w-md mx-auto">
+      <span onClick={() =>setIsDisplayed(false)} className="absolute top-2 right-2 hover:text-neutral-subtext hover:cursor-pointer">
+                <X className="w-4 h-4 text-gray-500 hover:cursor-pointer hover:text-neutral-subtext" />
+              </span>
       <h2 className="font-heading text-xl text-white mb-4">{dailyPlan ? "Edit" : "Add"} Workout</h2>
 
       {errors && (
@@ -106,15 +109,14 @@ function NewDailyPlanForm(props){
           required
           className="w-full bg-neutral-hover text-white rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-green"
         />
+
+        {dayOfWeek && <p className="block text-white text-sm my-2 font-sans">Day of the week: {dayOfWeek}</p>}
+
         <button type="submit" className="w-full bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">
           {dailyPlan ? "Update" : "Add"}
         </button>
-
-        <button type="submit" onClick={() => setIsDisplayed(false)}>
-          Cancel
-        </button>
       </form>
-      {dayOfWeek && <p className="block text-white text-sm mb-1 font-sans">Day of the week: {dayOfWeek}</p>}
+      
     </div>
   )
 }

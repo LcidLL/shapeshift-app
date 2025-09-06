@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import mockData from '../../mockResponse.json'
 import mockData2 from '../../mockResponse2.json'
@@ -11,7 +11,10 @@ function GenerateWorkoutForm(){
 
   const token = localStorage.getItem('token')
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const onSubmit = async (data) => {
+    setIsLoading(true)
     // Convert comma-separated strings to arrays
     data.equipment = convertToArray(data.equipment);
     data.medical_conditions = convertToArray(data.medical_conditions);
@@ -47,7 +50,7 @@ function GenerateWorkoutForm(){
 
   const sendMock = async () => {
     //navigate('/generate-workout-results', { state: { result: mockData } })
-    navigate('/generate-workout-results', { state: { result: mockData2 } })
+    navigate('/generate-workout-results', { state: { result: mockData } })
   }
 
   return(
@@ -138,12 +141,10 @@ function GenerateWorkoutForm(){
           />
         </div>
       </div>
-
-
           <button 
             type="submit" style={{ marginTop: 20 }} 
             className="w-1/2 bg-accent-green hover:bg-green-600 text-white font-semibold py-2 rounded-xl shadow">
-              Submit
+              {isLoading ? "Generating..." : "Submit"}
           </button>
         </form>
     </div>

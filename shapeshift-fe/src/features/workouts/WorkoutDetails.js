@@ -8,6 +8,8 @@ import { useError } from "../../contexts/ErrorContext";
 import { FilePenLine, Trash2, Edit } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { PieChart, pieArcClasses, pieArcLabelClasses } from "@mui/x-charts";
+import { Tooltip } from "@mui/material";
+import ConfirmationModal from "../../components/ConfirmationModal";
 
 function WorkoutDetails(){
 
@@ -17,6 +19,9 @@ function WorkoutDetails(){
   const [workout, setWorkout] = useState("")
   const [isDisplayed, setIsDisplayed] = useState(false)
   const [remaining, setRemaining] = useState("")
+
+  const [forDeleteWorkout, setForDeleteWorkout] = useState("")
+  const [openDelete, setOpenDelete] = useState(false)
 
   const { errors, setErrors } = useError();
 
@@ -97,6 +102,11 @@ function WorkoutDetails(){
     }
   }
 
+  const handleDelete = (workout) => {
+    setForDeleteWorkout(workout)
+    setOpenDelete(true);
+  }
+
   return (
     <div className="space-y-6">
       { errors && 
@@ -107,22 +117,53 @@ function WorkoutDetails(){
         )) }
         { !isDisplayed && <>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading text-2xl text-white flex items-center gap-3">Workout details
+          <h2 className="font-heading text-2xl font-semibold text-white flex items-center gap-3">Workout details
             <span className="flex gap-1">
-              <button
-                onClick={() => setIsDisplayed(true)}
-                className="p-1 rounded-lg hover:bg-neutral-hover"
-                title="Edit exercises"
-              >
-                <Edit className="w-4 h-4 text-accent-green" />
-              </button>
-              <button
-                onClick={() => deleteWorkout(workout.id)}
-                className="p-1 rounded-lg hover:bg-neutral-hover"
-                title="Delete exercises"
-              >
-                <Trash2 className="w-4 h-4 text-red-500" />
-              </button>
+              <Tooltip title="Edit Workout" placement="bottom" arrow
+                slotProps={{
+                  popper: {
+                    modifiers: [
+                      {
+                        name: 'offset',
+                        options: {
+                          offset: [0, -10],
+                        },
+                      },
+                    ],
+                  },
+              }}>
+                <span>
+                  <button
+                    onClick={() => setIsDisplayed(true)}
+                    className="p-1 rounded-lg hover:bg-neutral-hover"
+                    title="Edit exercises"
+                  >
+                    <Edit className="w-4 h-4 text-accent-green" />
+                  </button>
+                </span>
+              </Tooltip>
+              <Tooltip title="Delete Workout" placement="bottom" arrow
+                slotProps={{
+                  popper: {
+                    modifiers: [
+                      {
+                        name: 'offset',
+                        options: {
+                          offset: [0, -10],
+                        },
+                      },
+                    ],
+                  },
+              }}>
+                <span>
+                  <button
+                    onClick={() => handleDelete(workout)}
+                    className="p-1 rounded-lg hover:bg-neutral-hover"
+                  >
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                  </button>
+                </span>
+              </Tooltip>
             </span>
           </h2>
         </div>
@@ -253,6 +294,13 @@ function WorkoutDetails(){
           setIsDisplayed = {setIsDisplayed}
         />
       }
+
+        <ConfirmationModal
+            open={openDelete}
+            onClose={() => setOpenDelete(false)}
+            onConfirm={deleteWorkout}
+            workout = {forDeleteWorkout}
+          />
       
     </div>
   )

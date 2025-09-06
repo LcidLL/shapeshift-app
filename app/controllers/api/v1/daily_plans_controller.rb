@@ -40,6 +40,24 @@ class Api::V1::DailyPlansController < ApplicationController
     @plan_today = @daily_plans.where("workout_date = ?", Date.today)
   end
 
+  def duplicate
+    old_plan = DailyPlan.find(params[:id])
+
+    new_plan = old_plan.dup
+    new_plan.workout_date = params[:workout_date]
+    new_plan.workout_name = params[:workout_name]
+    new_plan.day_of_week = params[:day_of_week]
+    new_plan.save!
+
+    old_plan.exercise_plans.each do |exercise|
+      new_exercise = exercise.dup
+      new_exercise.daily_plan = new_plan
+      new_exercise.save!
+    end
+
+    render json: new_plan, status: :created
+  end
+
   private
 
   def set_plan
@@ -59,8 +77,8 @@ class Api::V1::DailyPlansController < ApplicationController
   end
 
   def get_plans_by_date
-    @outdated_plan = @daily_plans.where("workout_date < ?", Date.today)
-    @future_plan = @daily_plans.where("workout_date > ?", Date.today)
+    @outdated_plan = @daily_plans.where("workout_date < ?", Date.today).order(workout_date: :asc)
+    @future_plan = @daily_plans.where("workout_date > ?", Date.today).order(workout_date: :asc)
     @plan_today = @daily_plans.where("workout_date = ?", Date.today)
   end
 end

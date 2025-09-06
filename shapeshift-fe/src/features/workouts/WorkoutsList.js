@@ -175,11 +175,14 @@ const loadWorkouts = async () => {
   if (!workouts) return(<h1>Loading...</h1>)
 
   return(
-    <div className="grid grid-cols-3 gap-4 h-full">
-      <div className="flex flex-col justify-around col-span-1">
-        <div></div>
-        {/* <div className="row-span-3 h-full flex flex-col justify-around"> */}
-            <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
+    <div className="grid grid-cols-3 gap-4 h-[670px]">
+      <div className="flex flex-col col-span-1 h-full justify-around">
+        <div className="flex flex-col text-left">
+          <h1 className="text-2xl font-heading font-semibold text-accent-white flex flex-row">Today's Workout Summary</h1>
+          <span className="text-white rounded px-2 py-1">{maxDate}</span>
+        </div>
+        <div className="h-full flex flex-col justify-end gap-4">
+          <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
               <h3 className="text-white font-heading text-lg mb-2 tracking-wide">Workout Duration (mins)</h3>
               <div className="mx-auto">
                 <PieChart series={[{ 
@@ -224,9 +227,8 @@ const loadWorkouts = async () => {
                             }}
                 />
               </div>
-            </div>
-        
-            <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
+          </div>
+          <div className="bg-neutral-card rounded-2xl shadow-md p-4 text-center mx-auto flex flex-col justify-center w-full">
               <h3 className="text-white font-heading text-lg mb-2 tracking-wide">Calories Burned (kcal)</h3>
               <div className="mx-auto">
                 <PieChart series={[{ 
@@ -272,6 +274,7 @@ const loadWorkouts = async () => {
                 />
               </div>
             {/* </div> */}
+          </div>
         </div>
       </div>
       <div className="bg-neutral-card rounded-2xl shadow-md p-6 col-span-2 h-full overflow-hidden flex flex-col">
@@ -287,7 +290,7 @@ const loadWorkouts = async () => {
               <h2>{error}</h2>
             </div>
           ))}
-        <div className="text-sm overflow-y-auto h-[calc(100%-3rem)]">
+        <div className="text-sm overflow-y-auto h-full">
           <table className="w-full text-left border-collapse">
             <thead className="sticky top-0">
               <tr className="text-neutral-subtext border-b border-neutral-hover">
