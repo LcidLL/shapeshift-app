@@ -41,50 +41,60 @@ const LeaderboardSection = ({ challengeId, challengeType }) => {
         Show Leaderboard
       </button>
       {show && (
-        <div style={{ background: 'rgba(0,0,0,0.6)', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1000 }}>
-          <div style={{ background: 'white', maxWidth: 500, margin: '5rem auto', padding: '2rem', borderRadius: '8px', position: 'relative' }}>
-            <button onClick={handleClose} style={{ position: 'absolute', top: 10, right: 10, background: 'transparent', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
-            <h2>Leaderboard</h2>
-            {loading && <div>Loading...</div>}
-            {error && <div style={{ color: 'red' }}>{error}</div>}
-            {!loading && !error && (
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    {challengeType === 'GroupConfig' && leaderboard.length > 0 ? (
-                      <>
-                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Group Name</th>
-                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Members</th>
-                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Times Completed</th>
-                      </>
-                    ) : (
-                      <>
-                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>User</th>
-                        <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>Times Completed</th>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboard.map((entry, idx) => (
-                    challengeType === 'GroupConfig' ? (
-                      <tr key={entry.group_id || idx} style={{ background: idx % 2 ? '#f7f7f7' : 'white' }}>
-                        <td>{entry.group_name}</td>
-                        <td>{Array.isArray(entry.members) ? entry.members.join(', ') : ''}</td>
-                        <td>{entry.times_completed ?? '-'}</td>
+        <>
+          <div style={{ background: 'rgba(0,0,0,0.6)', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1000 }}></div>
+          <div className="fixed inset-0 flex items-center justify-center z-[1001]">
+            <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full mx-4 relative">
+              <button
+                onClick={handleClose}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+                aria-label="Close leaderboard"
+              >
+                &times;
+              </button>
+              {loading && <div>Loading...</div>}
+              {error && <div className="text-red-500">{error}</div>}
+              {!loading && !error && (
+                <div className="overflow-x-auto mt-4">
+                  <table className="min-w-full border border-gray-200 rounded-lg">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        {challengeType === 'GroupConfig' ? (
+                          <>
+                            <th className="py-2 px-4 border-b text-left font-semibold">Group</th>
+                            <th className="py-2 px-4 border-b text-left font-semibold">Members</th>
+                            <th className="py-2 px-4 border-b text-left font-semibold">Times Completed</th>
+                          </>
+                        ) : (
+                          <>
+                            <th className="py-2 px-4 border-b text-left font-semibold">User</th>
+                            <th className="py-2 px-4 border-b text-left font-semibold">Times Completed</th>
+                          </>
+                        )}
                       </tr>
-                    ) : (
-                      <tr key={entry.user_id || idx} style={{ background: idx % 2 ? '#f7f7f7' : 'white' }}>
-                        <td>{entry.user_name || (entry.user && `${entry.user.first_name} ${entry.user.last_name}`) || entry.name}</td>
-                        <td>{entry.times_completed ?? '-'}</td>
-                      </tr>
-                    )
-                  ))}
-                </tbody>
-              </table>
-            )}
+                    </thead>
+                    <tbody>
+                      {leaderboard.map((entry, idx) => (
+                        challengeType === 'GroupConfig' ? (
+                          <tr key={entry.group_id || idx} className={idx % 2 ? 'bg-gray-50' : 'bg-white'}>
+                            <td className="py-2 px-4 border-b">{entry.group_name}</td>
+                            <td className="py-2 px-4 border-b">{Array.isArray(entry.members) ? entry.members.join(', ') : ''}</td>
+                            <td className="py-2 px-4 border-b">{entry.times_completed ?? '-'}</td>
+                          </tr>
+                        ) : (
+                          <tr key={entry.user_id || idx} className={idx % 2 ? 'bg-gray-50' : 'bg-white'}>
+                            <td className="py-2 px-4 border-b">{entry.user_name || (entry.user && `${entry.user.first_name} ${entry.user.last_name}`) || entry.name}</td>
+                            <td className="py-2 px-4 border-b">{entry.times_completed ?? '-'}</td>
+                          </tr>
+                        )
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

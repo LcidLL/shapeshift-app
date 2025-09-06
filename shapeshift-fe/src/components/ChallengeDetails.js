@@ -202,14 +202,17 @@ const ChallengeDetails = () => {
   if (!challenge) return <div>No challenge found.</div>;
 
   return (
-    <div className="challenge-details-page">
-      <h1>{challenge.name}</h1>
-      <p>{challenge.description}</p>
-      <p>Duration: {challenge.duration} {challenge.duration_type}</p>
-      <p>Unit: {challenge.value} {challenge.unit}</p>
+    <div className="challenge-details-page min-h-screen flex flex-col items-center py-8 px-2 md:px-0">
+      <div className="w-full max-w-xl bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold mb-4 text-gray-800 text-center">{challenge.name}</h1>
+        <p className="mb-2 text-gray-700 text-lg text-center">{challenge.description}</p>
+        <div className="flex flex-col md:flex-row justify-center gap-4 mb-4">
+          <span className="bg-blue-100 text-blue-800 rounded-full px-4 py-1 text-sm font-semibold">Duration: {challenge.duration} {challenge.duration_type}</span>
+          <span className="bg-green-100 text-green-800 rounded-full px-4 py-1 text-sm font-semibold">Unit: {challenge.value} {challenge.unit}</span>
+        </div>
       {fromMyChallenges && participation && participation.progress < 100 && (
         <button
-          style={{ marginTop: '1rem', background: 'red', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+          className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow transition duration-150"
           onClick={async () => {
             console.debug('[forfeit] Clicked. participationId:', participationId);
             if (!window.confirm('Are you sure you want to forfeit this challenge?')) {
@@ -241,27 +244,27 @@ const ChallengeDetails = () => {
       {!fromMyChallenges && (
         <>
           <button
-            style={{ marginTop: '1rem', background: '#28a745', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: joinLoading ? 'not-allowed' : 'pointer', opacity: joinLoading ? 0.5 : 1 }}
+            className={`mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow transition duration-150 ${joinLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
             onClick={handleJoin}
             disabled={joinLoading}
           >
             {joinLoading ? 'Joining...' : 'Join Challenge'}
           </button>
-          {joinMessage && <div style={{ color: 'orange', marginTop: '0.5rem' }}>{joinMessage}</div>}
+          {joinMessage && <div className="text-orange-500 mt-2 text-center">{joinMessage}</div>}
         </>
       )}
 
       {/* Progress display for joined challenges */}
       {fromMyChallenges && participation && typeof participation.progress === 'number' && participation.joined_at ? (
         <>
-          <div style={{ marginTop: '1rem', color: '#007bff' }}>
+          <div className="mt-4 text-blue-600 text-lg font-semibold text-center">
             <strong>Progress:</strong> {`${participation.progress}%`}
           </div>
           <CountdownTimer participation={participation} challenge={challenge} />
           <InviteButton challengeId={challenge.id} />
         </>
       ) : fromMyChallenges && (
-        <div style={{ marginTop: '1rem', color: '#888' }}>
+        <div className="mt-4 text-gray-500 text-center">
           You have not joined this challenge yet.
         </div>
       )}
@@ -272,6 +275,7 @@ const ChallengeDetails = () => {
       {/* Leaderboard Button and Modal */}
       <LeaderboardSection challengeId={challenge.id} challengeType={challenge.challengeable_type} />
       {/* Add more fields as needed */}
+      </div>
     </div>
   );
 };

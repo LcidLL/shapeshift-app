@@ -60,67 +60,70 @@ const Challenges = () => {
   }
 
   return (
-    <div className="challenges-page">
-      <InvitesModal show={showInvites} onClose={() => setShowInvites(false)} />
-      <h1>Challenges</h1>
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-        <button
-          style={{ background: '#007bff', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          onClick={() => navigate('/challenges/new')}
-        >
-          Create Challenge
-        </button>
-        <button
-          style={{ background: '#28a745', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          onClick={() => navigate('/my-challenges')}
-        >
-          My Challenges
-        </button>
-        <button
-          style={{ background: '#6c63ff', color: 'white', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          onClick={() => setShowInvites(true)}
-        >
-          Invites
-        </button>
+    <div className="challenges-page min-h-screen flex flex-col items-center py-8 px-2 md:px-0">
+      <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8">
+        <InvitesModal show={showInvites} onClose={() => setShowInvites(false)} />
+        <h1 className="text-3xl font-bold mb-6 text-gray-800 text-center">Challenges</h1>
+        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-center">
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow transition duration-150"
+            onClick={() => navigate('/challenges/new')}
+          >
+            Create Challenge
+          </button>
+          <button
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow transition duration-150"
+            onClick={() => navigate('/my-challenges')}
+          >
+            My Challenges
+          </button>
+          <button
+            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded shadow transition duration-150"
+            onClick={() => setShowInvites(true)}
+          >
+            Invites
+          </button>
+        </div>
+        <div className="flex gap-4 mb-6">
+          <input
+            type="text"
+            placeholder="Search challenges..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+          />
+          <select
+            value={sortType}
+            onChange={e => setSortType(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+          >
+            <option value="all">All Types</option>
+            <option value="group">Group</option>
+            <option value="individual">Solo</option>
+          </select>
+        </div>
+        {filteredChallenges.length === 0 ? (
+          <p className="text-center text-gray-500">No challenges found.</p>
+        ) : (
+          <ul className="space-y-3">
+            {filteredChallenges.map((challenge) => (
+              <li
+                key={challenge.id}
+                className="cursor-pointer text-blue-600 hover:text-blue-800 underline font-medium bg-gray-100 hover:bg-blue-50 rounded px-4 py-3 flex items-center justify-between transition"
+                onClick={() => navigate(`/challenges/${challenge.id}`)}
+              >
+                <span>{challenge.name}</span>
+                <span className="ml-4 text-gray-600 font-bold">
+                  [
+                  {challenge.challengeable_type === 'IndividualConfig' ? 'Solo' :
+                   challenge.challengeable_type === 'GroupConfig' ? 'Group' : challenge.challengeable_type}
+                  ]
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Search challenges..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          style={{ padding: "0.5rem", flex: 1 }}
-        />
-        <select
-          value={sortType}
-          onChange={e => setSortType(e.target.value)}
-          style={{ padding: "0.5rem" }}
-        >
-          <option value="all">All Types</option>
-          <option value="group">Group</option>
-          <option value="individual">Solo</option>
-        </select>
-      </div>
-      {filteredChallenges.length === 0 ? (
-        <p>No challenges found.</p>
-      ) : (
-        <ul>
-          {filteredChallenges.map((challenge) => (
-            <li
-              key={challenge.id}
-              style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline', position: 'relative' }}
-              onClick={() => navigate(`/challenges/${challenge.id}`)}
-            >
-              {challenge.name} <span style={{color: '#555', fontWeight: 'bold', marginLeft: 8}}>
-                [
-                {challenge.challengeable_type === 'IndividualConfig' ? 'Solo' :
-                 challenge.challengeable_type === 'GroupConfig' ? 'Group' : challenge.challengeable_type}
-                ]
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 };
