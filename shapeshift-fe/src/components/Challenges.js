@@ -109,10 +109,10 @@ const Challenges = () => {
             {filteredChallenges.map((challenge) => (
               <li
                 key={challenge.id}
-                className="cursor-pointer text-blue-600 hover:text-blue-800 underline font-medium bg-gray-100 hover:bg-blue-50 rounded px-4 py-3 flex items-center justify-between transition"
+                className="cursor-pointer text-blue-600 hover:text-blue-800 font-medium bg-gray-100 hover:bg-blue-50 rounded px-4 py-3 flex items-center justify-between transition"
                 onClick={() => navigate(`/challenges/${challenge.id}`)}
               >
-                <span>{challenge.name}</span>
+                <span>{challenge.name} <span className="ml-2 text-gray-500 text-sm font-normal">Duration: {challenge.duration} {challenge.duration_type}</span></span>
                 <span className="ml-4 text-gray-600 font-bold">
                   [
                   {challenge.challengeable_type === 'IndividualConfig' ? 'Solo' :

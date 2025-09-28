@@ -20,14 +20,12 @@ const ChallengeDetails = () => {
   const handleJoin = async () => {
     if (joinLoading) return; // Prevent double submit
     setJoinLoading(true);
-    console.debug('[handleJoin] Called. participationId:', participationId, 'challenge:', challenge);
-    if (participationId) {
+        if (participationId) {
       // Allow re-join for IndividualConfig only if previous is complete
       if (challenge?.challengeable_type === 'IndividualConfig' && participation?.progress === 100) {
         try {
           const token = localStorage.getItem('token');
-          console.debug('[handleJoin] Joining challenge:', challenge?.id);
-          const response = await fetch('/api/v1/participations', {
+                    const response = await fetch('/api/v1/participations', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -44,10 +42,8 @@ const ChallengeDetails = () => {
             setJoinLoading(false);
             return;
           }
-          console.debug('[handleJoin] Join successful. Fetching participation...');
-          await fetchParticipation(); // Refresh participation state after join
-          console.debug('[handleJoin] Participation refreshed. Navigating to /my-challenges');
-          navigate('/my-challenges');
+                    await fetchParticipation(); // Refresh participation state after join
+                    navigate('/my-challenges');
         } catch (err) {
           setError(err.message);
           setJoinLoading(false);
@@ -56,8 +52,7 @@ const ChallengeDetails = () => {
       } else if (window.confirm('You have already joined this challenge. Do you want to forfeit and restart?')) {
         try {
           const token = localStorage.getItem('token');
-          console.debug('[handleJoin] Forfeiting participation:', participationId);
-          const response = await fetch(`/api/v1/participations/${participationId}`, {
+                    const response = await fetch(`/api/v1/participations/${participationId}`, {
             method: 'DELETE',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -66,23 +61,19 @@ const ChallengeDetails = () => {
           });
           if (!response.ok) throw new Error('Failed to forfeit challenge');
           setParticipation(null); // Clear local state
-          console.debug('[handleJoin] Forfeit successful.');
-        } catch (err) {
+                  } catch (err) {
           setError(err.message);
           console.error('[handleJoin] Forfeit error:', err);
           return;
         }
       } else {
         setJoinMessage('You have already joined this challenge.');
-        console.debug('[handleJoin] User cancelled forfeit.');
-        return;
+                return;
       }
     }
     try {
       const token = localStorage.getItem('token');
-      setJoinMessage('[DEBUG] Joining challenge: ' + (challenge?.id ?? 'unknown'));
-      console.debug('[handleJoin] Joining challenge:', challenge?.id);
-      const response = await fetch('/api/v1/participations', {
+                  const response = await fetch('/api/v1/participations', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -99,10 +90,8 @@ const ChallengeDetails = () => {
         setJoinLoading(false);
         return;
       }
-      console.debug('[handleJoin] Join successful. Fetching participation...');
-      await fetchParticipation(); // Refresh participation state after join
-      console.debug('[handleJoin] Participation refreshed. Navigating to /my-challenges');
-      navigate('/my-challenges');
+            await fetchParticipation(); // Refresh participation state after join
+            navigate('/my-challenges');
     } catch (err) {
       setError(err.message);
       setJoinLoading(false);
@@ -214,15 +203,12 @@ const ChallengeDetails = () => {
         <button
           className="mt-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow transition duration-150"
           onClick={async () => {
-            console.debug('[forfeit] Clicked. participationId:', participationId);
-            if (!window.confirm('Are you sure you want to forfeit this challenge?')) {
-              console.debug('[forfeit] User cancelled forfeit.');
-              return;
+                        if (!window.confirm('Are you sure you want to forfeit this challenge?')) {
+                            return;
             }
             try {
               const token = localStorage.getItem('token');
-              console.debug('[forfeit] Sending DELETE to /api/v1/participations/' + participationId);
-              const response = await fetch(`/api/v1/participations/${participationId}`, {
+                            const response = await fetch(`/api/v1/participations/${participationId}`, {
                 method: 'DELETE',
                 headers: {
                   'Authorization': `Bearer ${token}`,
@@ -230,8 +216,7 @@ const ChallengeDetails = () => {
                 },
               });
               if (!response.ok) throw new Error('Failed to forfeit challenge');
-              console.debug('[forfeit] Forfeit successful. Reloading My Challenges.');
-              window.location.assign('/my-challenges');
+                            window.location.assign('/my-challenges');
             } catch (err) {
               setError(err.message);
               console.error('[forfeit] Error:', err);
